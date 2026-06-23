@@ -1,225 +1,311 @@
+import Image from "next/image";
 import Link from "next/link";
 
+const heroImage =
+  "https://www.tcfe.or.th/wp-content/uploads/2018/05/%E0%B8%84%E0%B8%A3%E0%B8%B9%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%99%E0%B8%B3%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%A5%E0%B8%87%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99.jpg";
+const libraryImage =
+  "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1000&q=80";
+const deskImage =
+  "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1000&q=80";
+const focusImage =
+  "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1000&q=80";
+
+const navItems = [
+  ["แผนอ่าน", "/study-plans"],
+  ["คลังข้อสอบ", "/exams"],
+  ["สังกัดสอบ", "/affiliations"],
+  ["บทความสรุป", "/articles"],
+];
+
+const examBoards = [
+  {
+    name: "สพฐ.",
+    fullName: "สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน",
+    focus: "ภาค ก วิชาชีพครู กฎหมายการศึกษา และแนวข้อสอบมาตรฐานครูผู้ช่วย",
+    exams: "24 ชุด",
+    questions: "1,720 ข้อ",
+    color: "bg-[#0b66c3]",
+    href: "/affiliations/obec",
+  },
+  {
+    name: "สอศ.",
+    fullName: "สำนักงานคณะกรรมการการอาชีวศึกษา",
+    focus: "แนวข้อสอบครูผู้ช่วยสายอาชีวะ งานอาชีวศึกษา สมรรถนะครู และกฎหมายที่เกี่ยวข้อง",
+    exams: "16 ชุด",
+    questions: "1,080 ข้อ",
+    color: "bg-[#e94b7b]",
+    href: "/affiliations/ovec",
+  },
+  {
+    name: "สกร.",
+    fullName: "กรมส่งเสริมการเรียนรู้",
+    focus: "การศึกษานอกระบบ การเรียนรู้ตลอดชีวิต งานชุมชน และบทบาทครูยุคใหม่",
+    exams: "10 ชุด",
+    questions: "680 ข้อ",
+    color: "bg-[#00a86b]",
+    href: "/affiliations/dole",
+  },
+  {
+    name: "อปท.",
+    fullName: "องค์กรปกครองส่วนท้องถิ่น",
+    focus: "ระเบียบท้องถิ่น งานราชการ การจัดการศึกษาในพื้นที่ และกฎหมายพื้นฐาน",
+    exams: "12 ชุด",
+    questions: "840 ข้อ",
+    color: "bg-[#f6b21a]",
+    href: "/affiliations/local",
+  },
+];
+
+const studyResources = [
+  {
+    title: "ชุดเริ่มต้นครูผู้ช่วยทุกสังกัด",
+    subtitle: "ปูพื้นฐาน ภาค ก + วิชาชีพครู + กฎหมาย",
+    price: "เริ่มต้น",
+    detail: "เหมาะสำหรับคนเริ่มอ่าน ต้องการรู้ภาพรวมและทำข้อสอบวัดระดับก่อนเลือกสนาม",
+    href: "/study-plans/all-affiliations-starter",
+    color: "bg-[#0b66c3]",
+  },
+  {
+    title: "ชุดอ่านเฉพาะทาง สอศ. ครูอาชีวะ",
+    subtitle: "งานอาชีวศึกษา สมรรถนะครู และชุดจำลองสนาม",
+    price: "แนะนำ",
+    detail: "สำหรับผู้สอบสายอาชีวะที่ต้องการอ่านต่างจากสนามทั่วไปและเก็บประเด็นเฉพาะ สอศ.",
+    href: "/study-plans/ovec-teacher-assistant",
+    color: "bg-[#e94b7b]",
+  },
+  {
+    title: "ตะลุยกฎหมายการศึกษา",
+    subtitle: "สรุปมาตรา ข้อสอบซ้ำ และเฉลยแยกประเด็น",
+    price: "เข้มข้น",
+    detail: "เก็บคะแนนกฎหมายที่ใช้ได้ทุกสนาม ทั้ง สพฐ. สอศ. สกร. และ อปท.",
+    href: "/study-plans/education-law-intensive",
+    color: "bg-[#00a86b]",
+  },
+];
+
 const subjects = [
+  ["ภาค ก ความสามารถทั่วไป", "ภาษาไทย คณิต เหตุผล ความรู้รอบตัว", "1,260 ข้อ", "ต้องเริ่มก่อน"],
+  ["วิชาชีพครู", "หลักสูตร การสอน จิตวิทยา การวัดผล และจรรยาบรรณ", "1,540 ข้อ", "ออกทุกสนาม"],
+  ["กฎหมายการศึกษา", "พ.ร.บ. การศึกษา ระเบียบครู งานราชการ และหน่วยงาน", "980 ข้อ", "จุดตัดคะแนน"],
+  ["สังกัดเฉพาะ", "สพฐ. สอศ. สกร. อปท. และบริบทงานของแต่ละสนาม", "760 ข้อ", "อ่านให้ตรงสนาม"],
+];
+
+const recommendedExams = [
   {
-    name: "ความรู้ความสามารถทั่วไป",
-    slug: "general-ability",
-    exams: 18,
-    questions: 1260,
-    accent: "bg-sky-100 text-sky-700",
+    title: "สอศ. ครูผู้ช่วยสายอาชีวะ ชุดจำลองสนามจริง",
+    tag: "สอศ.",
+    detail: "90 ข้อ | 120 นาที | เน้นงานอาชีวศึกษาและสมรรถนะครู",
+    href: "/exams/ovec-teacher-assistant-practice",
+    color: "bg-[#e94b7b]",
   },
   {
-    name: "วิชาชีพครู",
-    slug: "teacher-profession",
-    exams: 22,
-    questions: 1540,
-    accent: "bg-emerald-100 text-emerald-700",
+    title: "สพฐ. ครูผู้ช่วย ภาค ก + วิชาชีพครู",
+    tag: "สพฐ.",
+    detail: "100 ข้อ | 120 นาที | ครบข้อสอบพื้นฐานที่ต้องผ่าน",
+    href: "/exams/obec-teacher-assistant-general",
+    color: "bg-[#0b66c3]",
   },
   {
-    name: "กฎหมายการศึกษา",
-    slug: "education-law",
-    exams: 12,
-    questions: 840,
-    accent: "bg-amber-100 text-amber-700",
-  },
-  {
-    name: "ภาษาไทยและการสื่อสาร",
-    slug: "thai-communication",
-    exams: 9,
-    questions: 630,
-    accent: "bg-rose-100 text-rose-700",
+    title: "กฎหมายการศึกษา สำหรับทุกสังกัด",
+    tag: "ทุกสังกัด",
+    detail: "75 ข้อ | 90 นาที | เฉลยแยกมาตราและประเด็นออกสอบ",
+    href: "/exams/education-law-all-affiliations",
+    color: "bg-[#00a86b]",
   },
 ];
 
-const examSets = [
+const studyPlans = [
   {
-    title: "แนวข้อสอบผู้ช่วยครู ภาค ก ชุดเข้มข้น",
-    slug: "teacher-assistant-general-intensive",
-    subject: "ความรู้ความสามารถทั่วไป",
-    year: 2567,
-    questions: 100,
-    duration: "120 นาที",
-    attempts: "18.4k",
-    premium: false,
+    title: "แผนอ่านครูผู้ช่วยทุกสังกัด 45 วัน",
+    label: "Study Plan",
+    image: libraryImage,
+    href: "/articles/teacher-assistant-45-days",
   },
   {
-    title: "ข้อสอบวิชาชีพครู พร้อมเฉลยละเอียด",
-    slug: "teacher-profession-with-explanations",
-    subject: "วิชาชีพครู",
-    year: 2567,
-    questions: 80,
-    duration: "90 นาที",
-    attempts: "12.1k",
-    premium: false,
+    title: "สอบ สอศ. ต้องอ่านอะไรบ้าง",
+    label: "OVEC Focus",
+    image: deskImage,
+    href: "/articles/ovec-teacher-assistant-guide",
   },
   {
-    title: "กฎหมายการศึกษา อัปเดตล่าสุด",
-    slug: "latest-education-law",
-    subject: "กฎหมายการศึกษา",
-    year: 2566,
-    questions: 60,
-    duration: "75 นาที",
-    attempts: "9.8k",
-    premium: true,
+    title: "กฎหมายการศึกษาที่ออกสอบบ่อย",
+    label: "Law Guide",
+    image: focusImage,
+    href: "/articles/education-law-all-affiliations",
   },
 ];
 
-const articles = [
-  "วิธีวางแผนอ่านหนังสือสอบผู้ช่วยครูใน 30 วัน",
-  "หัวข้อกฎหมายการศึกษาที่ออกสอบบ่อย",
-  "เทคนิคทำข้อสอบจับเวลาให้คะแนนนิ่งขึ้น",
+const studyRoadmap = [
+  ["สัปดาห์ 1", "วัดพื้นฐาน", "ทำข้อสอบ ภาค ก และกฎหมาย เพื่อดูว่าควรเริ่มเก็บคะแนนจากจุดไหน"],
+  ["สัปดาห์ 2-3", "เก็บแกนกลาง", "อ่านวิชาชีพครู หลักสูตร จิตวิทยา การวัดผล และกฎหมายที่ใช้ทุกสังกัด"],
+  ["สัปดาห์ 4-5", "เลือกสังกัด", "ลงชุด สพฐ. สอศ. สกร. หรือ อปท. พร้อมอ่านบริบทเฉพาะสนาม"],
+  ["สัปดาห์ 6", "ซ้อมสนามจริง", "ทำข้อสอบเต็มเวลา ทบทวนข้อผิด และจดหัวข้อที่ยังพลาดก่อนสอบจริง"],
+];
+
+const boardCompare = [
+  ["สพฐ.", "โรงเรียนพื้นฐาน", "ภาค ก วิชาชีพครู กฎหมาย", "เหมาะกับผู้สอบสายสามัญ"],
+  ["สอศ.", "สถานศึกษาอาชีวะ", "งานอาชีวศึกษา สมรรถนะครู กฎหมาย", "เหมาะกับผู้สอบครูสายอาชีพ"],
+  ["สกร.", "การเรียนรู้ตลอดชีวิต", "งานชุมชน การศึกษานอกระบบ", "เหมาะกับผู้สอบงานส่งเสริมการเรียนรู้"],
+  ["อปท.", "โรงเรียนท้องถิ่น", "ระเบียบท้องถิ่น งานราชการ การศึกษา", "เหมาะกับผู้สอบท้องถิ่น"],
+];
+
+const mustReadTopics = [
+  "พ.ร.บ. การศึกษาแห่งชาติ",
+  "ระเบียบข้าราชการครูและบุคลากรทางการศึกษา",
+  "หลักสูตรแกนกลางและการจัดการเรียนรู้",
+  "การวัดและประเมินผลการศึกษา",
+  "จิตวิทยาการศึกษาและพัฒนาการผู้เรียน",
+  "จรรยาบรรณวิชาชีพครู",
+  "เทคโนโลยีดิจิทัลเพื่อการศึกษา",
+  "งานอาชีวศึกษาและบริบท สอศ.",
+];
+
+const faqItems = [
+  ["ควรเลือกอ่านตามสังกัดเลยไหม", "ถ้ายังไม่เคยอ่าน ให้เริ่มจากภาค ก วิชาชีพครู และกฎหมายพื้นฐานก่อน จากนั้นค่อยเลือกสนามเฉพาะ เช่น สอศ. หรือ อปท."],
+  ["สอศ. ต้องอ่านต่างจาก สพฐ. แค่ไหน", "ควรเพิ่มเรื่องบริบทอาชีวศึกษา สมรรถนะครูสายอาชีพ การจัดการเรียนรู้เชิงปฏิบัติ และภารกิจของสำนักงานคณะกรรมการการอาชีวศึกษา"],
+  ["ควรเริ่มจากชุดข้อสอบไหน", "เริ่มจากชุดวัดระดับก่อน เพื่อดูว่าควรเก็บ ภาค ก กฎหมาย หรือวิชาชีพครูก่อน แล้วค่อยเลือกชุดตามสังกัดที่ต้องสอบ"],
+  ["เฉลยควรละเอียดระดับไหน", "เฉลยควรบอกเหตุผลของคำตอบที่ถูก ตัวเลือกที่ผิด และลิงก์กลับไปยังหัวข้ออ่านซ้ำ"],
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f7f8f3] text-slate-950">
-      <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
+      <div className="bg-[#071f4a] text-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 text-xs font-bold sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+          <p>แนวข้อสอบครูผู้ช่วยทุกสังกัด รวม สอศ. พร้อมเฉลยละเอียดและแผนอ่านตรงสนาม</p>
+          <Link href="/exams/education-law-all-affiliations/practice" className="text-[#ffd35a] hover:text-white">
+            เริ่มทำข้อสอบ
+          </Link>
+        </div>
+      </div>
+
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center gap-5 px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3" aria-label="Learnova home">
-            <span className="grid h-10 w-10 place-items-center rounded-lg bg-slate-950 text-lg font-black text-white">
+            <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#ffd35a] text-xl font-black text-[#071f4a] shadow-sm">
               L
             </span>
-            <span className="text-xl font-bold tracking-normal">Learnova</span>
+            <span>
+              <span className="block text-2xl font-black leading-6 text-[#071f4a]">Learnova</span>
+              <span className="hidden text-xs font-black text-slate-500 sm:block">ติวสอบครูผู้ช่วยทุกสังกัด</span>
+            </span>
           </Link>
 
-          <nav className="ml-auto hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
-            <Link href="/subjects" className="hover:text-slate-950">วิชาสอบ</Link>
-            <Link href="/exams" className="hover:text-slate-950">ชุดข้อสอบ</Link>
-            <Link href="/articles" className="hover:text-slate-950">บทความ</Link>
-            <Link href="/admin" className="hover:text-slate-950">Admin</Link>
+          <nav className="ml-auto hidden items-center gap-6 text-sm font-black text-slate-600 lg:flex">
+            {navItems.map(([label, href]) => (
+              <Link key={href} href={href} className="hover:text-[#0b66c3]">
+                {label}
+              </Link>
+            ))}
           </nav>
 
-          <Link
-            href="/login"
-            className="hidden h-10 items-center rounded-lg bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 sm:inline-flex"
-          >
+          <Link href="/login" className="ml-auto rounded-xl bg-[#0b66c3] px-4 py-2 text-sm font-black text-white shadow-sm hover:bg-[#084f99] lg:ml-0">
             เข้าสู่ระบบ
           </Link>
         </div>
       </header>
 
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-14">
-          <div className="flex flex-col justify-center">
-            <p className="mb-4 w-fit rounded-lg bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700">
-              แพลตฟอร์มเตรียมสอบผู้ช่วยครู
-            </p>
-            <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-normal text-slate-950 sm:text-5xl lg:text-6xl">
-              ค้นหา ฝึกทำ และวิเคราะห์ข้อสอบในที่เดียว
+      <section className="relative overflow-hidden bg-[#071f4a]">
+        <div className="absolute inset-0 bg-[#071f4a]" />
+        <div className="absolute left-0 top-20 h-72 w-72 rounded-full bg-[#ffd35a]/25 blur-3xl" />
+        <div className="absolute right-0 top-28 h-96 w-96 rounded-full bg-[#e94b7b]/20 blur-3xl" />
+
+        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_500px] lg:px-8 lg:py-16">
+          <div className="flex flex-col justify-center text-white">
+            <div className="mb-5 flex flex-wrap gap-2">
+              <span className="rounded-full bg-[#ffd35a] px-4 py-2 text-sm font-black text-[#071f4a] shadow-sm">ครูผู้ช่วย</span>
+              <span className="rounded-full bg-white/12 px-4 py-2 text-sm font-black text-white ring-1 ring-white/20">รวม สอศ.</span>
+              <span className="rounded-full bg-white/12 px-4 py-2 text-sm font-black text-white ring-1 ring-white/20">สพฐ. สกร. อปท.</span>
+            </div>
+
+            <h1 className="max-w-4xl text-5xl font-black leading-[1.04] tracking-normal sm:text-6xl lg:text-7xl">
+              สอบครูผู้ช่วย ต้องอ่านให้ตรงสังกัด
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Learnova รวมชุดข้อสอบตามวิชา พร้อมระบบจับเวลา เฉลยละเอียด ประวัติการทำข้อสอบ
-              และเนื้อหาที่ออกแบบให้ค้นเจอบน Google ได้ง่ายตั้งแต่วันแรก
+            <p className="mt-5 max-w-2xl text-2xl font-black leading-tight text-[#ffd35a] sm:text-3xl">
+              รวมแนวข้อสอบ สรุปเนื้อหา และแผนอ่านสำหรับ สพฐ. สอศ. สกร. อปท.
+            </p>
+            <p className="mt-5 max-w-2xl text-lg font-medium leading-8 text-slate-200">
+              เริ่มจากเลือกสนามสอบของคุณ แล้วไปต่อด้วยชุดวัดระดับ ภาค ก วิชาชีพครู กฎหมาย และหัวข้อเฉพาะของแต่ละสังกัด
             </p>
 
-            <form className="mt-8 flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2 shadow-sm sm:flex-row">
-              <label className="sr-only" htmlFor="search">ค้นหาข้อสอบ</label>
+            <div className="mt-8 grid gap-3 sm:grid-cols-[auto_auto] sm:justify-start">
+              <Link href="/affiliations/ovec" className="flex min-h-14 items-center justify-center rounded-2xl bg-[#ffd35a] px-7 text-base font-black text-[#071f4a] shadow-lg shadow-[#ffd35a]/20 transition hover:bg-[#f6bf22]">
+                ดูแนว สอศ.
+              </Link>
+              <Link href="/exams/education-law-all-affiliations/practice" className="flex min-h-14 items-center justify-center rounded-2xl bg-white px-7 text-base font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-slate-100">
+                เริ่มทำข้อสอบ
+              </Link>
+            </div>
+          </div>
+
+          <aside className="relative overflow-hidden rounded-[34px] border border-white/15 bg-white p-4 shadow-2xl shadow-black/25">
+            <div className="relative mb-4 h-52 overflow-hidden rounded-[26px] bg-[#eaf4ff]">
+              <Image
+                src="/images/learnova-hero-cartoon.png"
+                alt="การ์ตูนผู้เตรียมสอบครูผู้ช่วยกับสื่อการเรียน"
+                fill
+                priority
+                sizes="(min-width: 1024px) 500px, 100vw"
+                className="object-cover"
+              />
+            </div>
+
+            <div className="rounded-[26px] bg-[#fff5da] p-5">
+              <p className="text-sm font-black uppercase tracking-normal text-[#936000]">ค้นหาเร็ว</p>
+              <h2 className="mt-2 text-3xl font-black leading-tight text-[#071f4a]">เลือกสนามหรือวิชาที่ต้องการอ่าน</h2>
+              <p className="mt-3 text-sm font-bold leading-6 text-slate-600">
+                พิมพ์ชื่อสังกัด วิชา หรือหัวข้อสอบ แล้วไปยังสรุปและชุดข้อสอบที่เกี่ยวข้อง
+              </p>
+            </div>
+
+            <form className="mt-4 grid gap-3">
+              <label className="sr-only" htmlFor="search">ค้นหาสรุปหรือข้อสอบครูผู้ช่วย</label>
               <input
                 id="search"
                 name="q"
                 type="search"
-                placeholder="ค้นหา เช่น กฎหมายการศึกษา, ภาค ก, ปี 2567"
-                className="min-h-12 flex-1 rounded-lg border border-transparent bg-white px-4 text-base text-slate-900 outline-none ring-0 placeholder:text-slate-400 focus:border-sky-300"
+                placeholder="สอศ. / กฎหมายการศึกษา / ภาค ก"
+                className="min-h-14 rounded-2xl border border-slate-200 bg-slate-50 px-5 text-base font-semibold text-slate-950 outline-none placeholder:text-slate-400 focus:border-[#0b66c3] focus:bg-white"
               />
-              <button className="min-h-12 rounded-lg bg-sky-600 px-6 text-base font-semibold text-white transition hover:bg-sky-700">
-                ค้นหา
+              <button className="min-h-14 rounded-2xl bg-[#0b66c3] px-8 text-base font-black text-white hover:bg-[#084f99]">
+                ค้นหาเนื้อหา
               </button>
             </form>
 
-            <div className="mt-6 flex flex-wrap gap-2 text-sm text-slate-600">
-              {["ภาค ก", "วิชาชีพครู", "กฎหมาย", "ข้อสอบจับเวลา"].map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/search?q=${encodeURIComponent(tag)}`}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 hover:border-slate-300"
-                >
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {["สอศ.", "สพฐ.", "กฎหมาย", "ภาค ก", "วิชาชีพครู", "วัดระดับ"].map((tag) => (
+                <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} className="rounded-2xl bg-slate-100 px-3 py-3 text-center text-sm font-black text-slate-700 hover:bg-[#eaf4ff] hover:text-[#0b66c3]">
                   {tag}
                 </Link>
               ))}
             </div>
-          </div>
-
-          <div className="grid gap-4">
-            <div className="rounded-xl border border-slate-200 bg-[#102033] p-6 text-white shadow-sm">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium text-sky-200">Mock exam today</p>
-                  <h2 className="mt-2 text-2xl font-bold">ข้อสอบภาค ก ชุดแนะนำ</h2>
-                </div>
-                <span className="rounded-lg bg-white/10 px-3 py-1 text-sm">ฟรี</span>
-              </div>
-              <div className="mt-8 grid grid-cols-3 gap-3 text-center">
-                <div className="rounded-lg bg-white/10 p-3"><p className="text-2xl font-bold">100</p><p className="mt-1 text-xs text-slate-300">ข้อ</p></div>
-                <div className="rounded-lg bg-white/10 p-3"><p className="text-2xl font-bold">120</p><p className="mt-1 text-xs text-slate-300">นาที</p></div>
-                <div className="rounded-lg bg-white/10 p-3"><p className="text-2xl font-bold">8.7</p><p className="mt-1 text-xs text-slate-300">ระดับยาก</p></div>
-              </div>
-              <Link
-                href="/exams/teacher-assistant-general-intensive/practice"
-                className="mt-6 flex h-12 items-center justify-center rounded-lg bg-white text-sm font-bold text-slate-950 transition hover:bg-slate-100"
-              >
-                เริ่มทำข้อสอบ
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-xl border border-slate-200 bg-white p-5"><p className="text-3xl font-bold text-slate-950">61k+</p><p className="mt-1 text-sm text-slate-600">ครั้งที่ทำข้อสอบ</p></div>
-              <div className="rounded-xl border border-slate-200 bg-white p-5"><p className="text-3xl font-bold text-slate-950">4,270</p><p className="mt-1 text-sm text-slate-600">ข้อสอบในคลัง</p></div>
-            </div>
-          </div>
+          </aside>
         </div>
       </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold text-sky-700">Subjects</p>
-            <h2 className="mt-1 text-2xl font-bold sm:text-3xl">เลือกอ่านตามวิชาสอบ</h2>
-          </div>
-          <Link href="/subjects" className="text-sm font-semibold text-sky-700 hover:text-sky-800">ดูทั้งหมด</Link>
-        </div>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {subjects.map((subject) => (
-            <Link
-              key={subject.slug}
-              href={`/subjects/${subject.slug}`}
-              className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md"
-            >
-              <span className={`rounded-lg px-3 py-1 text-sm font-semibold ${subject.accent}`}>{subject.exams} ชุด</span>
-              <h3 className="mt-5 min-h-14 text-lg font-bold leading-7 group-hover:text-sky-700">{subject.name}</h3>
-              <p className="mt-3 text-sm text-slate-600">{subject.questions.toLocaleString()} ข้อพร้อมฝึก</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
       <section className="border-y border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between gap-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold text-emerald-700">Exam sets</p>
-              <h2 className="mt-1 text-2xl font-bold sm:text-3xl">ชุดข้อสอบยอดนิยม</h2>
+              <p className="text-sm font-black uppercase tracking-normal text-[#e94b7b]">Study Paths</p>
+              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">เลือกแนวอ่านตามเป้าหมายสอบ</h2>
             </div>
-            <Link href="/exams" className="text-sm font-semibold text-emerald-700 hover:text-emerald-800">ดูทั้งหมด</Link>
+            <Link href="/study-plans" className="text-sm font-black text-[#0b66c3] hover:text-[#084f99]">ดูแผนอ่านทั้งหมด</Link>
           </div>
 
           <div className="mt-6 grid gap-4 lg:grid-cols-3">
-            {examSets.map((exam) => (
-              <article key={exam.slug} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-lg bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">{exam.subject}</span>
-                  {exam.premium ? <span className="rounded-lg bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-700">Premium</span> : null}
+            {studyResources.map((course) => (
+              <article key={course.href} className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div className={`${course.color} p-5 text-white`}>
+                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-black">{course.price}</span>
+                  <h3 className="mt-8 min-h-20 text-2xl font-black leading-8">{course.title}</h3>
+                  <p className="mt-3 text-sm font-bold text-white/80">{course.subtitle}</p>
                 </div>
-                <h3 className="mt-4 text-xl font-bold leading-8">{exam.title}</h3>
-                <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
-                  <div className="rounded-lg bg-slate-50 p-3"><dt className="text-slate-500">ปี</dt><dd className="mt-1 font-bold">{exam.year}</dd></div>
-                  <div className="rounded-lg bg-slate-50 p-3"><dt className="text-slate-500">จำนวน</dt><dd className="mt-1 font-bold">{exam.questions} ข้อ</dd></div>
-                  <div className="rounded-lg bg-slate-50 p-3"><dt className="text-slate-500">เวลา</dt><dd className="mt-1 font-bold">{exam.duration}</dd></div>
-                  <div className="rounded-lg bg-slate-50 p-3"><dt className="text-slate-500">ผู้ฝึก</dt><dd className="mt-1 font-bold">{exam.attempts}</dd></div>
-                </dl>
-                <div className="mt-5 flex gap-3">
-                  <Link href={`/exams/${exam.slug}`} className="flex h-11 flex-1 items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold hover:bg-slate-50">รายละเอียด</Link>
-                  <Link href={`/exams/${exam.slug}/practice`} className="flex h-11 flex-1 items-center justify-center rounded-lg bg-slate-950 text-sm font-semibold text-white hover:bg-slate-800">ฝึกทำ</Link>
+                <div className="p-5">
+                  <p className="min-h-16 text-sm font-semibold leading-7 text-slate-600">{course.detail}</p>
+                  <div className="mt-5 flex gap-3">
+                    <Link href={course.href} className="flex h-11 flex-1 items-center justify-center rounded-xl border border-slate-200 text-sm font-black hover:bg-slate-50">รายละเอียด</Link>
+                    <Link href={course.href} className="flex h-11 flex-1 items-center justify-center rounded-xl bg-[#071f4a] text-sm font-black text-white hover:bg-[#0b66c3]">เริ่มอ่าน</Link>
+                  </div>
                 </div>
               </article>
             ))}
@@ -227,47 +313,245 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <p className="text-sm font-semibold text-rose-700">Profile preview</p>
-          <h2 className="mt-2 text-2xl font-bold">ภาพรวมหลังทำข้อสอบ</h2>
-          <div className="mt-6 space-y-4">
-            {[
-              ["วิชาชีพครู", "82%", "bg-emerald-500"],
-              ["ภาค ก", "68%", "bg-sky-500"],
-              ["กฎหมายการศึกษา", "54%", "bg-amber-500"],
-            ].map(([label, score, color]) => (
-              <div key={label}>
-                <div className="flex justify-between text-sm"><span className="font-medium text-slate-700">{label}</span><span className="font-bold">{score}</span></div>
-                <div className="mt-2 h-3 rounded-full bg-slate-100"><div className={`h-3 rounded-full ${color}`} style={{ width: score }} /></div>
-              </div>
-            ))}
+      <section className="bg-[#f7f8fc]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-black uppercase tracking-normal text-[#0b66c3]">Exam Boards</p>
+              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">เลือกสังกัดที่คุณจะสอบ</h2>
+            </div>
+            <Link href="/affiliations" className="text-sm font-black text-[#0b66c3] hover:text-[#084f99]">ดูทุกสังกัด</Link>
           </div>
-        </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <p className="text-sm font-semibold text-slate-600">Articles</p>
-          <h2 className="mt-2 text-2xl font-bold">บทความช่วยเตรียมสอบ</h2>
-          <div className="mt-5 divide-y divide-slate-100">
-            {articles.map((title, index) => (
-              <Link key={title} href={`/articles/mock-${index + 1}`} className="flex items-center justify-between gap-4 py-4 hover:text-sky-700">
-                <span className="font-semibold">{title}</span>
-                <span className="text-sm text-slate-500">อ่านต่อ</span>
+          <div className="mt-6 grid gap-4 lg:grid-cols-4">
+            {examBoards.map((item) => (
+              <Link key={item.href} href={item.href} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div className={`h-2 ${item.color}`} />
+                <div className="p-5">
+                  <p className="text-3xl font-black text-[#071f4a] group-hover:text-[#0b66c3]">{item.name}</p>
+                  <h3 className="mt-2 min-h-12 text-sm font-black leading-6 text-slate-700">{item.fullName}</h3>
+                  <p className="mt-4 min-h-20 text-sm font-semibold leading-6 text-slate-600">{item.focus}</p>
+                  <div className="mt-5 grid grid-cols-2 gap-2 text-center text-sm font-black">
+                    <span className="rounded-xl bg-slate-100 px-3 py-2 text-slate-700">{item.exams}</span>
+                    <span className="rounded-xl bg-slate-100 px-3 py-2 text-slate-700">{item.questions}</span>
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 bg-slate-950 text-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-slate-300 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <p>Learnova mock frontend for Teacher Assistant Exam MVP</p>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-white">Privacy</Link>
-            <Link href="/terms" className="hover:text-white">Terms</Link>
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[360px_1fr] lg:items-start">
+            <div className="rounded-3xl bg-[#071f4a] p-6 text-white shadow-xl">
+              <p className="text-sm font-black text-[#ffd35a]">อ่านให้ครบก่อนลงสนาม</p>
+              <h2 className="mt-2 text-3xl font-black leading-tight">เนื้อหาหลักที่ครูผู้ช่วยต้องเจอ</h2>
+              <p className="mt-4 text-sm font-semibold leading-7 text-white/75">
+                จัดหมวดตามสิ่งที่ผู้สอบใช้จริง: อ่านแกนกลางก่อน แล้วค่อยแยกไปยังสนามเฉพาะ เช่น สอศ. หรือ อปท.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {subjects.map(([title, description, amount, badge]) => (
+                <article key={title} className="rounded-3xl border border-slate-200 bg-[#f8fbff] p-5 shadow-sm">
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-2xl font-black text-[#071f4a]">{title}</h3>
+                    <span className="rounded-full bg-[#fff5da] px-3 py-1 text-xs font-black text-[#7a4b00]">{badge}</span>
+                  </div>
+                  <p className="mt-3 min-h-16 text-sm font-semibold leading-6 text-slate-600">{description}</p>
+                  <p className="mt-5 text-sm font-black text-[#0b66c3]">{amount}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f7f8fc]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-black uppercase tracking-normal text-[#e94b7b]">Mock Exams</p>
+              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดข้อสอบที่ควรเริ่มก่อน</h2>
+            </div>
+            <Link href="/exams" className="text-sm font-black text-[#0b66c3] hover:text-[#084f99]">เปิดคลังข้อสอบ</Link>
+          </div>
+
+          <div className="mt-6 grid gap-4 lg:grid-cols-3">
+            {recommendedExams.map((exam) => (
+              <article key={exam.href} className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div className={`${exam.color} p-5 text-white`}>
+                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-black">{exam.tag}</span>
+                  <h3 className="mt-8 min-h-20 text-2xl font-black leading-8">{exam.title}</h3>
+                </div>
+                <div className="p-5">
+                  <p className="text-sm font-bold leading-6 text-slate-600">{exam.detail}</p>
+                  <div className="mt-5 flex gap-3">
+                    <Link href={exam.href} className="flex h-11 flex-1 items-center justify-center rounded-xl border border-slate-200 text-sm font-black hover:bg-slate-50">รายละเอียด</Link>
+                    <Link href={`${exam.href}/practice`} className="flex h-11 flex-1 items-center justify-center rounded-xl bg-[#071f4a] text-sm font-black text-white hover:bg-[#0b66c3]">เริ่มทำ</Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[360px_1fr]">
+            <div>
+              <p className="text-sm font-black uppercase tracking-normal text-[#0b66c3]">อ่านตามแผน</p>
+              <h2 className="mt-1 text-3xl font-black leading-tight text-[#071f4a]">แผนเตรียมสอบ 45 วัน</h2>
+              <p className="mt-4 text-sm font-semibold leading-7 text-slate-600">
+                เหมาะกับคนที่ไม่รู้จะเริ่มตรงไหน แบ่งช่วงอ่านให้ชัดตั้งแต่ประเมินพื้นฐานจนถึงซ้อมสนามจริง
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {studyRoadmap.map(([period, title, description]) => (
+                <article key={period} className="rounded-3xl border border-slate-200 bg-[#f8fbff] p-5 shadow-sm">
+                  <p className="text-sm font-black text-[#0b66c3]">{period}</p>
+                  <h3 className="mt-2 text-2xl font-black text-[#071f4a]">{title}</h3>
+                  <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">{description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f7f8fc]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-black uppercase tracking-normal text-[#e94b7b]">เทียบสนามสอบ</p>
+              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">สังกัดไหนต้องเน้นอะไร</h2>
+            </div>
+            <Link href="/affiliations" className="text-sm font-black text-[#0b66c3] hover:text-[#084f99]">อ่านรายละเอียดสังกัด</Link>
+          </div>
+
+          <div className="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+            <div className="grid grid-cols-4 bg-[#071f4a] px-5 py-4 text-sm font-black text-white max-md:hidden">
+              <span>สังกัด</span>
+              <span>สนามสอบ</span>
+              <span>ควรเน้น</span>
+              <span>เหมาะกับ</span>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {boardCompare.map(([name, context, focus, target]) => (
+                <div key={name} className="grid gap-3 px-5 py-5 text-sm md:grid-cols-4 md:items-center">
+                  <p className="text-2xl font-black text-[#071f4a]">{name}</p>
+                  <p className="font-bold text-slate-700">{context}</p>
+                  <p className="font-semibold leading-6 text-slate-600">{focus}</p>
+                  <p className="font-semibold leading-6 text-slate-600">{target}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
+          <div>
+            <p className="text-sm font-black uppercase tracking-normal text-[#00a86b]">หัวข้อออกสอบบ่อย</p>
+            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">เริ่มอ่านจากหัวข้อเหล่านี้ก่อน</h2>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {mustReadTopics.map((topic, index) => (
+                <Link key={topic} href={`/articles/topic-${index + 1}`} className="rounded-2xl border border-slate-200 bg-[#f8fbff] p-4 font-black text-slate-800 transition hover:border-[#0b66c3] hover:text-[#0b66c3]">
+                  {topic}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <aside className="rounded-3xl bg-[#071f4a] p-6 text-white shadow-xl">
+            <p className="text-sm font-black text-[#ffd35a]">เน้น สอศ.</p>
+            <h2 className="mt-2 text-3xl font-black leading-tight">สายอาชีวะต้องอ่านให้ต่างจากสนามทั่วไป</h2>
+            <p className="mt-4 text-sm font-semibold leading-7 text-white/75">
+              ผู้สอบ สอศ. ควรเก็บทั้งแกนกลางครูผู้ช่วยและบริบทอาชีวศึกษา เช่น สมรรถนะวิชาชีพ การเรียนรู้เชิงปฏิบัติ และภารกิจของสถานศึกษาอาชีวะ
+            </p>
+            <Link href="/affiliations/ovec" className="mt-6 inline-flex rounded-xl bg-[#ffd35a] px-5 py-3 text-sm font-black text-[#071f4a] hover:bg-[#f6bf22]">
+              ดูแนว สอศ.
+            </Link>
+          </aside>
+        </div>
+      </section>
+
+      <section className="bg-[#f7f8fc]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-black uppercase tracking-normal text-[#00a86b]">บทความสรุป</p>
+              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">อ่านสรุปก่อนเริ่มทำข้อสอบ</h2>
+            </div>
+            <Link href="/articles" className="text-sm font-black text-[#0b66c3] hover:text-[#084f99]">ดูบทความทั้งหมด</Link>
+          </div>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {studyPlans.map((card) => (
+              <Link key={card.href} href={card.href} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div className="relative h-40">
+                  <Image src={card.image} alt={card.title} fill sizes="(min-width: 640px) 33vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" />
+                </div>
+                <div className="p-5">
+                  <p className="text-xs font-black uppercase tracking-normal text-[#0b66c3]">{card.label}</p>
+                  <h3 className="mt-2 min-h-20 text-lg font-black leading-7 group-hover:text-[#0b66c3]">{card.title}</h3>
+                  <p className="mt-3 text-sm font-black text-slate-500">อ่านต่อ</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[360px_1fr]">
+            <div>
+              <p className="text-sm font-black uppercase tracking-normal text-[#0b66c3]">FAQ</p>
+              <h2 className="mt-1 text-3xl font-black leading-tight text-[#071f4a]">คำถามที่ผู้สอบมักถาม</h2>
+              <p className="mt-4 text-sm font-semibold leading-7 text-slate-600">
+                รวมคำตอบสั้น ๆ สำหรับคนที่กำลังเลือกว่าจะเริ่มอ่านจากอะไรและควรเลือกสนามสอบอย่างไร
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {faqItems.map(([question, answer]) => (
+                <article key={question} className="rounded-3xl border border-slate-200 bg-[#f8fbff] p-5 shadow-sm">
+                  <h3 className="text-xl font-black leading-8 text-[#071f4a]">{question}</h3>
+                  <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">{answer}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-[#071f4a] text-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <div>
+            <p className="text-2xl font-black">Learnova</p>
+            <p className="mt-1 text-sm font-semibold text-white/70">ติวสอบครูผู้ช่วยทุกสังกัด รวม สอศ. พร้อมข้อสอบและสรุปอ่านตรงสนาม</p>
+          </div>
+          <div className="flex flex-wrap gap-4 text-sm font-bold text-white/75">
+            <Link href="/terms" className="hover:text-white">ข้อตกลง</Link>
+            <Link href="/privacy" className="hover:text-white">ความเป็นส่วนตัว</Link>
+            <Link href="/contact" className="hover:text-white">ติดต่อเรา</Link>
           </div>
         </div>
       </footer>
     </main>
   );
 }
+
+
+
+
+
+
+
+
