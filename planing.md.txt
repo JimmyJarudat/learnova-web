@@ -1,0 +1,550 @@
+# Project: Learnova
+
+Learnova is a modern EdTech platform focused on exam preparation, learning content, online courses, and future AI-powered learning experiences.
+
+The initial MVP focuses on Teacher Assistant Exam preparation in Thailand, but the architecture must be designed to support future expansion into:
+
+- Teacher Exams
+- Government Exams
+- Civil Service Exams
+- Professional Certifications
+- Online Courses
+- Video Learning
+- Premium Content
+- AI Tutor
+- Mock Exams
+- Learning Analytics
+- Mobile Applications
+
+The platform must be scalable and production-ready from the beginning.
+
+---
+
+# Architecture
+
+Use a decoupled architecture.
+
+Clients:
+
+- Learnova Web (Next.js)
+- Learnova Mobile (React Native - future)
+
+Backend:
+
+- Learnova API (NestJS)
+
+Infrastructure:
+
+- PostgreSQL
+- Redis (future)
+- Cloudflare R2
+
+Architecture Diagram:
+
+Clients
+├── Web (Next.js)
+└── Mobile (React Native)
+
+↓
+
+NestJS API
+
+↓
+
+Prisma ORM
+
+↓
+
+PostgreSQL
+
+↓
+
+Cloudflare R2
+
+---
+
+# Tech Stack
+
+Frontend:
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- shadcn/ui
+- TanStack Query
+- Zod
+
+Backend:
+
+- NestJS
+- TypeScript
+- Prisma ORM
+- JWT Authentication
+- Swagger/OpenAPI
+- Class Validator
+- Class Transformer
+
+Database:
+
+- PostgreSQL
+
+Storage:
+
+- Cloudflare R2
+
+Authentication:
+
+- JWT Access Token
+- JWT Refresh Token
+
+Deployment:
+
+- Docker
+- Docker Compose
+
+Future:
+
+- Redis
+- Queue System
+- WebSocket
+- AI Services
+
+---
+
+# Monorepo Structure
+
+Use Turborepo.
+
+Structure:
+
+learnova/
+
+├── apps/
+│
+├── web/
+│   └── Next.js
+│
+├── api/
+│   └── NestJS
+│
+├── packages/
+│
+├── shared-types/
+│
+├── validation/
+│
+├── constants/
+│
+└── ui/
+
+├── infrastructure/
+│
+├── docker/
+│
+└── nginx/
+
+├── docs/
+
+└── README.md
+
+---
+
+# Design Principles
+
+Learnova is a Content Platform.
+
+It is NOT an ERP system.
+
+Public pages must prioritize:
+
+- SEO
+- Content Discovery
+- Fast Loading
+- Mobile Experience
+
+Public pages must NOT use sidebar layouts.
+
+Public Layout:
+
+- Header
+- Search
+- Main Content
+- Footer
+
+Member Layout:
+
+- Dashboard
+- Profile
+- History
+
+Admin Layout:
+
+- Sidebar
+- Management Pages
+
+---
+
+# MVP Scope
+
+Phase 1 focuses on Teacher Assistant Exam preparation.
+
+Features:
+
+1. Home Page
+2. Subject Page
+3. Exam Set Page
+4. Exam Practice Page
+5. Exam Result Page
+6. Search
+7. Authentication
+8. User Profile
+
+---
+
+# SEO Requirements
+
+SEO is a top priority.
+
+Implement:
+
+- Server Components
+- Dynamic Metadata
+- Open Graph
+- Twitter Cards
+- JSON-LD
+- Sitemap
+- Robots.txt
+- Canonical URLs
+
+URL Structure:
+
+/subjects
+/subjects/[slug]
+
+/exams
+/exams/[slug]
+
+/articles
+/articles/[slug]
+
+/courses
+/courses/[slug]
+
+---
+
+# Database Design
+
+Use Prisma ORM.
+
+Core Models:
+
+User
+Role
+Permission
+
+UserIdentity
+
+Subject
+Category
+Tag
+
+ExamSet
+Question
+Choice
+
+UserExamAttempt
+UserAnswer
+
+Bookmark
+
+AuditLog
+
+---
+
+# User Model
+
+Support multiple authentication providers.
+
+User
+
+- id
+- username
+- displayName
+- email
+- avatarUrl
+- isActive
+
+UserIdentity
+
+- id
+- userId
+- provider
+- providerUserId
+
+Supported providers:
+
+- Email
+- Google
+- Facebook
+- Apple
+- GitHub
+
+---
+
+# Subject Model
+
+Subject
+
+- id
+- name
+- slug
+- description
+- isActive
+
+Category
+
+- id
+- name
+- slug
+
+Tag
+
+- id
+- name
+- slug
+
+---
+
+# Exam Model
+
+ExamSet
+
+- id
+- subjectId
+- title
+- slug
+- year
+- description
+- totalQuestions
+- isPremium
+- isPublished
+
+Question
+
+- id
+- examSetId
+- content
+- imageUrl
+- explanation
+- difficulty
+
+Choice
+
+- id
+- questionId
+- label
+- content
+- isCorrect
+
+---
+
+# User Exam Models
+
+UserExamAttempt
+
+- id
+- userId
+- examSetId
+- score
+- totalQuestions
+- startedAt
+- completedAt
+
+UserAnswer
+
+- id
+- attemptId
+- questionId
+- selectedChoiceId
+- isCorrect
+
+---
+
+# Future Models
+
+Article
+
+Course
+
+CourseSection
+
+VideoLesson
+
+Enrollment
+
+SubscriptionPlan
+
+UserSubscription
+
+Comment
+
+Notification
+
+LearningAnalytics
+
+Leaderboard
+
+Create Prisma models now even if features are not implemented yet.
+
+---
+
+# Search
+
+Prepare for PostgreSQL Full Text Search.
+
+Support searching:
+
+- Subject Name
+- Exam Title
+- Year
+- Question Content
+- Article Content
+
+Search architecture must be scalable.
+
+---
+
+# Exam System
+
+Support:
+
+- Timed Exams
+- Practice Mode
+- Instant Feedback
+- Exam Review
+- Score Analysis
+- Exam History
+
+---
+
+# User Dashboard
+
+Display:
+
+- Recent Scores
+- Exam History
+- Weak Subjects
+- Strong Subjects
+- Recommended Exams
+
+---
+
+# Cloudflare R2
+
+Store:
+
+- Question Images
+- PDFs
+- Article Images
+- Course Images
+- Video Files (future)
+
+Database must only store URLs.
+
+Never store binary files in PostgreSQL.
+
+---
+
+# Admin System
+
+Admin can manage:
+
+- Users
+- Subjects
+- Categories
+- Tags
+- Exams
+- Questions
+- Articles
+- Courses
+
+Admin uses a separate layout.
+
+---
+
+# API Design
+
+Follow REST API principles.
+
+Example:
+
+/api/v1/auth
+/api/v1/users
+/api/v1/subjects
+/api/v1/exams
+/api/v1/questions
+/api/v1/articles
+/api/v1/courses
+
+Use DTOs and validation.
+
+Generate Swagger documentation automatically.
+
+---
+
+# Security
+
+Implement:
+
+- JWT Authentication
+- Refresh Tokens
+- Role-Based Access Control (RBAC)
+- Rate Limiting
+- Input Validation
+- Secure Headers
+- CORS Configuration
+
+---
+
+# UI Requirements
+
+Modern
+Clean
+Professional
+Mobile First
+
+Use:
+
+- Responsive Header
+- Mega Menu
+- Search Bar
+- Card-based Content Layout
+
+Do not use sidebar on public pages.
+
+---
+
+# Deliverables
+
+Generate:
+
+1. Complete Monorepo Structure
+2. Next.js App Structure
+3. NestJS App Structure
+4. Prisma Schema
+5. Initial Database Design
+6. Shared Type Package
+7. Validation Package
+8. Docker Configuration
+9. Docker Compose
+10. Environment Templates
+11. Coding Standards
+12. Naming Conventions
+13. Swagger Setup
+14. Authentication Architecture
+15. R2 Storage Service
+16. RBAC Design
+17. SEO Architecture
+
+The generated codebase must be production-ready, scalable, and suitable for future React Native integration without major architectural changes.
