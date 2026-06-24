@@ -4,8 +4,18 @@ import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";
 import { findOrCreateGitHubUser, findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
 
-if (!process.env.NEXTAUTH_URL && process.env.AUTH_URL) {
-  process.env.NEXTAUTH_URL = process.env.AUTH_URL;
+function getAuthUrl() {
+  if (process.env.NODE_ENV !== "production") {
+    return "http://localhost:3000";
+  }
+
+  return process.env.NEXTAUTH_URL ?? process.env.AUTH_URL;
+}
+
+const authUrl = getAuthUrl();
+
+if (!process.env.NEXTAUTH_URL && authUrl) {
+  process.env.NEXTAUTH_URL = authUrl;
 }
 
 if (!process.env.NEXTAUTH_SECRET && process.env.AUTH_SECRET) {
@@ -95,3 +105,4 @@ export const authOptions: AuthOptions = {
     },
   },
 };
+

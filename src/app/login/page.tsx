@@ -100,6 +100,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           <SocialLoginButtons />
 
+          <p className="mt-5 text-center text-xs font-semibold leading-5 text-slate-500">
+            การเข้าสู่ระบบถือว่าคุณรับทราบ
+            <Link href="/privacy-policy" className="ml-1 font-black text-[#0b66c3] hover:text-[#084f99]">
+              นโยบายความเป็นส่วนตัว
+            </Link>
+          </p>
+
           <p className="mt-6 text-center text-sm font-semibold text-slate-600">
             ยังไม่มีบัญชี?{" "}
             <Link href="/register" className="font-black text-[#0b66c3] hover:text-[#084f99]">
@@ -111,4 +118,5 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     </main>
   );
 }
+
 
