@@ -1,7 +1,8 @@
 import type { AuthOptions } from "next-auth";
+import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";
-import { findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
+import { findOrCreateGitHubUser, findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
 
 if (!process.env.NEXTAUTH_URL && process.env.AUTH_URL) {
   process.env.NEXTAUTH_URL = process.env.AUTH_URL;
@@ -45,10 +46,19 @@ export const authOptions: AuthOptions = {
         },
       },
     }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID ?? "",
+      clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
+      authorization: {
+        params: {
+          scope: "read:user user:email",
+        },
+      },
+    }),
   ],
   callbacks: {
     async signIn({ account, profile }) {
-      return (account?.provider === "google" || account?.provider === "line") && Boolean(profile);
+      return (account?.provider === "google" || account?.provider === "line" || account?.provider === "github") && Boolean(profile);
     },
     async jwt({ token, account, profile }) {
       if (account?.provider === "google" && profile) {
@@ -60,6 +70,13 @@ export const authOptions: AuthOptions = {
 
       if (account?.provider === "line" && profile) {
         const user = await findOrCreateLineUser({ account, profile });
+        token.userId = user.id;
+        token.username = user.username;
+        token.picture = user.avatarUrl?.startsWith("/uploads/avatars/") ? user.avatarUrl : null;
+      }
+
+      if (account?.provider === "github" && profile) {
+        const user = await findOrCreateGitHubUser({ account, profile });
         token.userId = user.id;
         token.username = user.username;
         token.picture = user.avatarUrl?.startsWith("/uploads/avatars/") ? user.avatarUrl : null;

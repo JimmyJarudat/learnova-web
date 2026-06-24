@@ -28,8 +28,8 @@ const socialProviders = [
     id: "github",
     name: "GitHub",
     icon: "https://cdn.simpleicons.org/github/181717",
-    enabled: false,
-    className: "bg-white opacity-45",
+    enabled: true,
+    className: "bg-white hover:border-slate-500/35",
   },
 ];
 
@@ -56,3 +56,5 @@ export function SocialLoginButtons() {
     </div>
   );
 }
+
+

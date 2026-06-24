@@ -1,11 +1,11 @@
 import crypto from "node:crypto";
-import type { Account, Profile } from "next-auth";
-import type { GoogleProfile } from "next-auth/providers/google";
-import type { LineProfile } from "next-auth/providers/line";
+import type { Account } from "next-auth";
 import { SocialProvider } from "@/generated/prisma/enums";
 import type { SocialProvider as SocialProviderType } from "@/generated/prisma/enums";
 import prisma from "@/lib/db/postgres";
 import { cacheRemoteAvatar } from "./avatar-cache";
+import type { NormalizedProfile, OAuthProfile } from "./oauth-profile";
+import { normalizeOAuthProfile } from "./oauth-profile";
 import { baseUsernameFromEmail } from "./username";
 
 type AuthUser = {
@@ -18,17 +18,8 @@ type AuthUser = {
 
 type OAuthAccountInput = {
   account: Account;
-  profile: Profile | GoogleProfile | LineProfile;
+  profile: OAuthProfile;
   provider: SocialProviderType;
-};
-
-type NormalizedProfile = {
-  email: string;
-  providerAccountId: string;
-  providerEmail: string | null;
-  displayName: string;
-  remoteAvatarUrl: string | null;
-  emailVerifiedAt: Date | null;
 };
 
 const authUserSelect = {
@@ -38,58 +29,6 @@ const authUserSelect = {
   displayName: true,
   avatarUrl: true,
 } as const;
-
-function normalizeGoogleProfile(profile: Profile | GoogleProfile): NormalizedProfile {
-  const googleProfile = profile as GoogleProfile;
-  const providerAccountId = googleProfile.sub;
-  const email = googleProfile.email?.toLowerCase();
-
-  if (!providerAccountId) {
-    throw new Error("Google profile did not include a subject identifier.");
-  }
-
-  if (!email) {
-    throw new Error("Google profile did not include an email address.");
-  }
-
-  return {
-    email,
-    providerAccountId,
-    providerEmail: email,
-    displayName: googleProfile.name ?? email,
-    remoteAvatarUrl: googleProfile.picture ?? null,
-    emailVerifiedAt: googleProfile.email_verified ? new Date() : null,
-  };
-}
-
-function normalizeLineProfile(profile: Profile | LineProfile): NormalizedProfile {
-  const lineProfile = profile as LineProfile & { email?: string };
-  const providerAccountId = lineProfile.sub;
-  const providerEmail = lineProfile.email?.toLowerCase() ?? null;
-  const email = providerEmail ?? `${providerAccountId}@line.learnova.local`;
-
-  if (!providerAccountId) {
-    throw new Error("LINE profile did not include a subject identifier.");
-  }
-
-  return {
-    email,
-    providerAccountId,
-    providerEmail,
-    displayName: lineProfile.name ?? "LINE User",
-    remoteAvatarUrl: lineProfile.picture ?? null,
-    emailVerifiedAt: providerEmail ? new Date() : null,
-  };
-}
-
-function normalizeProfile(input: OAuthAccountInput) {
-  if (input.provider === SocialProvider.GOOGLE) {
-    return normalizeGoogleProfile(input.profile);
-  }
-
-  return normalizeLineProfile(input.profile);
-}
-
 
 async function createAvailableUsername(email: string) {
   const baseUsername = baseUsernameFromEmail(email).slice(0, 24);
@@ -111,7 +50,7 @@ async function createAvailableUsername(email: string) {
   return `${baseUsername}_${crypto.randomUUID().slice(0, 8)}`;
 }
 
-async function findUserBySocialAccount(provider: SocialProvider, providerAccountId: string) {
+async function findUserBySocialAccount(provider: SocialProviderType, providerAccountId: string) {
   const socialAccount = await prisma.socialAccount.findUnique({
     where: {
       provider_providerAccountId: {
@@ -146,11 +85,7 @@ async function findUserByEmail(email: string) {
   });
 }
 
-async function createUser(input: {
-  email: string;
-  displayName: string;
-  emailVerifiedAt: Date | null;
-}) {
+async function createUser(input: NormalizedProfile) {
   return prisma.user.create({
     data: {
       username: await createAvailableUsername(input.email),
@@ -164,7 +99,7 @@ async function createUser(input: {
   });
 }
 
-async function touchUser(userId: string, input: { displayName: string }) {
+async function touchUser(userId: string, input: NormalizedProfile) {
   return prisma.user.update({
     where: { id: userId },
     data: {
@@ -229,7 +164,7 @@ async function upsertSocialAccount(userId: string, input: OAuthAccountInput, nor
 }
 
 async function findOrCreateOAuthUser(input: OAuthAccountInput): Promise<AuthUser> {
-  const normalizedProfile = normalizeProfile(input);
+  const normalizedProfile = normalizeOAuthProfile(input.provider, input.profile);
   const socialUser = await findUserBySocialAccount(input.provider, normalizedProfile.providerAccountId);
 
   if (socialUser) {
@@ -257,3 +192,6 @@ export async function findOrCreateLineUser(input: Omit<OAuthAccountInput, "provi
   return findOrCreateOAuthUser({ ...input, provider: SocialProvider.LINE });
 }
 
+export async function findOrCreateGitHubUser(input: Omit<OAuthAccountInput, "provider">) {
+  return findOrCreateOAuthUser({ ...input, provider: SocialProvider.GITHUB });
+}
