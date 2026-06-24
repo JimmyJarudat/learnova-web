@@ -6,17 +6,30 @@ import LineProvider from "next-auth/providers/line";
 import { getUsableAvatarUrl } from "@/server/auth/avatar-url";
 import { findOrCreateFacebookUser, findOrCreateGitHubUser, findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
 
+function toHttpsUrl(host: string | undefined) {
+  if (!host) {
+    return undefined;
+  }
+
+  return host.startsWith("http") ? host : `https://${host}`;
+}
+
 function getAuthUrl() {
   if (process.env.NODE_ENV !== "production") {
     return "http://localhost:3000";
   }
 
-  return process.env.NEXTAUTH_URL ?? process.env.AUTH_URL;
+  return (
+    process.env.AUTH_URL ??
+    process.env.NEXTAUTH_URL ??
+    toHttpsUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+    toHttpsUrl(process.env.VERCEL_URL)
+  );
 }
 
 const authUrl = getAuthUrl();
 
-if (!process.env.NEXTAUTH_URL && authUrl) {
+if (authUrl) {
   process.env.NEXTAUTH_URL = authUrl;
 }
 
@@ -136,5 +149,7 @@ export const authOptions: AuthOptions = {
     },
   },
 };
+
+
 
 
