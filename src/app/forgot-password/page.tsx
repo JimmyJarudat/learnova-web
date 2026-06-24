@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
             <p className="text-sm font-black uppercase tracking-normal text-[#0b66c3]">Reset Password</p>
             <h1 className="mt-2 text-4xl font-black leading-tight text-[#071f4a]">ลืมรหัสผ่าน</h1>
             <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
-              กรอกอีเมลที่ใช้สมัคร ระบบจะส่งขั้นตอนสำหรับตั้งรหัสผ่านใหม่ให้เมื่อพร้อมใช้งานจริง
+              กรอกอีเมลที่ใช้สมัคร ระบบจะส่งลิงก์สำหรับตั้งรหัสผ่านใหม่ไปยังอีเมลของคุณ
             </p>
           </div>
 
@@ -42,3 +42,4 @@ export default function ForgotPasswordPage() {
     </main>
   );
 }
+

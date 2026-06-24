@@ -27,7 +27,8 @@ model User {
   updatedAt       DateTime  @updatedAt
   deletedAt       DateTime?
 
-  socialAccounts SocialAccount[]
+  socialAccounts       SocialAccount[]
+  passwordResetTokens PasswordResetToken[]
 
   @@index([email])
   @@index([username])
@@ -55,6 +56,21 @@ model SocialAccount {
   @@unique([userId, provider])
   @@index([userId])
   @@map("social_accounts")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
 }
 
 model system_config {
