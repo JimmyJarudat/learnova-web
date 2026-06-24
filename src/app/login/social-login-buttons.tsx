@@ -14,8 +14,8 @@ const socialProviders = [
     id: "facebook",
     name: "Facebook",
     icon: "https://cdn.simpleicons.org/facebook/1877F2",
-    enabled: false,
-    className: "bg-white opacity-45",
+    enabled: true,
+    className: "bg-white hover:border-[#1877f2]/45",
   },
   {
     id: "line",
@@ -56,5 +56,6 @@ export function SocialLoginButtons() {
     </div>
   );
 }
+
 
 

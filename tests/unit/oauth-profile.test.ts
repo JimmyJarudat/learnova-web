@@ -37,5 +37,46 @@ describe("normalizeOAuthProfile", () => {
     expect(profile.providerEmail).toBe(null);
     expect(profile.displayName).toBe("private-user");
   });
+
+  test("normalizes a Facebook profile with email", () => {
+    const facebookProfile = {
+      id: "fb_12345",
+      name: "Facebook Learner",
+      email: "LEARNER@EXAMPLE.COM",
+      picture: {
+        data: {
+          url: "https://graph.facebook.com/fb_12345/picture",
+        },
+      },
+    } as unknown as OAuthProfile;
+
+    const profile = normalizeOAuthProfile(SocialProvider.FACEBOOK, facebookProfile);
+
+    expect(profile.providerAccountId).toBe("fb_12345");
+    expect(profile.email).toBe("learner@example.com");
+    expect(profile.providerEmail).toBe("learner@example.com");
+    expect(profile.displayName).toBe("Facebook Learner");
+    expect(profile.remoteAvatarUrl).toBe("https://graph.facebook.com/fb_12345/picture");
+  });
+
+  test("uses a synthetic Facebook email when profile email is missing", () => {
+    const facebookProfile = {
+      id: "fb_private",
+      name: null,
+      email: null,
+      picture: {
+        data: {
+          url: "https://graph.facebook.com/fb_private/picture",
+        },
+      },
+    } as unknown as OAuthProfile;
+
+    const profile = normalizeOAuthProfile(SocialProvider.FACEBOOK, facebookProfile);
+
+    expect(profile.email).toBe("fb_private@facebook.learnova.local");
+    expect(profile.providerEmail).toBe(null);
+    expect(profile.displayName).toBe("Facebook User");
+  });
 });
+
 

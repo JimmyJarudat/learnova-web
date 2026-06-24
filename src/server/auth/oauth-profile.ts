@@ -1,11 +1,12 @@
 import type { Profile } from "next-auth";
+import type { FacebookProfile } from "next-auth/providers/facebook";
 import type { GithubProfile } from "next-auth/providers/github";
 import type { GoogleProfile } from "next-auth/providers/google";
 import type { LineProfile } from "next-auth/providers/line";
 import { SocialProvider } from "@/generated/prisma/enums";
 import type { SocialProvider as SocialProviderType } from "@/generated/prisma/enums";
 
-export type OAuthProfile = Profile | GoogleProfile | LineProfile | GithubProfile;
+export type OAuthProfile = Profile | FacebookProfile | GoogleProfile | LineProfile | GithubProfile;
 
 export type NormalizedProfile = {
   email: string;
@@ -15,6 +16,30 @@ export type NormalizedProfile = {
   remoteAvatarUrl: string | null;
   emailVerifiedAt: Date | null;
 };
+
+function normalizeFacebookProfile(profile: OAuthProfile): NormalizedProfile {
+  const facebookProfile = profile as FacebookProfile & {
+    email?: string | null;
+    image?: string | null;
+    name?: string | null;
+  };
+  const providerAccountId = facebookProfile.id ? String(facebookProfile.id) : null;
+  const providerEmail = facebookProfile.email?.toLowerCase() ?? null;
+  const remoteAvatarUrl = facebookProfile.picture?.data?.url ?? facebookProfile.image ?? null;
+
+  if (!providerAccountId) {
+    throw new Error("Facebook profile did not include a user identifier.");
+  }
+
+  return {
+    email: providerEmail ?? `${providerAccountId}@facebook.learnova.local`,
+    providerAccountId,
+    providerEmail,
+    displayName: facebookProfile.name ?? "Facebook User",
+    remoteAvatarUrl,
+    emailVerifiedAt: providerEmail ? new Date() : null,
+  };
+}
 
 function normalizeGoogleProfile(profile: OAuthProfile): NormalizedProfile {
   const googleProfile = profile as GoogleProfile;
@@ -78,6 +103,10 @@ function normalizeGitHubProfile(profile: OAuthProfile): NormalizedProfile {
 }
 
 export function normalizeOAuthProfile(provider: SocialProviderType, profile: OAuthProfile): NormalizedProfile {
+  if (provider === SocialProvider.FACEBOOK) {
+    return normalizeFacebookProfile(profile);
+  }
+
   if (provider === SocialProvider.GOOGLE) {
     return normalizeGoogleProfile(profile);
   }

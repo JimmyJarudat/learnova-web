@@ -197,3 +197,7 @@ export async function findOrCreateGitHubUser(input: Omit<OAuthAccountInput, "pro
   return findOrCreateOAuthUser({ ...input, provider: SocialProvider.GITHUB });
 }
 
+export async function findOrCreateFacebookUser(input: Omit<OAuthAccountInput, "provider">) {
+  return findOrCreateOAuthUser({ ...input, provider: SocialProvider.FACEBOOK });
+}
+

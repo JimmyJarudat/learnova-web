@@ -1,9 +1,10 @@
 import type { AuthOptions } from "next-auth";
+import FacebookProvider from "next-auth/providers/facebook";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";
 import { getUsableAvatarUrl } from "@/server/auth/avatar-url";
-import { findOrCreateGitHubUser, findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
+import { findOrCreateFacebookUser, findOrCreateGitHubUser, findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
 
 function getAuthUrl() {
   if (process.env.NODE_ENV !== "production") {
@@ -38,6 +39,16 @@ export const authOptions: AuthOptions = {
     },
   },
   providers: [
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID ?? "",
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET ?? "",
+      authorization: {
+        url: "https://www.facebook.com/v11.0/dialog/oauth",
+        params: {
+          scope: "email,public_profile",
+        },
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
@@ -69,9 +80,22 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ account, profile }) {
-      return (account?.provider === "google" || account?.provider === "line" || account?.provider === "github") && Boolean(profile);
+      return (
+        (account?.provider === "facebook" ||
+          account?.provider === "google" ||
+          account?.provider === "line" ||
+          account?.provider === "github") &&
+        Boolean(profile)
+      );
     },
     async jwt({ token, account, profile }) {
+      if (account?.provider === "facebook" && profile) {
+        const user = await findOrCreateFacebookUser({ account, profile });
+        token.userId = user.id;
+        token.username = user.username;
+        token.picture = getUsableAvatarUrl(user.avatarUrl);
+      }
+
       if (account?.provider === "google" && profile) {
         const user = await findOrCreateGoogleUser({ account, profile });
         token.userId = user.id;
@@ -106,6 +130,4 @@ export const authOptions: AuthOptions = {
     },
   },
 };
-
-
 
