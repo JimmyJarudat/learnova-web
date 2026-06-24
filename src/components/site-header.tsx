@@ -1,10 +1,19 @@
 import Link from "next/link";
 
 const navItems = [
-  ["แผนอ่าน", "/study-plans"],
-  ["คลังข้อสอบ", "/exams"],
-  ["สังกัดสอบ", "/affiliations"],
-  ["บทความสรุป", "/articles"],
+  { label: "หน้าแรก", href: "/" },
+  { label: "คลังข้อสอบ", href: "/exams" },
+  { label: "ข่าวสาร", href: "/news" },
+  { label: "สรุปเนื้อหา", href: "/summaries" },
+  { label: "แผนอ่าน", href: "/study-plans" },
+  { label: "บทความ", href: "/articles" },
+];
+
+const affiliations = [
+  { label: "สพฐ.", href: "/affiliations/obec" },
+  { label: "สอศ.", href: "/affiliations/ovec" },
+  { label: "สกร.", href: "/affiliations/nfe" },
+  { label: "อปท.", href: "/affiliations/local" },
 ];
 
 export function SiteHeader() {
@@ -12,50 +21,82 @@ export function SiteHeader() {
     <>
       <div className="bg-[#071f4a] text-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 text-xs font-bold sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <p>แนวข้อสอบครูผู้ช่วยทุกสังกัด รวม สอศ. พร้อมเฉลยละเอียดและแผนอ่านตรงสนาม</p>
-          <Link href="/exams/education-law-all-affiliations/practice" className="text-[#ffd35a] hover:text-white">
-            เริ่มทำข้อสอบ
+          <p>
+            แนวข้อสอบครูผู้ช่วยทุกสังกัด รวม สอศ. พร้อมเฉลยละเอียดและแผนอ่านตรงสนาม
+          </p>
+
+          <Link
+            href="/exams"
+            className="text-[#ffd35a] hover:text-white"
+          >
+            เริ่มฝึกทำข้อสอบ
           </Link>
         </div>
       </div>
 
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-5 px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-3" aria-label="Learnova home">
+        <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 shrink-0">
             <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#ffd35a] text-xl font-black text-[#071f4a] shadow-sm">
               L
             </span>
-            <span>
-              <span className="block text-2xl font-black leading-6 text-[#071f4a]">Learnova</span>
-              <span className="hidden text-xs font-black text-slate-500 sm:block">ติวสอบครูผู้ช่วยทุกสังกัด</span>
-            </span>
+
+            <div className="leading-tight">
+              <div className="text-2xl font-black text-[#071f4a]">
+                Learnova
+              </div>
+              <div className="hidden text-xs font-black text-slate-500 sm:block">
+                ติวสอบครูผู้ช่วยทุกสังกัด
+              </div>
+            </div>
           </Link>
 
-          <form className="ml-auto hidden w-full max-w-sm items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-1.5 lg:flex">
-            <label className="sr-only" htmlFor="nav-search">ค้นหาสรุปหรือข้อสอบครูผู้ช่วย</label>
-            <input
-              id="nav-search"
-              name="q"
-              type="search"
-              placeholder="ค้นหา สอศ. / กฎหมาย / ภาค ก"
-              className="min-h-9 flex-1 bg-transparent px-3 text-sm font-bold text-slate-950 outline-none placeholder:text-slate-400"
-            />
-            <button className="min-h-9 rounded-xl bg-[#0b66c3] px-4 text-sm font-black text-white hover:bg-[#084f99]">
-              ค้นหา
-            </button>
-          </form>
-
-          <nav className="hidden items-center gap-5 text-sm font-black text-slate-600 xl:flex">
-            {navItems.map(([label, href]) => (
-              <Link key={href} href={href} className="hover:text-[#0b66c3]">
-                {label}
+          {/* Center Nav */}
+          <nav className="hidden flex-1 justify-center items-center gap-8 xl:flex">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-black text-slate-700 hover:text-[#0b66c3] transition"
+              >
+                {item.label}
               </Link>
             ))}
+
+            {/* Dropdown */}
+            <div className="relative group">
+              <button className="text-sm font-black text-slate-700 hover:text-[#0b66c3] transition flex items-center gap-1">
+                สังกัดสอบ
+                <span className="text-[10px]">▼</span>
+              </button>
+
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute left-1/2 -translate-x-1/2 top-full mt-3 w-44 rounded-xl border border-slate-200 bg-white shadow-xl">
+                <div className="py-2">
+                  {affiliations.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#0b66c3]"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
           </nav>
 
-          <Link href="/login" className="rounded-xl bg-[#0b66c3] px-4 py-2 text-sm font-black text-white shadow-sm hover:bg-[#084f99]">
-            เข้าสู่ระบบ
-          </Link>
+          {/* Right */}
+          <div className="ml-auto flex items-center gap-3">
+            <Link
+              href="/login"
+              className="rounded-xl bg-[#0b66c3] px-4 py-2 text-sm font-black text-white shadow-sm hover:bg-[#084f99]"
+            >
+              เข้าสู่ระบบ
+            </Link>
+          </div>
         </div>
       </header>
     </>
