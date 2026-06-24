@@ -18,6 +18,12 @@ export const authOptions: AuthOptions = {
   pages: {
     signIn: "/login",
   },
+  debug: process.env.NODE_ENV !== "production",
+  logger: {
+    error(code, ...message) {
+      console.error("[next-auth]", code, ...message);
+    },
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -39,7 +45,7 @@ export const authOptions: AuthOptions = {
         const user = await findOrCreateGoogleUser({ account, profile });
         token.userId = user.id;
         token.username = user.username;
-        token.picture = user.avatarUrl ?? token.picture;
+        token.picture = user.avatarUrl?.startsWith("/uploads/avatars/") ? user.avatarUrl : null;
       }
 
       return token;
@@ -55,5 +61,9 @@ export const authOptions: AuthOptions = {
     },
   },
 };
+
+
+
+
 
 

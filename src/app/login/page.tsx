@@ -9,7 +9,24 @@ export const metadata: Metadata = {
     "เข้าสู่ระบบ Learnova เพื่อฝึกทำข้อสอบครูผู้ช่วย ดูผลวิเคราะห์ และอ่านแผนเตรียมสอบตามสังกัด",
 };
 
-export default function LoginPage() {
+type LoginPageProps = {
+  searchParams?: Promise<{
+    error?: string | string[];
+  }>;
+};
+
+const authErrorMessages: Record<string, string> = {
+  OAuthCallback: "เข้าสู่ระบบด้วย Google ไม่สำเร็จ กรุณาลองอีกครั้ง",
+  OAuthAccountNotLinked: "อีเมลนี้เคยสมัครด้วยวิธีอื่น กรุณาใช้วิธีเดิมหรือเชื่อมบัญชีภายหลัง",
+  AccessDenied: "ไม่สามารถเข้าสู่ระบบด้วยบัญชีนี้ได้",
+  Configuration: "การตั้งค่าระบบเข้าสู่ระบบยังไม่สมบูรณ์",
+  default: "เข้าสู่ระบบไม่สำเร็จ กรุณาลองอีกครั้ง",
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+  const error = Array.isArray(params?.error) ? params.error[0] : params?.error;
+  const errorMessage = error ? authErrorMessages[error] ?? authErrorMessages.default : null;
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#071f4a] text-slate-950">
       <Image
@@ -34,6 +51,12 @@ export default function LoginPage() {
               กลับมาทำข้อสอบต่อและดูผลวิเคราะห์ของคุณ
             </p>
           </div>
+
+          {errorMessage ? (
+            <div className="mb-5 rounded-2xl border border-[#ffc9c9] bg-[#fff1f1] px-4 py-3 text-sm font-bold leading-6 text-[#b42318]">
+              {errorMessage}
+            </div>
+          ) : null}
 
           <form className="grid gap-4">
             <label className="grid gap-2">
@@ -88,3 +111,4 @@ export default function LoginPage() {
     </main>
   );
 }
+

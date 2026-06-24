@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
+import { UserMenu } from "@/components/user-menu";
 
 const navItems = [
   { label: "หน้าแรก", href: "/" },
@@ -18,10 +19,6 @@ const affiliations = [
   { label: "สกร.", href: "/affiliations/nfe" },
   { label: "อปท.", href: "/affiliations/local" },
 ];
-
-function getInitial(name?: string | null, email?: string | null) {
-  return (name?.trim() || email?.trim() || "U").charAt(0).toUpperCase();
-}
 
 export async function SiteHeader() {
   const session = await getServerSession(authOptions);
@@ -96,25 +93,7 @@ export async function SiteHeader() {
 
           <div className="ml-auto flex items-center gap-3">
             {user ? (
-              <Link
-                href="/account"
-                className="flex h-11 items-center gap-3 rounded-full border border-slate-200 bg-white px-2.5 pr-4 shadow-sm transition hover:border-[#0b66c3]/40 hover:shadow-md"
-              >
-                <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full bg-[#071f4a] text-sm font-black text-white">
-                  {user.image?.startsWith("/uploads/avatars/") ? (
-                    <img
-                      src={user.image}
-                      alt={user.name ?? "ผู้ใช้"}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    getInitial(user.name, user.email)
-                  )}
-                </span>
-                <span className="hidden max-w-32 truncate text-sm font-black text-slate-700 sm:block">
-                  {user.name ?? user.email ?? "บัญชีของฉัน"}
-                </span>
-              </Link>
+              <UserMenu name={user.name} email={user.email} image={user.image} />
             ) : (
               <Link
                 href="/login"
@@ -129,6 +108,8 @@ export async function SiteHeader() {
     </>
   );
 }
+
+
 
 
 

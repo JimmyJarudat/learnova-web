@@ -43,7 +43,7 @@ function getGoogleProfile(profile: Profile | GoogleProfile) {
     email,
     providerAccountId,
     displayName: googleProfile.name ?? email,
-    avatarUrl: googleProfile.picture ?? null,
+    remoteAvatarUrl: googleProfile.picture ?? null,
     emailVerifiedAt: googleProfile.email_verified ? new Date() : null,
   };
 }
@@ -117,7 +117,6 @@ async function findUserByEmail(email: string) {
 async function createUser(input: {
   email: string;
   displayName: string;
-  avatarUrl: string | null;
   emailVerifiedAt: Date | null;
 }) {
   return prisma.user.create({
@@ -144,8 +143,8 @@ async function touchUser(userId: string, input: { displayName: string }) {
   });
 }
 
-async function updateCachedAvatar(user: AuthUser, remoteAvatarUrl: string | null) {
-  if (!remoteAvatarUrl || user.avatarUrl?.startsWith("/uploads/avatars/")) {
+async function cacheUserAvatar(user: AuthUser, remoteAvatarUrl: string | null) {
+  if (user.avatarUrl?.startsWith("/uploads/avatars/")) {
     return user;
   }
 
@@ -204,7 +203,7 @@ export async function findOrCreateGoogleUser(input: GoogleAccountInput): Promise
 
   if (socialUser) {
     const user = await touchUser(socialUser.id, googleProfile);
-    const userWithAvatar = await updateCachedAvatar(user, googleProfile.avatarUrl);
+    const userWithAvatar = await cacheUserAvatar(user, googleProfile.remoteAvatarUrl);
     await upsertGoogleSocialAccount(userWithAvatar.id, input);
     return userWithAvatar;
   }
@@ -214,8 +213,7 @@ export async function findOrCreateGoogleUser(input: GoogleAccountInput): Promise
     ? await touchUser(existingUser.id, googleProfile)
     : await createUser(googleProfile);
 
-  const userWithAvatar = await updateCachedAvatar(user, googleProfile.avatarUrl);
+  const userWithAvatar = await cacheUserAvatar(user, googleProfile.remoteAvatarUrl);
   await upsertGoogleSocialAccount(userWithAvatar.id, input);
   return userWithAvatar;
 }
-
