@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { SocialLoginButtons } from "../login/social-login-buttons";
+import { RegisterForm } from "./register-form";
 
 export const metadata: Metadata = {
   title: "สมัครสมาชิก",
@@ -91,92 +91,7 @@ export default function RegisterPage() {
                 </p>
               </div>
 
-              <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-                <SocialLoginButtons />
-
-                <div className="my-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-xs font-black text-slate-400">
-                  <span className="h-px bg-slate-200" />
-                  <span>หรือสมัครด้วยอีเมล</span>
-                  <span className="h-px bg-slate-200" />
-                </div>
-
-                <form className="grid gap-4">
-                  <label className="grid gap-2">
-                    <span className="text-sm font-black text-slate-700">ชื่อที่แสดง</span>
-                    <input
-                      type="text"
-                      name="displayName"
-                      placeholder="ครูผู้ช่วยมือใหม่"
-                      className="h-[48px] rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b66c3] focus:ring-4 focus:ring-[#0b66c3]/10"
-                    />
-                  </label>
-
-                  <div className="grid gap-4">
-                    <label className="grid gap-2">
-                      <span className="text-sm font-black text-slate-700">username</span>
-                      <input
-                        type="text"
-                        name="username"
-                        placeholder="learnova_teacher"
-                        className="h-[48px] rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b66c3] focus:ring-4 focus:ring-[#0b66c3]/10"
-                      />
-                    </label>
-
-                    <label className="grid gap-2">
-                      <span className="text-sm font-black text-slate-700">อีเมล</span>
-                      <input
-                        type="email"
-                        name="email"
-                        placeholder="teacher@example.com"
-                        className="h-[48px] rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b66c3] focus:ring-4 focus:ring-[#0b66c3]/10"
-                      />
-                    </label>
-                  </div>
-
-                  <div className="grid gap-4">
-                    <label className="grid gap-2">
-                      <span className="text-sm font-black text-slate-700">รหัสผ่าน</span>
-                      <input
-                        type="password"
-                        name="password"
-                        placeholder="อย่างน้อย 8 ตัวอักษร"
-                        className="h-[48px] rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b66c3] focus:ring-4 focus:ring-[#0b66c3]/10"
-                      />
-                    </label>
-
-                    <label className="grid gap-2">
-                      <span className="text-sm font-black text-slate-700">ยืนยันรหัสผ่าน</span>
-                      <input
-                        type="password"
-                        name="confirmPassword"
-                        placeholder="กรอกรหัสผ่านอีกครั้ง"
-                        className="h-[48px] rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b66c3] focus:ring-4 focus:ring-[#0b66c3]/10"
-                      />
-                    </label>
-                  </div>
-
-                  <label className="flex gap-3 rounded-2xl bg-slate-50 p-4 text-xs font-semibold leading-5 text-slate-600">
-                    <input type="checkbox" name="acceptedTerms" className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0b66c3]" />
-                    <span>
-                      ฉันรับทราบ
-                      <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="mx-1 font-black text-[#0b66c3] hover:text-[#084f99]">
-                        นโยบายความเป็นส่วนตัว
-                      </Link>
-                      และ
-                      <Link href="/terms" target="_blank" rel="noopener noreferrer" className="mx-1 font-black text-[#0b66c3] hover:text-[#084f99]">
-                        เงื่อนไขการใช้งาน
-                      </Link>
-                    </span>
-                  </label>
-
-                  <button
-                    type="button"
-                    className="h-[52px] rounded-2xl bg-[#ffd35a] text-base font-black text-[#071f4a] shadow-lg shadow-[#ffd35a]/25 transition hover:-translate-y-0.5 hover:bg-[#f6bf22]"
-                  >
-                    สร้างบัญชี
-                  </button>
-                </form>
-              </div>
+              <RegisterForm />
 
               <p className="mt-6 text-center text-sm font-semibold text-slate-600">
                 มีบัญชีแล้ว?{" "}
@@ -191,6 +106,7 @@ export default function RegisterPage() {
     </main>
   );
 }
+
 
 
 

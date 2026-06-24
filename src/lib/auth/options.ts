@@ -1,9 +1,11 @@
 import type { AuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import FacebookProvider from "next-auth/providers/facebook";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";
 import { getUsableAvatarUrl } from "@/server/auth/avatar-url";
+import { authorizePasswordUser } from "@/server/auth/credentials-user";
 import { findOrCreateFacebookUser, findOrCreateGitHubUser, findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
 
 function toHttpsUrl(host: string | undefined) {
@@ -52,6 +54,16 @@ export const authOptions: AuthOptions = {
     },
   },
   providers: [
+    CredentialsProvider({
+      name: "Email or username",
+      credentials: {
+        identifier: { label: "Email or username", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        return authorizePasswordUser(credentials?.identifier, credentials?.password);
+      },
+    }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
@@ -98,6 +110,10 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ account, profile }) {
+      if (account?.provider === "credentials") {
+        return true;
+      }
+
       return (
         (account?.provider === "facebook" ||
           account?.provider === "google" ||
@@ -106,7 +122,14 @@ export const authOptions: AuthOptions = {
         Boolean(profile)
       );
     },
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
+      if (account?.provider === "credentials" && user) {
+        const credentialsUser = user as typeof user & { username?: string | null };
+        token.userId = credentialsUser.id;
+        token.username = credentialsUser.username ?? null;
+        token.picture = credentialsUser.image ?? null;
+      }
+
       if (account?.provider === "facebook" && profile) {
         const user = await findOrCreateFacebookUser({ account, profile });
         token.userId = user.id;
@@ -148,6 +171,9 @@ export const authOptions: AuthOptions = {
     },
   },
 };
+
+
+
 
 
 
