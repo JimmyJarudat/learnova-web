@@ -19,6 +19,7 @@ const examBoards = [
     exams: "24 ชุด",
     questions: "1,720 ข้อ",
     color: "bg-[#0b66c3]",
+    image: "/images/teacher-card-general.png",
     href: "/affiliations/obec",
   },
   {
@@ -28,6 +29,7 @@ const examBoards = [
     exams: "16 ชุด",
     questions: "1,080 ข้อ",
     color: "bg-[#e94b7b]",
+    image: "/images/teacher-card-ovec.png",
     href: "/affiliations/ovec",
   },
   {
@@ -37,6 +39,7 @@ const examBoards = [
     exams: "10 ชุด",
     questions: "680 ข้อ",
     color: "bg-[#00a86b]",
+    image: "/images/teacher-card-law.png",
     href: "/affiliations/dole",
   },
   {
@@ -58,6 +61,7 @@ const studyResources = [
     detail: "เหมาะสำหรับคนเริ่มอ่าน ต้องการรู้ภาพรวมและทำข้อสอบวัดระดับก่อนเลือกสนาม",
     href: "/study-plans/all-affiliations-starter",
     color: "bg-[#0b66c3]",
+    image: "/images/teacher-card-general.png",
   },
   {
     title: "ชุดอ่านเฉพาะทาง สอศ. ครูอาชีวะ",
@@ -66,6 +70,7 @@ const studyResources = [
     detail: "สำหรับผู้สอบสายอาชีวะที่ต้องการอ่านต่างจากสนามทั่วไปและเก็บประเด็นเฉพาะ สอศ.",
     href: "/study-plans/ovec-teacher-assistant",
     color: "bg-[#e94b7b]",
+    image: "/images/teacher-card-ovec.png",
   },
   {
     title: "ตะลุยกฎหมายการศึกษา",
@@ -74,6 +79,7 @@ const studyResources = [
     detail: "เก็บคะแนนกฎหมายที่ใช้ได้ทุกสนาม ทั้ง สพฐ. สอศ. สกร. และ อปท.",
     href: "/study-plans/education-law-intensive",
     color: "bg-[#00a86b]",
+    image: "/images/teacher-card-law.png",
   },
 ];
 
@@ -91,6 +97,7 @@ const recommendedExams = [
     detail: "90 ข้อ | 120 นาที | เน้นงานอาชีวศึกษาและสมรรถนะครู",
     href: "/exams/ovec-teacher-assistant-practice",
     color: "bg-[#e94b7b]",
+    image: "/images/teacher-card-ovec.png",
   },
   {
     title: "สพฐ. ครูผู้ช่วย ภาค ก + วิชาชีพครู",
@@ -98,6 +105,7 @@ const recommendedExams = [
     detail: "100 ข้อ | 120 นาที | ครบข้อสอบพื้นฐานที่ต้องผ่าน",
     href: "/exams/obec-teacher-assistant-general",
     color: "bg-[#0b66c3]",
+    image: "/images/teacher-card-general.png",
   },
   {
     title: "กฎหมายการศึกษา สำหรับทุกสังกัด",
@@ -105,6 +113,7 @@ const recommendedExams = [
     detail: "75 ข้อ | 90 นาที | เฉลยแยกมาตราและประเด็นออกสอบ",
     href: "/exams/education-law-all-affiliations",
     color: "bg-[#00a86b]",
+    image: "/images/teacher-card-law.png",
   },
 ];
 
@@ -227,7 +236,7 @@ export default function Home() {
               <article key={course.href} className="relative isolate overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
                 <div className="pointer-events-none absolute right-0 top-0 z-10 h-32 w-32 translate-x-3 -translate-y-1 sm:h-36 sm:w-36">
                   <Image
-                    src="/images/teacher-card-cutout.png"
+                    src={course.image}
                     alt=""
                     fill
                     sizes="144px"
@@ -486,6 +495,10 @@ export default function Home() {
     </main>
   );
 }
+
+
+
+
 
 
 

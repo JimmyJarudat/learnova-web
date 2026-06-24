@@ -13,21 +13,71 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://learnova.com"),
+
   title: {
-    default: "Learnova | เตรียมสอบผู้ช่วยครู",
+    default: "Learnova | แนวข้อสอบครูผู้ช่วย สพฐ. สอศ. สกร. อปท.",
     template: "%s | Learnova",
   },
+
   description:
-    "Learnova แพลตฟอร์มเตรียมสอบผู้ช่วยครูแบบ SEO-first พร้อมข้อสอบจับเวลา เฉลยละเอียด และประวัติการฝึกทำข้อสอบ",
-  openGraph: {
-    title: "Learnova | เตรียมสอบผู้ช่วยครู",
-    description:
-      "ค้นหา ฝึกทำ และวิเคราะห์ข้อสอบผู้ช่วยครู พร้อม mock data สำหรับ MVP frontend",
-    type: "website",
-    locale: "th_TH",
-    siteName: "Learnova",
+    "รวมแนวข้อสอบครูผู้ช่วย ข้อสอบย้อนหลัง สรุปเนื้อหา ภาค ก วิชาชีพครู กฎหมายการศึกษา และแบบทดสอบวัดระดับ สำหรับ สพฐ. สอศ. สกร. และ อปท. พร้อมเฉลยละเอียดและระบบวิเคราะห์ผลสอบ",
+
+  keywords: [
+    "ครูผู้ช่วย",
+    "สอบครูผู้ช่วย",
+    "แนวข้อสอบครูผู้ช่วย",
+    "ข้อสอบครูผู้ช่วย",
+    "ข้อสอบครูผู้ช่วย สพฐ",
+    "ข้อสอบครูผู้ช่วย สอศ",
+    "ข้อสอบครูผู้ช่วย สกร",
+    "ข้อสอบครูผู้ช่วย อปท",
+    "ภาค ก ครูผู้ช่วย",
+    "วิชาชีพครู",
+    "กฎหมายการศึกษา",
+    "สรุปสอบครูผู้ช่วย",
+    "เตรียมสอบครูผู้ช่วย",
+    "แบบทดสอบครูผู้ช่วย",
+  ],
+
+  authors: [{ name: "Learnova" }],
+
+  creator: "Learnova",
+
+  publisher: "Learnova",
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
+
+  openGraph: {
+    title: "Learnova | แนวข้อสอบครูผู้ช่วย สพฐ. สอศ. สกร. อปท.",
+    description:
+      "รวมแนวข้อสอบครูผู้ช่วย ข้อสอบย้อนหลัง สรุปเนื้อหา และแบบทดสอบวัดระดับ พร้อมเฉลยละเอียดและวิเคราะห์ผลสอบ",
+    url: "https://learnova.com",
+    siteName: "Learnova",
+    locale: "th_TH",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Learnova | แนวข้อสอบครูผู้ช่วย",
+    description:
+      "ฝึกทำข้อสอบครูผู้ช่วย พร้อมเฉลยละเอียด สรุปเนื้อหา และวิเคราะห์ผลสอบ",
+  },
+
+  category: "Education",
 };
+
 
 export default function RootLayout({
   children,
