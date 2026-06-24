@@ -41,12 +41,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <div className="absolute inset-0 bg-gradient-to-b from-white/8 via-white/0 to-[#071f4a]/24" />
 
       <section className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8 sm:px-6">
-        <div className="w-full max-w-[440px] overflow-hidden rounded-[28px] border border-white/45 bg-white/92 p-5 shadow-2xl backdrop-blur-xl sm:p-7">
+        <div className="relative w-full max-w-[440px] overflow-hidden rounded-[28px] border border-white/45 bg-white/92 px-5 pb-5 pt-20 shadow-2xl backdrop-blur-xl sm:px-7 sm:pb-7">
+          <Link href="/" className="absolute left-1/2 top-5 grid h-10 w-10 -translate-x-1/2 place-items-center rounded-xl bg-[#ffd35a] text-lg font-black text-[#071f4a] shadow-sm">
+            L
+          </Link>
           <div className="mb-6 text-center">
-            <Link href="/" className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#ffd35a] text-2xl font-black text-[#071f4a] shadow-sm">
-              L
-            </Link>
-            <h1 className="mt-4 text-4xl font-black leading-tight text-[#071f4a]">เข้าสู่ระบบ</h1>
+            <h1 className="text-4xl font-black leading-tight text-[#071f4a]">เข้าสู่ระบบ</h1>
             <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
               กลับมาทำข้อสอบต่อและดูผลวิเคราะห์ของคุณ
             </p>
@@ -128,6 +128,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     </main>
   );
 }
+
+
+
 
 
 
