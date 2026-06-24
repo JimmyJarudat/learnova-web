@@ -100,8 +100,16 @@ export async function SiteHeader() {
                 href="/account"
                 className="flex h-11 items-center gap-3 rounded-full border border-slate-200 bg-white px-2.5 pr-4 shadow-sm transition hover:border-[#0b66c3]/40 hover:shadow-md"
               >
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#071f4a] text-sm font-black text-white">
-                  {getInitial(user.name, user.email)}
+                <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full bg-[#071f4a] text-sm font-black text-white">
+                  {user.image?.startsWith("/uploads/avatars/") ? (
+                    <img
+                      src={user.image}
+                      alt={user.name ?? "ผู้ใช้"}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    getInitial(user.name, user.email)
+                  )}
                 </span>
                 <span className="hidden max-w-32 truncate text-sm font-black text-slate-700 sm:block">
                   {user.name ?? user.email ?? "บัญชีของฉัน"}
@@ -121,5 +129,6 @@ export async function SiteHeader() {
     </>
   );
 }
+
 
 

@@ -3,6 +3,7 @@ import type { Account, Profile } from "next-auth";
 import type { GoogleProfile } from "next-auth/providers/google";
 import { SocialProvider } from "@/generated/prisma/enums";
 import prisma from "@/lib/db/postgres";
+import { cacheRemoteAvatar } from "./avatar-cache";
 
 type AuthUser = {
   id: string;
@@ -124,7 +125,7 @@ async function createUser(input: {
       username: await createAvailableUsername(input.email),
       email: input.email,
       displayName: input.displayName,
-      avatarUrl: input.avatarUrl,
+      avatarUrl: null,
       emailVerifiedAt: input.emailVerifiedAt,
       lastLoginAt: new Date(),
     },
@@ -132,14 +133,31 @@ async function createUser(input: {
   });
 }
 
-async function touchUser(userId: string, input: { displayName: string; avatarUrl: string | null }) {
+async function touchUser(userId: string, input: { displayName: string }) {
   return prisma.user.update({
     where: { id: userId },
     data: {
       displayName: input.displayName,
-      avatarUrl: input.avatarUrl ?? undefined,
       lastLoginAt: new Date(),
     },
+    select: authUserSelect,
+  });
+}
+
+async function updateCachedAvatar(user: AuthUser, remoteAvatarUrl: string | null) {
+  if (!remoteAvatarUrl || user.avatarUrl?.startsWith("/uploads/avatars/")) {
+    return user;
+  }
+
+  const cachedAvatarUrl = await cacheRemoteAvatar(user.id, remoteAvatarUrl);
+
+  if (!cachedAvatarUrl) {
+    return user;
+  }
+
+  return prisma.user.update({
+    where: { id: user.id },
+    data: { avatarUrl: cachedAvatarUrl },
     select: authUserSelect,
   });
 }
@@ -186,8 +204,9 @@ export async function findOrCreateGoogleUser(input: GoogleAccountInput): Promise
 
   if (socialUser) {
     const user = await touchUser(socialUser.id, googleProfile);
-    await upsertGoogleSocialAccount(user.id, input);
-    return user;
+    const userWithAvatar = await updateCachedAvatar(user, googleProfile.avatarUrl);
+    await upsertGoogleSocialAccount(userWithAvatar.id, input);
+    return userWithAvatar;
   }
 
   const existingUser = await findUserByEmail(googleProfile.email);
@@ -195,6 +214,8 @@ export async function findOrCreateGoogleUser(input: GoogleAccountInput): Promise
     ? await touchUser(existingUser.id, googleProfile)
     : await createUser(googleProfile);
 
-  await upsertGoogleSocialAccount(user.id, input);
-  return user;
+  const userWithAvatar = await updateCachedAvatar(user, googleProfile.avatarUrl);
+  await upsertGoogleSocialAccount(userWithAvatar.id, input);
+  return userWithAvatar;
 }
+

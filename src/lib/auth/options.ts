@@ -39,6 +39,7 @@ export const authOptions: AuthOptions = {
         const user = await findOrCreateGoogleUser({ account, profile });
         token.userId = user.id;
         token.username = user.username;
+        token.picture = user.avatarUrl ?? token.picture;
       }
 
       return token;
@@ -47,10 +48,12 @@ export const authOptions: AuthOptions = {
       if (session.user) {
         session.user.id = token.userId ?? "";
         session.user.username = token.username ?? null;
+        session.user.image = token.picture ?? null;
       }
 
       return session;
     },
   },
 };
+
 
