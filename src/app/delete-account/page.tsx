@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const deletionSteps = [
-  "ส่งอีเมลจากอีเมลเดียวกับบัญชี Learnova ของคุณมาที่ privacy@learnova.com",
+  "ส่งอีเมลจากอีเมลเดียวกับบัญชี Learnova ของคุณมาที่ jarudat.jc@gmail.com",
   "ระบุหัวข้ออีเมลว่า Delete Learnova Account",
   "ระบุชื่อที่แสดงในระบบ และผู้ให้บริการที่ใช้เข้าสู่ระบบ เช่น Google, LINE, GitHub หรือ Facebook",
   "ทีมงานจะตรวจสอบคำขอและยืนยันตัวตนตามความเหมาะสมก่อนดำเนินการลบบัญชี",
@@ -93,8 +93,8 @@ export default function DeleteAccountPage() {
             <h2 className="text-xl font-black text-slate-950">ติดต่อเรา</h2>
             <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
               ส่งคำขอลบบัญชีหรือสอบถามเรื่องข้อมูลส่วนบุคคลได้ที่
-              <a href="mailto:privacy@learnova.com" className="ml-1 font-bold text-sky-700 underline-offset-4 hover:underline">
-                privacy@learnova.com
+              <a href="mailto:jarudat.jc@gmail.com" className="ml-1 font-bold text-sky-700 underline-offset-4 hover:underline">
+                jarudat.jc@gmail.com
               </a>
             </p>
           </section>

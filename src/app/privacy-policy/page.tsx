@@ -119,8 +119,8 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-xl font-black text-slate-950">ติดต่อเรา</h2>
             <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
               หากมีคำถามเกี่ยวกับนโยบายความเป็นส่วนตัว หรือประสงค์ขอจัดการข้อมูลส่วนบุคคล สามารถติดต่อ Learnova ได้ที่
-              <a href="mailto:privacy@learnova.com" className="ml-1 font-bold text-sky-700 underline-offset-4 hover:underline">
-                privacy@learnova.com
+              <a href="mailto:jarudat.jc@gmail.com" className="ml-1 font-bold text-sky-700 underline-offset-4 hover:underline">
+                jarudat.jc@gmail.com
               </a>
             </p>
           </section>

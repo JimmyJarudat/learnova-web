@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 const heroImage =
   "https://www.tcfe.or.th/wp-content/uploads/2018/05/%E0%B8%84%E0%B8%A3%E0%B8%B9%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%99%E0%B8%B3%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%A5%E0%B8%87%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99.jpg";
@@ -480,41 +481,9 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-[#071f4a] text-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <div>
-            <p className="text-2xl font-black">Learnova</p>
-            <p className="mt-1 text-sm font-semibold text-white/70">ติวสอบครูผู้ช่วยทุกสังกัด รวม สอศ. พร้อมข้อสอบและสรุปอ่านตรงสนาม</p>
-          </div>
-          <div className="flex flex-wrap gap-4 text-sm font-bold text-white/75">
-            <Link href="/terms" className="hover:text-white">ข้อตกลง</Link>
-            <Link href="/privacy" className="hover:text-white">ความเป็นส่วนตัว</Link>
-            <Link href="/contact" className="hover:text-white">ติดต่อเรา</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
+
     </main>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
