@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SiteHeader } from "@/components/site-header";
 
 const heroImage =
   "https://www.tcfe.or.th/wp-content/uploads/2018/05/%E0%B8%84%E0%B8%A3%E0%B8%B9%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%99%E0%B8%B3%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%A5%E0%B8%87%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99.jpg";
@@ -9,13 +10,6 @@ const deskImage =
   "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1000&q=80";
 const focusImage =
   "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1000&q=80";
-
-const navItems = [
-  ["แผนอ่าน", "/study-plans"],
-  ["คลังข้อสอบ", "/exams"],
-  ["สังกัดสอบ", "/affiliations"],
-  ["บทความสรุป", "/articles"],
-];
 
 const examBoards = [
   {
@@ -170,116 +164,52 @@ const faqItems = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
-      <div className="bg-[#071f4a] text-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 text-xs font-bold sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <p>แนวข้อสอบครูผู้ช่วยทุกสังกัด รวม สอศ. พร้อมเฉลยละเอียดและแผนอ่านตรงสนาม</p>
-          <Link href="/exams/education-law-all-affiliations/practice" className="text-[#ffd35a] hover:text-white">
-            เริ่มทำข้อสอบ
-          </Link>
-        </div>
-      </div>
-
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-5 px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-3" aria-label="Learnova home">
-            <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#ffd35a] text-xl font-black text-[#071f4a] shadow-sm">
-              L
-            </span>
-            <span>
-              <span className="block text-2xl font-black leading-6 text-[#071f4a]">Learnova</span>
-              <span className="hidden text-xs font-black text-slate-500 sm:block">ติวสอบครูผู้ช่วยทุกสังกัด</span>
-            </span>
-          </Link>
-
-          <nav className="ml-auto hidden items-center gap-6 text-sm font-black text-slate-600 lg:flex">
-            {navItems.map(([label, href]) => (
-              <Link key={href} href={href} className="hover:text-[#0b66c3]">
-                {label}
-              </Link>
-            ))}
-          </nav>
-
-          <Link href="/login" className="ml-auto rounded-xl bg-[#0b66c3] px-4 py-2 text-sm font-black text-white shadow-sm hover:bg-[#084f99] lg:ml-0">
-            เข้าสู่ระบบ
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="relative overflow-hidden bg-[#071f4a]">
-        <div className="absolute inset-0 bg-[#071f4a]" />
-        <div className="absolute left-0 top-20 h-72 w-72 rounded-full bg-[#ffd35a]/25 blur-3xl" />
-        <div className="absolute right-0 top-28 h-96 w-96 rounded-full bg-[#e94b7b]/20 blur-3xl" />
+        <Image
+          src="/images/learnova-hero-teachers-group.png"
+          alt="การ์ตูนกลุ่มครูผู้ช่วยจากหลายสังกัดยืนรวมกัน"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#071f4a] via-[#071f4a]/82 to-[#071f4a]/18" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071f4a]/55 via-transparent to-transparent" />
 
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_500px] lg:px-8 lg:py-16">
-          <div className="flex flex-col justify-center text-white">
+        <div className="relative mx-auto flex min-h-[720px] max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+          <div className="flex max-w-3xl flex-col justify-center text-white">
             <div className="mb-5 flex flex-wrap gap-2">
               <span className="rounded-full bg-[#ffd35a] px-4 py-2 text-sm font-black text-[#071f4a] shadow-sm">ครูผู้ช่วย</span>
-              <span className="rounded-full bg-white/12 px-4 py-2 text-sm font-black text-white ring-1 ring-white/20">รวม สอศ.</span>
-              <span className="rounded-full bg-white/12 px-4 py-2 text-sm font-black text-white ring-1 ring-white/20">สพฐ. สกร. อปท.</span>
+              <span className="rounded-full bg-white/12 px-4 py-2 text-sm font-black text-white ring-1 ring-white/20">ข้อสอบย้อนหลัง</span>
+              <span className="rounded-full bg-white/12 px-4 py-2 text-sm font-black text-white ring-1 ring-white/20">วัดระดับ</span>
+              <span className="rounded-full bg-white/12 px-4 py-2 text-sm font-black text-white ring-1 ring-white/20">ทุกสังกัด</span>
             </div>
 
-            <h1 className="max-w-4xl text-5xl font-black leading-[1.04] tracking-normal sm:text-6xl lg:text-7xl">
-              สอบครูผู้ช่วย ต้องอ่านให้ตรงสังกัด
+            <h1 className="text-5xl font-black leading-[1.04] tracking-normal sm:text-6xl lg:text-7xl">
+              เตรียมสอบครูผู้ช่วย
+              <br />
+              ให้ตรงสังกัด และตรงจุด
             </h1>
+
             <p className="mt-5 max-w-2xl text-2xl font-black leading-tight text-[#ffd35a] sm:text-3xl">
-              รวมแนวข้อสอบ สรุปเนื้อหา และแผนอ่านสำหรับ สพฐ. สอศ. สกร. อปท.
+              รวมแนวข้อสอบย้อนหลัง สรุปเนื้อหา และแบบทดสอบวัดระดับ สำหรับ สพฐ. สอศ. สกร. และ อปท.
             </p>
-            <p className="mt-5 max-w-2xl text-lg font-medium leading-8 text-slate-200">
-              เริ่มจากเลือกสนามสอบของคุณ แล้วไปต่อด้วยชุดวัดระดับ ภาค ก วิชาชีพครู กฎหมาย และหัวข้อเฉพาะของแต่ละสังกัด
+
+            <p className="mt-5 max-w-2xl text-lg font-medium leading-8 text-slate-100">
+              รู้ทันทีว่าพร้อมสอบแค่ไหน วิเคราะห์จุดแข็ง จุดอ่อน และวางแผนอ่านหนังสือจากข้อสอบจริง ครอบคลุม ภาค ก วิชาชีพครู กฎหมายการศึกษา และเนื้อหาเฉพาะของแต่ละสังกัด
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-[auto_auto] sm:justify-start">
               <Link href="/affiliations/ovec" className="flex min-h-14 items-center justify-center rounded-2xl bg-[#ffd35a] px-7 text-base font-black text-[#071f4a] shadow-lg shadow-[#ffd35a]/20 transition hover:bg-[#f6bf22]">
-                ดูแนว สอศ.
+                ดูแนวข้อสอบ สอศ.
               </Link>
               <Link href="/exams/education-law-all-affiliations/practice" className="flex min-h-14 items-center justify-center rounded-2xl bg-white px-7 text-base font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-slate-100">
-                เริ่มทำข้อสอบ
+                เริ่มวัดระดับ
               </Link>
             </div>
           </div>
-
-          <aside className="relative overflow-hidden rounded-[34px] border border-white/15 bg-white p-4 shadow-2xl shadow-black/25">
-            <div className="relative mb-4 h-52 overflow-hidden rounded-[26px] bg-[#eaf4ff]">
-              <Image
-                src="/images/learnova-hero-cartoon.png"
-                alt="การ์ตูนผู้เตรียมสอบครูผู้ช่วยกับสื่อการเรียน"
-                fill
-                priority
-                sizes="(min-width: 1024px) 500px, 100vw"
-                className="object-cover"
-              />
-            </div>
-
-            <div className="rounded-[26px] bg-[#fff5da] p-5">
-              <p className="text-sm font-black uppercase tracking-normal text-[#936000]">ค้นหาเร็ว</p>
-              <h2 className="mt-2 text-3xl font-black leading-tight text-[#071f4a]">เลือกสนามหรือวิชาที่ต้องการอ่าน</h2>
-              <p className="mt-3 text-sm font-bold leading-6 text-slate-600">
-                พิมพ์ชื่อสังกัด วิชา หรือหัวข้อสอบ แล้วไปยังสรุปและชุดข้อสอบที่เกี่ยวข้อง
-              </p>
-            </div>
-
-            <form className="mt-4 grid gap-3">
-              <label className="sr-only" htmlFor="search">ค้นหาสรุปหรือข้อสอบครูผู้ช่วย</label>
-              <input
-                id="search"
-                name="q"
-                type="search"
-                placeholder="สอศ. / กฎหมายการศึกษา / ภาค ก"
-                className="min-h-14 rounded-2xl border border-slate-200 bg-slate-50 px-5 text-base font-semibold text-slate-950 outline-none placeholder:text-slate-400 focus:border-[#0b66c3] focus:bg-white"
-              />
-              <button className="min-h-14 rounded-2xl bg-[#0b66c3] px-8 text-base font-black text-white hover:bg-[#084f99]">
-                ค้นหาเนื้อหา
-              </button>
-            </form>
-
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {["สอศ.", "สพฐ.", "กฎหมาย", "ภาค ก", "วิชาชีพครู", "วัดระดับ"].map((tag) => (
-                <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} className="rounded-2xl bg-slate-100 px-3 py-3 text-center text-sm font-black text-slate-700 hover:bg-[#eaf4ff] hover:text-[#0b66c3]">
-                  {tag}
-                </Link>
-              ))}
-            </div>
-          </aside>
         </div>
       </section>
       <section className="border-y border-slate-200 bg-white">
@@ -294,8 +224,17 @@ export default function Home() {
 
           <div className="mt-6 grid gap-4 lg:grid-cols-3">
             {studyResources.map((course) => (
-              <article key={course.href} className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-                <div className={`${course.color} p-5 text-white`}>
+              <article key={course.href} className="relative isolate overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div className="pointer-events-none absolute right-0 top-0 z-10 h-32 w-32 translate-x-3 -translate-y-1 sm:h-36 sm:w-36">
+                  <Image
+                    src="/images/teacher-card-cutout.png"
+                    alt=""
+                    fill
+                    sizes="144px"
+                    className="object-contain drop-shadow-xl"
+                  />
+                </div>
+                <div className={`${course.color} min-h-48 p-5 pr-28 text-white`}>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-black">{course.price}</span>
                   <h3 className="mt-8 min-h-20 text-2xl font-black leading-8">{course.title}</h3>
                   <p className="mt-3 text-sm font-bold text-white/80">{course.subtitle}</p>
@@ -547,6 +486,16 @@ export default function Home() {
     </main>
   );
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
