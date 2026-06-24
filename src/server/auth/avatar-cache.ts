@@ -1,5 +1,6 @@
 import { mkdir, readdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { canUseLocalAvatarCache, isLocalCachedAvatarUrl } from "./avatar-url";
 
 const avatarDirectory = path.join(process.cwd(), "public", "uploads", "avatars");
 const maxAvatarBytes = 2 * 1024 * 1024;
@@ -53,7 +54,11 @@ export async function cacheRemoteAvatar(userId: string, remoteAvatarUrl: string 
       return null;
     }
 
-    if (remoteAvatarUrl.startsWith("/uploads/avatars/")) {
+    if (isLocalCachedAvatarUrl(remoteAvatarUrl)) {
+      return remoteAvatarUrl;
+    }
+
+    if (!canUseLocalAvatarCache()) {
       return remoteAvatarUrl;
     }
 

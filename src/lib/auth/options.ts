@@ -2,6 +2,7 @@ import type { AuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";
+import { getUsableAvatarUrl } from "@/server/auth/avatar-url";
 import { findOrCreateGitHubUser, findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
 
 function getAuthUrl() {
@@ -75,21 +76,21 @@ export const authOptions: AuthOptions = {
         const user = await findOrCreateGoogleUser({ account, profile });
         token.userId = user.id;
         token.username = user.username;
-        token.picture = user.avatarUrl?.startsWith("/uploads/avatars/") ? user.avatarUrl : null;
+        token.picture = getUsableAvatarUrl(user.avatarUrl);
       }
 
       if (account?.provider === "line" && profile) {
         const user = await findOrCreateLineUser({ account, profile });
         token.userId = user.id;
         token.username = user.username;
-        token.picture = user.avatarUrl?.startsWith("/uploads/avatars/") ? user.avatarUrl : null;
+        token.picture = getUsableAvatarUrl(user.avatarUrl);
       }
 
       if (account?.provider === "github" && profile) {
         const user = await findOrCreateGitHubUser({ account, profile });
         token.userId = user.id;
         token.username = user.username;
-        token.picture = user.avatarUrl?.startsWith("/uploads/avatars/") ? user.avatarUrl : null;
+        token.picture = getUsableAvatarUrl(user.avatarUrl);
       }
 
       return token;
@@ -98,11 +99,13 @@ export const authOptions: AuthOptions = {
       if (session.user) {
         session.user.id = token.userId ?? "";
         session.user.username = token.username ?? null;
-        session.user.image = token.picture ?? null;
+        session.user.image = getUsableAvatarUrl(token.picture);
       }
 
       return session;
     },
   },
 };
+
+
 

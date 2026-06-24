@@ -111,7 +111,7 @@ async function touchUser(userId: string, input: NormalizedProfile) {
 }
 
 async function cacheUserAvatar(user: AuthUser, remoteAvatarUrl: string | null) {
-  if (user.avatarUrl?.startsWith("/uploads/avatars/")) {
+  if (user.avatarUrl && (!isLocalCachedAvatarUrl(user.avatarUrl) || canUseLocalAvatarCache())) {
     return user;
   }
 
@@ -195,3 +195,4 @@ export async function findOrCreateLineUser(input: Omit<OAuthAccountInput, "provi
 export async function findOrCreateGitHubUser(input: Omit<OAuthAccountInput, "provider">) {
   return findOrCreateOAuthUser({ ...input, provider: SocialProvider.GITHUB });
 }
+

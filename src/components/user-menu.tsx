@@ -16,8 +16,13 @@ function getInitial(name?: string | null, email?: string | null) {
 
 export function UserMenu({ name, email, image }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const displayName = name ?? email ?? "บัญชีของฉัน";
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [image]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -55,8 +60,14 @@ export function UserMenu({ name, email, image }: UserMenuProps) {
         className="flex h-11 cursor-pointer items-center gap-3 rounded-full border border-slate-200 bg-white px-2.5 pr-4 shadow-sm transition hover:border-[#0b66c3]/40 hover:shadow-md"
       >
         <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full bg-[#071f4a] text-sm font-black text-white">
-          {image?.startsWith("/uploads/avatars/") ? (
-            <img src={image} alt={name ?? "ผู้ใช้"} className="h-full w-full object-cover" />
+          {image && !imageFailed ? (
+            <img
+              src={image}
+              alt={name ?? "ผู้ใช้"}
+              className="h-full w-full object-cover"
+              referrerPolicy="no-referrer"
+              onError={() => setImageFailed(true)}
+            />
           ) : (
             getInitial(name, email)
           )}
@@ -110,3 +121,5 @@ export function UserMenu({ name, email, image }: UserMenuProps) {
     </div>
   );
 }
+
+
