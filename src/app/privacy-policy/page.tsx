@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
 
 const policySections = [
   {
+    id: "data-collection",
     title: "ข้อมูลที่เราเก็บรวบรวม",
     items: [
       "ข้อมูลบัญชีพื้นฐาน เช่น ชื่อผู้ใช้ อีเมล ชื่อที่แสดง และรูปโปรไฟล์",
@@ -15,6 +17,7 @@ const policySections = [
     ],
   },
   {
+    id: "usage",
     title: "เราใช้ข้อมูลอย่างไร",
     items: [
       "ใช้เพื่อยืนยันตัวตน สร้างบัญชีผู้ใช้ และให้ผู้เรียนเข้าสู่ระบบได้อย่างปลอดภัย",
@@ -23,6 +26,7 @@ const policySections = [
     ],
   },
   {
+    id: "oauth-login",
     title: "การเข้าสู่ระบบด้วยบริการภายนอก",
     items: [
       "เมื่อผู้ใช้เลือกเข้าสู่ระบบผ่าน Google, LINE หรือ GitHub ระบบจะรับเฉพาะข้อมูลที่จำเป็นสำหรับการยืนยันตัวตนและสร้างบัญชี",
@@ -31,6 +35,7 @@ const policySections = [
     ],
   },
   {
+    id: "security",
     title: "การจัดเก็บและการปกป้องข้อมูล",
     items: [
       "ข้อมูลบัญชีถูกจัดเก็บในฐานข้อมูลของระบบ และจำกัดการเข้าถึงเฉพาะส่วนที่จำเป็นต่อการให้บริการ",
@@ -39,6 +44,7 @@ const policySections = [
     ],
   },
   {
+    id: "sharing",
     title: "การเปิดเผยข้อมูล",
     items: [
       "เราไม่ขายข้อมูลส่วนบุคคลของผู้ใช้",
@@ -47,6 +53,7 @@ const policySections = [
     ],
   },
   {
+    id: "user-rights",
     title: "สิทธิของผู้ใช้",
     items: [
       "ผู้ใช้สามารถขอเข้าถึง แก้ไข หรือลบบัญชีและข้อมูลส่วนบุคคลที่เกี่ยวข้องกับบัญชีของตนได้",
@@ -58,53 +65,67 @@ const policySections = [
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="min-h-screen bg-[#f6f8fb] text-slate-900">
-      <section className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-5 py-12 sm:px-8 lg:py-16">
-        <div className="rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-sm sm:px-10 sm:py-10">
-          <p className="text-sm font-semibold text-sky-700">Learnova</p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      <article className="mx-auto w-full max-w-3xl px-5 py-10 sm:px-8 lg:py-14">
+        <Link href="/" className="text-sm font-bold text-sky-700 underline-offset-4 hover:underline">
+          Learnova
+        </Link>
+
+        <header className="mt-8 border-b border-slate-200 pb-8">
+          <p className="text-sm font-semibold text-slate-500">Privacy Policy</p>
+          <h1 className="mt-3 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">
             นโยบายความเป็นส่วนตัว
           </h1>
-          <p className="mt-4 text-base leading-8 text-slate-600">
+          <p className="mt-5 text-base leading-8 text-slate-600">
             หน้านี้อธิบายวิธีที่ Learnova เก็บ ใช้ และดูแลข้อมูลส่วนบุคคลของผู้ใช้ โดยเฉพาะข้อมูลที่เกี่ยวข้องกับการเข้าสู่ระบบผ่าน OAuth เช่น Google, LINE และ GitHub
           </p>
-          <p className="mt-4 text-sm text-slate-500">วันที่มีผลบังคับใช้: 24 มิถุนายน 2569</p>
-        </div>
+          <p className="mt-4 text-sm font-semibold text-slate-500">วันที่มีผลบังคับใช้: 24 มิถุนายน 2569</p>
+        </header>
 
-        <div className="space-y-5">
+        <nav aria-label="หัวข้อนโยบาย" className="my-8 rounded-2xl border border-slate-200 bg-white p-5">
+          <p className="text-sm font-black text-slate-950">หัวข้อในหน้านี้</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {policySections.map((section) => (
+              <a key={section.id} href={`#${section.id}`} className="text-sm font-semibold leading-6 text-slate-600 hover:text-sky-700">
+                {section.title}
+              </a>
+            ))}
+          </div>
+        </nav>
+
+        <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white px-5 sm:px-8">
           {policySections.map((section) => (
-            <section key={section.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
-              <h2 className="text-xl font-bold text-slate-950">{section.title}</h2>
-              <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-600 sm:text-base">
+            <section key={section.id} id={section.id} className="scroll-mt-8 py-7 sm:py-8">
+              <h2 className="text-xl font-black text-slate-950">{section.title}</h2>
+              <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
                 {section.items.map((item) => (
                   <li key={item} className="flex gap-3">
-                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-sky-500" />
+                    <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </section>
           ))}
+
+          <section className="py-7 sm:py-8">
+            <h2 className="text-xl font-black text-slate-950">การเปลี่ยนแปลงนโยบาย</h2>
+            <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+              Learnova อาจปรับปรุงนโยบายนี้เป็นครั้งคราวเพื่อให้สอดคล้องกับการพัฒนาระบบ กฎหมาย หรือข้อกำหนดของผู้ให้บริการ OAuth โดยจะแสดงวันที่มีผลบังคับใช้ล่าสุดไว้บนหน้านี้
+            </p>
+          </section>
+
+          <section className="py-7 sm:py-8">
+            <h2 className="text-xl font-black text-slate-950">ติดต่อเรา</h2>
+            <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+              หากมีคำถามเกี่ยวกับนโยบายความเป็นส่วนตัว หรือประสงค์ขอจัดการข้อมูลส่วนบุคคล สามารถติดต่อ Learnova ได้ที่
+              <a href="mailto:privacy@learnova.com" className="ml-1 font-bold text-sky-700 underline-offset-4 hover:underline">
+                privacy@learnova.com
+              </a>
+            </p>
+          </section>
         </div>
-
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
-          <h2 className="text-xl font-bold text-slate-950">การเปลี่ยนแปลงนโยบาย</h2>
-          <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
-            Learnova อาจปรับปรุงนโยบายนี้เป็นครั้งคราวเพื่อให้สอดคล้องกับการพัฒนาระบบ กฎหมาย หรือข้อกำหนดของผู้ให้บริการ OAuth โดยจะแสดงวันที่มีผลบังคับใช้ล่าสุดไว้บนหน้านี้
-          </p>
-        </section>
-
-        <section className="rounded-2xl border border-sky-100 bg-sky-50 p-6 sm:p-7">
-          <h2 className="text-xl font-bold text-slate-950">ติดต่อเรา</h2>
-          <p className="mt-4 text-sm leading-7 text-slate-700 sm:text-base">
-            หากมีคำถามเกี่ยวกับนโยบายความเป็นส่วนตัว หรือประสงค์ขอจัดการข้อมูลส่วนบุคคล สามารถติดต่อ Learnova ได้ที่
-            <a href="mailto:privacy@learnova.com" className="ml-1 font-semibold text-sky-700 underline-offset-4 hover:underline">
-              privacy@learnova.com
-            </a>
-          </p>
-        </section>
-      </section>
+      </article>
     </main>
   );
 }
-
