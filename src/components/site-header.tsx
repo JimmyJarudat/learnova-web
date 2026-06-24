@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
+import { getAuthOptions } from "@/lib/auth/options";
 import { MobileNav } from "@/components/mobile-nav";
 import { UserMenu } from "@/components/user-menu";
 
@@ -23,7 +23,7 @@ const affiliations = [
 ];
 
 export async function SiteHeader() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(await getAuthOptions());
   const user = session?.user;
 
   return (
@@ -116,10 +116,4 @@ export async function SiteHeader() {
     </>
   );
 }
-
-
-
-
-
-
 

@@ -13,7 +13,7 @@ type SystemConfigSeed = {
   data_type?: "BOOLEAN" | "NUMBER" | "STRING";
   is_encrypted?: boolean;
   display_name?: string;
-  category?: "GENERAL" | "SMTP" | "REGIONAL";
+  category?: "GENERAL" | "SMTP" | "REGIONAL" | "OAUTH";
 };
 
 const regionalConfigs: SystemConfigSeed[] = [
@@ -80,7 +80,7 @@ const smtpConfigs: SystemConfigSeed[] = [
   },
   {
     id: "smtp_password",
-    value: "xvtxijxldikilhqs",
+    value: "",
     description: "SMTP password",
     is_encrypted: true,
     display_name: "SMTP Password",
@@ -114,6 +114,23 @@ const smtpConfigs: SystemConfigSeed[] = [
   },
 ];
 
+const oauthConfigs: SystemConfigSeed[] = [
+  {
+    id: "google_oauth_client_id",
+    value: "",
+    description: "Google OAuth client ID",
+    category: "OAUTH",
+    display_name: "Google Client ID",
+  },
+  {
+    id: "google_oauth_client_secret",
+    value: "",
+    description: "Google OAuth client secret",
+    category: "OAUTH",
+    is_encrypted: true,
+    display_name: "Google Client Secret",
+  },
+];
 function encryptConfigValue(value: string) {
   if (!value) {
     return "";
@@ -150,7 +167,7 @@ async function seedTestUser() {
   console.log(`Seeded test user: ${user.email} (${user.username})`);
 }
 
-async function seedSystemConfigs(configs: SystemConfigSeed[], fallbackCategory: "SMTP" | "REGIONAL") {
+async function seedSystemConfigs(configs: SystemConfigSeed[], fallbackCategory: "SMTP" | "REGIONAL" | "OAUTH") {
   let createdCount = 0;
   let skippedCount = 0;
 
@@ -190,6 +207,7 @@ async function main() {
   await seedTestUser();
   await seedSystemConfigs(regionalConfigs, "REGIONAL");
   await seedSystemConfigs(smtpConfigs, "SMTP");
+  await seedSystemConfigs(oauthConfigs, "OAUTH");
 }
 
 main()
@@ -200,9 +218,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-
-
-
-
 

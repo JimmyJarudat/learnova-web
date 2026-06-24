@@ -17,7 +17,7 @@
     "test:unit": "bun test tests/unit",
     "test:integration": "bun test tests/integration",
     "test:uat": "node scripts/test/run-uat.mjs",
-    "seed:dev": "node scripts/seed/seed-dev.mjs"
+    "seed:dev": "bun --env-file=.env prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
@@ -52,3 +52,4 @@
     "unrs-resolver"
   ]
 }
+
