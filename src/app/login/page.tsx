@@ -105,6 +105,16 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <Link href="/privacy-policy" className="ml-1 font-black text-[#0b66c3] hover:text-[#084f99]">
               นโยบายความเป็นส่วนตัว
             </Link>
+            <span className="mx-1">และ</span>
+            <Link href="/terms" className="font-black text-[#0b66c3] hover:text-[#084f99]">
+              เงื่อนไขการใช้งาน
+            </Link>
+          </p>
+          <p className="mt-2 text-center text-xs font-semibold leading-5 text-slate-500">
+            ต้องการลบบัญชีหรือข้อมูลส่วนบุคคล?
+            <Link href="/delete-account" className="ml-1 font-black text-[#0b66c3] hover:text-[#084f99]">
+              ดูขั้นตอนที่นี่
+            </Link>
           </p>
 
           <p className="mt-6 text-center text-sm font-semibold text-slate-600">
@@ -118,5 +128,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     </main>
   );
 }
+
 
 
