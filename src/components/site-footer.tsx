@@ -2,8 +2,9 @@ import Link from "next/link";
 
 const examLinks = [
   { href: "/affiliations/obec", label: "สพฐ." },
+  { href: "/affiliations/bma", label: "กทม." },
   { href: "/affiliations/ovec", label: "สอศ." },
-  { href: "/affiliations/nfe", label: "สกร." },
+  { href: "/affiliations/dole", label: "สกร." },
   { href: "/affiliations/dla", label: "อปท." },
 ];
 

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
+import { MobileNav } from "@/components/mobile-nav";
 import { UserMenu } from "@/components/user-menu";
 
 const navItems = [
@@ -15,9 +16,10 @@ const navItems = [
 
 const affiliations = [
   { label: "สพฐ.", href: "/affiliations/obec" },
+  { label: "กทม.", href: "/affiliations/bma" },
   { label: "สอศ.", href: "/affiliations/ovec" },
-  { label: "สกร.", href: "/affiliations/nfe" },
-  { label: "อปท.", href: "/affiliations/local" },
+  { label: "สกร.", href: "/affiliations/dole" },
+  { label: "อปท.", href: "/affiliations/dla" },
 ];
 
 export async function SiteHeader() {
@@ -91,7 +93,7 @@ export async function SiteHeader() {
             </div>
           </nav>
 
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto hidden items-center gap-3 xl:flex">
             {user ? (
               <UserMenu name={user.name} email={user.email} image={user.image} />
             ) : (
@@ -103,11 +105,19 @@ export async function SiteHeader() {
               </Link>
             )}
           </div>
+
+          <MobileNav
+            navItems={navItems}
+            affiliations={affiliations}
+            user={user ? { name: user.name, email: user.email } : null}
+          />
         </div>
       </header>
     </>
   );
 }
+
+
 
 
 
