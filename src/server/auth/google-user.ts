@@ -4,6 +4,7 @@ import { SocialProvider } from "@/generated/prisma/enums";
 import type { SocialProvider as SocialProviderType } from "@/generated/prisma/enums";
 import prisma from "@/lib/db/postgres";
 import { cacheRemoteAvatar } from "./avatar-cache";
+import { canUseLocalAvatarCache, isLocalCachedAvatarUrl } from "./avatar-url";
 import type { NormalizedProfile, OAuthProfile } from "./oauth-profile";
 import { normalizeOAuthProfile } from "./oauth-profile";
 import { baseUsernameFromEmail } from "./username";
