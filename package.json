@@ -13,6 +13,9 @@
     "db:create": "node scripts/db/create-database.mjs",
     "db:test": "node scripts/db/test-connection.mjs",
     "db:reset": "node scripts/db/reset-database.mjs",
+    "test": "bun test",
+    "test:unit": "bun test tests/unit",
+    "test:integration": "bun test tests/integration",
     "test:uat": "node scripts/test/run-uat.mjs",
     "seed:dev": "node scripts/seed/seed-dev.mjs"
   },

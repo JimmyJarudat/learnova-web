@@ -21,8 +21,8 @@ const socialProviders = [
     id: "line",
     name: "LINE",
     icon: "https://cdn.simpleicons.org/line/06C755",
-    enabled: false,
-    className: "bg-white opacity-45",
+    enabled: true,
+    className: "bg-white hover:border-[#06c755]/45",
   },
   {
     id: "github",

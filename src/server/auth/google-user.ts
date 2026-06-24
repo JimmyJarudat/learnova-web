@@ -1,9 +1,12 @@
 import crypto from "node:crypto";
 import type { Account, Profile } from "next-auth";
 import type { GoogleProfile } from "next-auth/providers/google";
+import type { LineProfile } from "next-auth/providers/line";
 import { SocialProvider } from "@/generated/prisma/enums";
+import type { SocialProvider as SocialProviderType } from "@/generated/prisma/enums";
 import prisma from "@/lib/db/postgres";
 import { cacheRemoteAvatar } from "./avatar-cache";
+import { baseUsernameFromEmail } from "./username";
 
 type AuthUser = {
   id: string;
@@ -13,9 +16,19 @@ type AuthUser = {
   avatarUrl: string | null;
 };
 
-type GoogleAccountInput = {
+type OAuthAccountInput = {
   account: Account;
-  profile: Profile | GoogleProfile;
+  profile: Profile | GoogleProfile | LineProfile;
+  provider: SocialProviderType;
+};
+
+type NormalizedProfile = {
+  email: string;
+  providerAccountId: string;
+  providerEmail: string | null;
+  displayName: string;
+  remoteAvatarUrl: string | null;
+  emailVerifiedAt: Date | null;
 };
 
 const authUserSelect = {
@@ -26,38 +39,57 @@ const authUserSelect = {
   avatarUrl: true,
 } as const;
 
-function getGoogleProfile(profile: Profile | GoogleProfile) {
+function normalizeGoogleProfile(profile: Profile | GoogleProfile): NormalizedProfile {
   const googleProfile = profile as GoogleProfile;
-  const email = googleProfile.email?.toLowerCase();
   const providerAccountId = googleProfile.sub;
-
-  if (!email) {
-    throw new Error("Google profile did not include an email address.");
-  }
+  const email = googleProfile.email?.toLowerCase();
 
   if (!providerAccountId) {
     throw new Error("Google profile did not include a subject identifier.");
   }
 
+  if (!email) {
+    throw new Error("Google profile did not include an email address.");
+  }
+
   return {
     email,
     providerAccountId,
+    providerEmail: email,
     displayName: googleProfile.name ?? email,
     remoteAvatarUrl: googleProfile.picture ?? null,
     emailVerifiedAt: googleProfile.email_verified ? new Date() : null,
   };
 }
 
-function baseUsernameFromEmail(email: string) {
-  const [localPart] = email.split("@");
-  const username = localPart
-    .toLowerCase()
-    .replace(/[^a-z0-9_]/g, "_")
-    .replace(/_+/g, "_")
-    .replace(/^_|_$/g, "");
+function normalizeLineProfile(profile: Profile | LineProfile): NormalizedProfile {
+  const lineProfile = profile as LineProfile & { email?: string };
+  const providerAccountId = lineProfile.sub;
+  const providerEmail = lineProfile.email?.toLowerCase() ?? null;
+  const email = providerEmail ?? `${providerAccountId}@line.learnova.local`;
 
-  return username || "user";
+  if (!providerAccountId) {
+    throw new Error("LINE profile did not include a subject identifier.");
+  }
+
+  return {
+    email,
+    providerAccountId,
+    providerEmail,
+    displayName: lineProfile.name ?? "LINE User",
+    remoteAvatarUrl: lineProfile.picture ?? null,
+    emailVerifiedAt: providerEmail ? new Date() : null,
+  };
 }
+
+function normalizeProfile(input: OAuthAccountInput) {
+  if (input.provider === SocialProvider.GOOGLE) {
+    return normalizeGoogleProfile(input.profile);
+  }
+
+  return normalizeLineProfile(input.profile);
+}
+
 
 async function createAvailableUsername(email: string) {
   const baseUsername = baseUsernameFromEmail(email).slice(0, 24);
@@ -79,11 +111,11 @@ async function createAvailableUsername(email: string) {
   return `${baseUsername}_${crypto.randomUUID().slice(0, 8)}`;
 }
 
-async function findUserBySocialAccount(providerAccountId: string) {
+async function findUserBySocialAccount(provider: SocialProvider, providerAccountId: string) {
   const socialAccount = await prisma.socialAccount.findUnique({
     where: {
       provider_providerAccountId: {
-        provider: SocialProvider.GOOGLE,
+        provider,
         providerAccountId,
       },
     },
@@ -161,22 +193,21 @@ async function cacheUserAvatar(user: AuthUser, remoteAvatarUrl: string | null) {
   });
 }
 
-async function upsertGoogleSocialAccount(userId: string, input: GoogleAccountInput) {
-  const googleProfile = getGoogleProfile(input.profile);
+async function upsertSocialAccount(userId: string, input: OAuthAccountInput, normalizedProfile: NormalizedProfile) {
   const expiresAt = input.account.expires_at ? new Date(input.account.expires_at * 1000) : null;
 
   await prisma.socialAccount.upsert({
     where: {
       userId_provider: {
         userId,
-        provider: SocialProvider.GOOGLE,
+        provider: input.provider,
       },
     },
     create: {
       userId,
-      provider: SocialProvider.GOOGLE,
-      providerAccountId: googleProfile.providerAccountId,
-      providerEmail: googleProfile.email,
+      provider: input.provider,
+      providerAccountId: normalizedProfile.providerAccountId,
+      providerEmail: normalizedProfile.providerEmail,
       accessToken: input.account.access_token ?? null,
       refreshToken: input.account.refresh_token ?? null,
       expiresAt,
@@ -185,8 +216,8 @@ async function upsertGoogleSocialAccount(userId: string, input: GoogleAccountInp
       idToken: input.account.id_token ?? null,
     },
     update: {
-      providerAccountId: googleProfile.providerAccountId,
-      providerEmail: googleProfile.email,
+      providerAccountId: normalizedProfile.providerAccountId,
+      providerEmail: normalizedProfile.providerEmail,
       accessToken: input.account.access_token ?? null,
       refreshToken: input.account.refresh_token ?? undefined,
       expiresAt,
@@ -197,23 +228,32 @@ async function upsertGoogleSocialAccount(userId: string, input: GoogleAccountInp
   });
 }
 
-export async function findOrCreateGoogleUser(input: GoogleAccountInput): Promise<AuthUser> {
-  const googleProfile = getGoogleProfile(input.profile);
-  const socialUser = await findUserBySocialAccount(googleProfile.providerAccountId);
+async function findOrCreateOAuthUser(input: OAuthAccountInput): Promise<AuthUser> {
+  const normalizedProfile = normalizeProfile(input);
+  const socialUser = await findUserBySocialAccount(input.provider, normalizedProfile.providerAccountId);
 
   if (socialUser) {
-    const user = await touchUser(socialUser.id, googleProfile);
-    const userWithAvatar = await cacheUserAvatar(user, googleProfile.remoteAvatarUrl);
-    await upsertGoogleSocialAccount(userWithAvatar.id, input);
+    const user = await touchUser(socialUser.id, normalizedProfile);
+    const userWithAvatar = await cacheUserAvatar(user, normalizedProfile.remoteAvatarUrl);
+    await upsertSocialAccount(userWithAvatar.id, input, normalizedProfile);
     return userWithAvatar;
   }
 
-  const existingUser = await findUserByEmail(googleProfile.email);
+  const existingUser = await findUserByEmail(normalizedProfile.email);
   const user = existingUser
-    ? await touchUser(existingUser.id, googleProfile)
-    : await createUser(googleProfile);
+    ? await touchUser(existingUser.id, normalizedProfile)
+    : await createUser(normalizedProfile);
 
-  const userWithAvatar = await cacheUserAvatar(user, googleProfile.remoteAvatarUrl);
-  await upsertGoogleSocialAccount(userWithAvatar.id, input);
+  const userWithAvatar = await cacheUserAvatar(user, normalizedProfile.remoteAvatarUrl);
+  await upsertSocialAccount(userWithAvatar.id, input, normalizedProfile);
   return userWithAvatar;
 }
+
+export async function findOrCreateGoogleUser(input: Omit<OAuthAccountInput, "provider">) {
+  return findOrCreateOAuthUser({ ...input, provider: SocialProvider.GOOGLE });
+}
+
+export async function findOrCreateLineUser(input: Omit<OAuthAccountInput, "provider">) {
+  return findOrCreateOAuthUser({ ...input, provider: SocialProvider.LINE });
+}
+

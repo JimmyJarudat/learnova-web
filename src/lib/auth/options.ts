@@ -1,6 +1,7 @@
 import type { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { findOrCreateGoogleUser } from "@/server/auth/google-user";
+import LineProvider from "next-auth/providers/line";
+import { findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
 
 if (!process.env.NEXTAUTH_URL && process.env.AUTH_URL) {
   process.env.NEXTAUTH_URL = process.env.AUTH_URL;
@@ -35,14 +36,30 @@ export const authOptions: AuthOptions = {
         },
       },
     }),
+    LineProvider({
+      clientId: process.env.LINE_CLIENT_ID ?? "",
+      clientSecret: process.env.LINE_CLIENT_SECRET ?? "",
+      authorization: {
+        params: {
+          scope: "openid profile email",
+        },
+      },
+    }),
   ],
   callbacks: {
     async signIn({ account, profile }) {
-      return account?.provider === "google" && Boolean(profile);
+      return (account?.provider === "google" || account?.provider === "line") && Boolean(profile);
     },
     async jwt({ token, account, profile }) {
       if (account?.provider === "google" && profile) {
         const user = await findOrCreateGoogleUser({ account, profile });
+        token.userId = user.id;
+        token.username = user.username;
+        token.picture = user.avatarUrl?.startsWith("/uploads/avatars/") ? user.avatarUrl : null;
+      }
+
+      if (account?.provider === "line" && profile) {
+        const user = await findOrCreateLineUser({ account, profile });
         token.userId = user.id;
         token.username = user.username;
         token.picture = user.avatarUrl?.startsWith("/uploads/avatars/") ? user.avatarUrl : null;
@@ -61,9 +78,3 @@ export const authOptions: AuthOptions = {
     },
   },
 };
-
-
-
-
-
-
