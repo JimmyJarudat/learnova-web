@@ -385,7 +385,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  SocialAccount: 'SocialAccount'
+  SocialAccount: 'SocialAccount',
+  system_config: 'system_config'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -401,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "socialAccount"
+    modelProps: "user" | "socialAccount" | "system_config"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -553,6 +554,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    system_config: {
+      payload: Prisma.$system_configPayload<ExtArgs>
+      fields: Prisma.system_configFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.system_configFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.system_configFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>
+        }
+        findFirst: {
+          args: Prisma.system_configFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.system_configFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>
+        }
+        findMany: {
+          args: Prisma.system_configFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>[]
+        }
+        create: {
+          args: Prisma.system_configCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>
+        }
+        createMany: {
+          args: Prisma.system_configCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.system_configCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>[]
+        }
+        delete: {
+          args: Prisma.system_configDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>
+        }
+        update: {
+          args: Prisma.system_configUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>
+        }
+        deleteMany: {
+          args: Prisma.system_configDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.system_configUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.system_configUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>[]
+        }
+        upsert: {
+          args: Prisma.system_configUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$system_configPayload>
+        }
+        aggregate: {
+          args: Prisma.System_configAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSystem_config>
+        }
+        groupBy: {
+          args: Prisma.system_configGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.System_configGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.system_configCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.System_configCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -628,6 +703,23 @@ export const SocialAccountScalarFieldEnum = {
 export type SocialAccountScalarFieldEnum = (typeof SocialAccountScalarFieldEnum)[keyof typeof SocialAccountScalarFieldEnum]
 
 
+export const System_configScalarFieldEnum = {
+  id: 'id',
+  value: 'value',
+  description: 'description',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  category: 'category',
+  is_active: 'is_active',
+  is_encrypted: 'is_encrypted',
+  last_modified_by_id: 'last_modified_by_id',
+  display_name: 'display_name',
+  data_type: 'data_type'
+} as const
+
+export type System_configScalarFieldEnum = (typeof System_configScalarFieldEnum)[keyof typeof System_configScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -697,6 +789,13 @@ export type EnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'SocialProvider[]'
  */
 export type ListEnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -825,6 +924,7 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   socialAccount?: Prisma.SocialAccountOmit
+  system_config?: Prisma.system_configOmit
 }
 
 /* Types for Logging */

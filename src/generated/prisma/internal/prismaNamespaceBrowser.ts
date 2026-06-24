@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  SocialAccount: 'SocialAccount'
+  SocialAccount: 'SocialAccount',
+  system_config: 'system_config'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -105,6 +106,23 @@ export const SocialAccountScalarFieldEnum = {
 } as const
 
 export type SocialAccountScalarFieldEnum = (typeof SocialAccountScalarFieldEnum)[keyof typeof SocialAccountScalarFieldEnum]
+
+
+export const System_configScalarFieldEnum = {
+  id: 'id',
+  value: 'value',
+  description: 'description',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  category: 'category',
+  is_active: 'is_active',
+  is_encrypted: 'is_encrypted',
+  last_modified_by_id: 'last_modified_by_id',
+  display_name: 'display_name',
+  data_type: 'data_type'
+} as const
+
+export type System_configScalarFieldEnum = (typeof System_configScalarFieldEnum)[keyof typeof System_configScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -27,3 +27,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type SocialAccount = Prisma.SocialAccountModel
+/**
+ * Model system_config
+ * 
+ */
+export type system_config = Prisma.system_configModel

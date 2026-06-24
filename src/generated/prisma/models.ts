@@ -10,4 +10,5 @@
  */
 export type * from './models/User'
 export type * from './models/SocialAccount'
+export type * from './models/system_config'
 export type * from './commonInputTypes'
