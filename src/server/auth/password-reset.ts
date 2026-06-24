@@ -2,15 +2,15 @@ import { randomUUID } from "node:crypto";
 import prisma from "@/lib/db/postgres";
 import { PasswordResetRequestEmailService } from "@/templates/emails/password-reset-request";
 import { hashPassword } from "./password";
-import { buildPasswordResetUrl, canRequestPasswordReset, createPasswordResetToken, hashPasswordResetToken, remainingCooldownSeconds } from "./password-reset-token";
+import { buildPasswordResetUrl, canRequestPasswordReset, createPasswordResetToken, hashPasswordResetToken } from "./password-reset-token";
 
 export const passwordResetExpiryMinutes = 30;
 export const passwordResetCooldownMinutes = 5;
 
 type PasswordResetStatus = "sent" | "send_failed" | "not_found" | "oauth_only" | "cooldown";
 
-type PasswordResetRequestRow = {
-  createdAt: Date;
+type PasswordResetCooldownRow = {
+  retryAfterSeconds: number | bigint | null;
 };
 
 type PasswordResetTokenRow = {
@@ -36,16 +36,20 @@ async function findUserByEmail(email: string) {
   });
 }
 
-async function getLatestResetRequest(userId: string) {
-  const rows = await prisma.$queryRaw<PasswordResetRequestRow[]>`
-    SELECT "createdAt"
+async function getPasswordResetCooldownSeconds(userId: string) {
+  const rows = await prisma.$queryRaw<PasswordResetCooldownRow[]>`
+    SELECT COALESCE(
+      GREATEST(
+        0,
+        CEIL(EXTRACT(EPOCH FROM (MAX("createdAt") + (${passwordResetCooldownMinutes} * INTERVAL '1 minute') - LOCALTIMESTAMP)))
+      )::int,
+      0
+    ) AS "retryAfterSeconds"
     FROM "password_reset_tokens"
     WHERE "userId" = ${userId}
-    ORDER BY "createdAt" DESC
-    LIMIT 1
   `;
 
-  return rows[0] ?? null;
+  return Number(rows[0]?.retryAfterSeconds ?? 0);
 }
 
 export async function requestPasswordReset(email: string): Promise<{ ok: true; status: PasswordResetStatus; emailSent: boolean; retryAfterSeconds?: number; error?: string }> {
@@ -59,11 +63,7 @@ export async function requestPasswordReset(email: string): Promise<{ ok: true; s
     return { ok: true, status: "oauth_only", emailSent: false };
   }
 
-  const latestRequest = await getLatestResetRequest(user.id);
-  const retryAfterSeconds = remainingCooldownSeconds(
-    latestRequest?.createdAt,
-    passwordResetCooldownMinutes * 60 * 1000,
-  );
+  const retryAfterSeconds = await getPasswordResetCooldownSeconds(user.id);
 
   if (retryAfterSeconds > 0) {
     return { ok: true, status: "cooldown", emailSent: false, retryAfterSeconds };
@@ -82,7 +82,7 @@ export async function requestPasswordReset(email: string): Promise<{ ok: true; s
     `,
     prisma.$executeRaw`
       INSERT INTO "password_reset_tokens" ("id", "userId", "tokenHash", "expiresAt", "createdAt")
-      VALUES (${randomUUID()}, ${user.id}, ${tokenHash}, ${expiresAt}, NOW())
+      VALUES (${randomUUID()}, ${user.id}, ${tokenHash}, ${expiresAt}, LOCALTIMESTAMP)
     `,
   ]);
 
@@ -98,6 +98,7 @@ export async function requestPasswordReset(email: string): Promise<{ ok: true; s
     ok: true,
     status: result.success ? "sent" : "send_failed",
     emailSent: result.success,
+    retryAfterSeconds: passwordResetCooldownMinutes * 60,
     error: result.error,
   };
 }
@@ -151,6 +152,3 @@ export async function resetPasswordWithToken(token: string, password: string) {
 
   return { ok: true as const };
 }
-
-
-

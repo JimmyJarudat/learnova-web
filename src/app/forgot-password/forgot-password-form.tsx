@@ -47,6 +47,10 @@ export function ForgotPasswordForm() {
         return;
       }
 
+      if (typeof result.retryAfterSeconds === "number" && result.retryAfterSeconds > 0) {
+        setRetryAfterSeconds(result.retryAfterSeconds);
+      }
+
       setMessageType(result.status === "sent" ? "success" : "error");
       setMessage(result.message ?? "ไม่สามารถส่งอีเมลรีเซ็ตรหัสผ่านได้");
     } catch {
@@ -88,6 +92,8 @@ export function ForgotPasswordForm() {
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#071f4a]/25 border-t-[#071f4a]" aria-hidden="true" />
               กำลังส่งลิงก์...
             </>
+          ) : isCoolingDown ? (
+            `ส่งอีกครั้งได้ใน ${countdownText}`
           ) : (
             "ส่งลิงก์ตั้งรหัสผ่านใหม่"
           )}
@@ -105,7 +111,3 @@ export function ForgotPasswordForm() {
     </div>
   );
 }
-
-
-
-
