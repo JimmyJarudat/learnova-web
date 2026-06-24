@@ -10,8 +10,11 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "db:create": "node scripts/create-database.mjs",
-    "db:test": "node scripts/test-database-connection.mjs"
+    "db:create": "node scripts/db/create-database.mjs",
+    "db:test": "node scripts/db/test-connection.mjs",
+    "db:reset": "node scripts/db/reset-database.mjs",
+    "test:uat": "node scripts/test/run-uat.mjs",
+    "seed:dev": "node scripts/seed/seed-dev.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
