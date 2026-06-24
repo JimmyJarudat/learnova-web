@@ -45,7 +45,13 @@ export const authOptions: AuthOptions = {
       authorization: {
         url: "https://www.facebook.com/v11.0/dialog/oauth",
         params: {
-          scope: "email,public_profile",
+          scope: "public_profile",
+        },
+      },
+      userinfo: {
+        url: "https://graph.facebook.com/me",
+        params: {
+          fields: "id,name,picture",
         },
       },
     }),
@@ -130,4 +136,5 @@ export const authOptions: AuthOptions = {
     },
   },
 };
+
 
