@@ -1,9 +1,8 @@
-import pg from "pg";
-
-const { Pool } = pg;
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@/generated/prisma/client";
 
 declare global {
-  var learnovaPgPool: pg.Pool | undefined;
+  var learnovaPrisma: PrismaClient | undefined;
 }
 
 function getDatabaseUrl() {
@@ -16,13 +15,14 @@ function getDatabaseUrl() {
   return databaseUrl;
 }
 
-export const db =
-  globalThis.learnovaPgPool ??
-  new Pool({
-    connectionString: getDatabaseUrl(),
-    max: 10,
+const prisma =
+  globalThis.learnovaPrisma ??
+  new PrismaClient({
+    adapter: new PrismaPg({ connectionString: getDatabaseUrl() }),
   });
 
 if (process.env.NODE_ENV !== "production") {
-  globalThis.learnovaPgPool = db;
+  globalThis.learnovaPrisma = prisma;
 }
+
+export default prisma;

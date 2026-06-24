@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import type { Account, Profile } from "next-auth";
 import type { GoogleProfile } from "next-auth/providers/google";
-import { db } from "@/lib/db/postgres";
+import { SocialProvider } from "@/generated/prisma/enums";
+import prisma from "@/lib/db/postgres";
 
 type AuthUser = {
   id: string;
@@ -15,6 +16,14 @@ type GoogleAccountInput = {
   account: Account;
   profile: Profile | GoogleProfile;
 };
+
+const authUserSelect = {
+  id: true,
+  username: true,
+  email: true,
+  displayName: true,
+  avatarUrl: true,
+} as const;
 
 function getGoogleProfile(profile: Profile | GoogleProfile) {
   const googleProfile = profile as GoogleProfile;
@@ -40,7 +49,11 @@ function getGoogleProfile(profile: Profile | GoogleProfile) {
 
 function baseUsernameFromEmail(email: string) {
   const [localPart] = email.split("@");
-  const username = localPart.toLowerCase().replace(/[^a-z0-9_]/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+  const username = localPart
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "");
 
   return username || "user";
 }
@@ -50,9 +63,12 @@ async function createAvailableUsername(email: string) {
   let username = baseUsername;
 
   for (let attempt = 0; attempt < 8; attempt += 1) {
-    const existing = await db.query('select 1 from "users" where "username" = $1 limit 1', [username]);
+    const existing = await prisma.user.findUnique({
+      where: { username },
+      select: { id: true },
+    });
 
-    if (existing.rowCount === 0) {
+    if (!existing) {
       return username;
     }
 
@@ -63,28 +79,38 @@ async function createAvailableUsername(email: string) {
 }
 
 async function findUserBySocialAccount(providerAccountId: string) {
-  const result = await db.query<AuthUser>(
-    `select u."id", u."username", u."email", u."displayName", u."avatarUrl"
-     from "users" u
-     inner join "social_accounts" sa on sa."userId" = u."id"
-     where sa."provider" = 'GOOGLE' and sa."providerAccountId" = $1 and u."deletedAt" is null
-     limit 1`,
-    [providerAccountId],
-  );
+  const socialAccount = await prisma.socialAccount.findUnique({
+    where: {
+      provider_providerAccountId: {
+        provider: SocialProvider.GOOGLE,
+        providerAccountId,
+      },
+    },
+    select: {
+      user: {
+        select: {
+          ...authUserSelect,
+          deletedAt: true,
+        },
+      },
+    },
+  });
 
-  return result.rows[0] ?? null;
+  if (!socialAccount?.user || socialAccount.user.deletedAt) {
+    return null;
+  }
+
+  return socialAccount.user;
 }
 
 async function findUserByEmail(email: string) {
-  const result = await db.query<AuthUser>(
-    `select "id", "username", "email", "displayName", "avatarUrl"
-     from "users"
-     where "email" = $1 and "deletedAt" is null
-     limit 1`,
-    [email],
-  );
-
-  return result.rows[0] ?? null;
+  return prisma.user.findFirst({
+    where: {
+      email,
+      deletedAt: null,
+    },
+    select: authUserSelect,
+  });
 }
 
 async function createUser(input: {
@@ -93,69 +119,68 @@ async function createUser(input: {
   avatarUrl: string | null;
   emailVerifiedAt: Date | null;
 }) {
-  const id = crypto.randomUUID();
-  const username = await createAvailableUsername(input.email);
-  const result = await db.query<AuthUser>(
-    `insert into "users" (
-       "id", "username", "email", "displayName", "avatarUrl", "emailVerifiedAt", "lastLoginAt", "updatedAt"
-     ) values ($1, $2, $3, $4, $5, $6, now(), now())
-     returning "id", "username", "email", "displayName", "avatarUrl"`,
-    [id, username, input.email, input.displayName, input.avatarUrl, input.emailVerifiedAt],
-  );
-
-  return result.rows[0];
+  return prisma.user.create({
+    data: {
+      username: await createAvailableUsername(input.email),
+      email: input.email,
+      displayName: input.displayName,
+      avatarUrl: input.avatarUrl,
+      emailVerifiedAt: input.emailVerifiedAt,
+      lastLoginAt: new Date(),
+    },
+    select: authUserSelect,
+  });
 }
 
 async function touchUser(userId: string, input: { displayName: string; avatarUrl: string | null }) {
-  const result = await db.query<AuthUser>(
-    `update "users"
-     set "displayName" = coalesce("displayName", $2),
-         "avatarUrl" = coalesce($3, "avatarUrl"),
-         "lastLoginAt" = now(),
-         "updatedAt" = now()
-     where "id" = $1
-     returning "id", "username", "email", "displayName", "avatarUrl"`,
-    [userId, input.displayName, input.avatarUrl],
-  );
-
-  return result.rows[0];
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      displayName: input.displayName,
+      avatarUrl: input.avatarUrl ?? undefined,
+      lastLoginAt: new Date(),
+    },
+    select: authUserSelect,
+  });
 }
 
 async function upsertGoogleSocialAccount(userId: string, input: GoogleAccountInput) {
   const googleProfile = getGoogleProfile(input.profile);
   const expiresAt = input.account.expires_at ? new Date(input.account.expires_at * 1000) : null;
 
-  await db.query(
-    `insert into "social_accounts" (
-       "id", "userId", "provider", "providerAccountId", "providerEmail",
-       "accessToken", "refreshToken", "expiresAt", "tokenType", "scope", "idToken", "updatedAt"
-     ) values ($1, $2, 'GOOGLE', $3, $4, $5, $6, $7, $8, $9, $10, now())
-     on conflict ("userId", "provider") do update set
-       "providerAccountId" = excluded."providerAccountId",
-       "providerEmail" = excluded."providerEmail",
-       "accessToken" = excluded."accessToken",
-       "refreshToken" = coalesce(excluded."refreshToken", "social_accounts"."refreshToken"),
-       "expiresAt" = excluded."expiresAt",
-       "tokenType" = excluded."tokenType",
-       "scope" = excluded."scope",
-       "idToken" = excluded."idToken",
-       "updatedAt" = now()`,
-    [
-      crypto.randomUUID(),
+  await prisma.socialAccount.upsert({
+    where: {
+      userId_provider: {
+        userId,
+        provider: SocialProvider.GOOGLE,
+      },
+    },
+    create: {
       userId,
-      googleProfile.providerAccountId,
-      googleProfile.email,
-      input.account.access_token ?? null,
-      input.account.refresh_token ?? null,
+      provider: SocialProvider.GOOGLE,
+      providerAccountId: googleProfile.providerAccountId,
+      providerEmail: googleProfile.email,
+      accessToken: input.account.access_token ?? null,
+      refreshToken: input.account.refresh_token ?? null,
       expiresAt,
-      input.account.token_type ?? null,
-      input.account.scope ?? null,
-      input.account.id_token ?? null,
-    ],
-  );
+      tokenType: input.account.token_type ?? null,
+      scope: input.account.scope ?? null,
+      idToken: input.account.id_token ?? null,
+    },
+    update: {
+      providerAccountId: googleProfile.providerAccountId,
+      providerEmail: googleProfile.email,
+      accessToken: input.account.access_token ?? null,
+      refreshToken: input.account.refresh_token ?? undefined,
+      expiresAt,
+      tokenType: input.account.token_type ?? null,
+      scope: input.account.scope ?? null,
+      idToken: input.account.id_token ?? null,
+    },
+  });
 }
 
-export async function findOrCreateGoogleUser(input: GoogleAccountInput) {
+export async function findOrCreateGoogleUser(input: GoogleAccountInput): Promise<AuthUser> {
   const googleProfile = getGoogleProfile(input.profile);
   const socialUser = await findUserBySocialAccount(googleProfile.providerAccountId);
 

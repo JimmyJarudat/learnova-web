@@ -32,12 +32,7 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ account, profile }) {
-      if (account?.provider !== "google" || !profile) {
-        return false;
-      }
-
-      await findOrCreateGoogleUser({ account, profile });
-      return true;
+      return account?.provider === "google" && Boolean(profile);
     },
     async jwt({ token, account, profile }) {
       if (account?.provider === "google" && profile) {
@@ -58,3 +53,4 @@ export const authOptions: AuthOptions = {
     },
   },
 };
+

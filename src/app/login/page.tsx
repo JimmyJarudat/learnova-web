@@ -1,35 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SocialLoginButtons } from "./social-login-buttons";
 
 export const metadata: Metadata = {
   title: "เข้าสู่ระบบ",
   description:
     "เข้าสู่ระบบ Learnova เพื่อฝึกทำข้อสอบครูผู้ช่วย ดูผลวิเคราะห์ และอ่านแผนเตรียมสอบตามสังกัด",
 };
-
-const socialProviders = [
-  {
-    name: "Google",
-    icon: "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg",
-    className: "bg-white hover:border-slate-300",
-  },
-  {
-    name: "Facebook",
-    icon: "https://cdn.simpleicons.org/facebook/1877F2",
-    className: "bg-white hover:border-[#1877f2]/45",
-  },
-  {
-    name: "LINE",
-    icon: "https://cdn.simpleicons.org/line/06C755",
-    className: "bg-white hover:border-[#06c755]/45",
-  },
-  {
-    name: "GitHub",
-    icon: "https://cdn.simpleicons.org/github/181717",
-    className: "bg-white hover:border-slate-400",
-  },
-];
 
 export default function LoginPage() {
   return (
@@ -44,13 +22,6 @@ export default function LoginPage() {
       />
       <div className="absolute inset-0 bg-[#071f4a]/28" />
       <div className="absolute inset-0 bg-gradient-to-b from-white/8 via-white/0 to-[#071f4a]/24" />
-
-      <Link
-        href="/"
-        className="absolute left-4 top-4 z-20 rounded-full bg-white/90 px-4 py-2 text-sm font-black text-[#071f4a] shadow-lg backdrop-blur transition hover:-translate-y-0.5 hover:bg-white sm:left-6 sm:top-6"
-      >
-        กลับหน้าแรก
-      </Link>
 
       <section className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-[440px] overflow-hidden rounded-[28px] border border-white/45 bg-white/92 p-5 shadow-2xl backdrop-blur-xl sm:p-7">
@@ -104,19 +75,7 @@ export default function LoginPage() {
             <span className="h-px bg-slate-200" />
           </div>
 
-          <div className="flex items-center justify-center gap-3">
-            {socialProviders.map((provider) => (
-              <button
-                key={provider.name}
-                type="button"
-                aria-label={`เข้าสู่ระบบด้วย ${provider.name}`}
-                title={provider.name}
-                className={`grid h-10 w-10 place-items-center rounded-full border border-slate-200 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${provider.className}`}
-              >
-                <img src={provider.icon} alt="" className="h-5 w-5" />
-              </button>
-            ))}
-          </div>
+          <SocialLoginButtons />
 
           <p className="mt-6 text-center text-sm font-semibold text-slate-600">
             ยังไม่มีบัญชี?{" "}
@@ -129,8 +88,3 @@ export default function LoginPage() {
     </main>
   );
 }
-
-
-
-
-
