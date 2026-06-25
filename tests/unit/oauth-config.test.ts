@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getAuthConfigIds, resolveAuthRuntimeConfig, resolveOAuthConfig } from "@/lib/auth/oauth-config";
+import { getAuthConfigIds, normalizeSystemConfigRows, resolveAuthRuntimeConfig, resolveOAuthConfig } from "@/lib/auth/oauth-config";
 
 describe("auth runtime config", () => {
   test("uses Google OAuth config from system config before env", () => {
@@ -52,6 +52,25 @@ describe("auth runtime config", () => {
     expect(config.providers.github.clientSecret).toBe("gh-secret");
     expect(config.providers.google.clientId).toBe("google-id");
     expect(config.providers.line.clientSecret).toBe("line-secret");
+  });
+
+  test("skips encrypted config values that cannot be decrypted", () => {
+    const rows = normalizeSystemConfigRows(
+      [
+        { id: "auth_secret", value: "broken-encrypted-value", is_encrypted: true },
+        { id: "auth_url", value: "https://db.example.com", is_encrypted: false },
+      ],
+      () => {
+        throw new Error("bad decrypt");
+      },
+    );
+
+    const config = resolveAuthRuntimeConfig(rows, {
+      AUTH_SECRET: "env-auth-secret",
+    });
+
+    expect(config.authUrl).toBe("https://db.example.com");
+    expect(config.authSecret).toBe("env-auth-secret");
   });
 
   test("lists all auth config ids needed from system_config", () => {

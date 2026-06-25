@@ -15,6 +15,8 @@ type OAuthProviderIds = {
   envClientSecret: string;
 };
 
+type DecryptConfigValue = (value: string) => string;
+
 const oauthConfigIds: Record<OAuthProviderKey, OAuthProviderIds> = {
   facebook: {
     clientId: "facebook_oauth_client_id",
@@ -94,6 +96,21 @@ export function getAuthConfigIds() {
   ];
 }
 
+export function normalizeSystemConfigRows(rows: SystemConfigValue[], decryptValue: DecryptConfigValue) {
+  return rows.flatMap((row) => {
+    if (!row.is_encrypted || !row.value) {
+      return [row];
+    }
+
+    try {
+      return [{ ...row, value: decryptValue(row.value) }];
+    } catch (error) {
+      console.error(`[auth-config] Cannot decrypt ${row.id}. Falling back to env value.`, error);
+      return [];
+    }
+  });
+}
+
 export async function getAuthRuntimeConfig() {
   const [{ default: prisma }, { decryptText }] = await Promise.all([
     import("@/lib/db/postgres"),
@@ -111,11 +128,5 @@ export async function getAuthRuntimeConfig() {
     },
   });
 
-  const configs = rows.map((row) => ({
-    id: row.id,
-    value: row.is_encrypted && row.value ? decryptText(row.value) : row.value,
-    is_encrypted: row.is_encrypted,
-  }));
-
-  return resolveAuthRuntimeConfig(configs);
+  return resolveAuthRuntimeConfig(normalizeSystemConfigRows(rows, decryptText));
 }
