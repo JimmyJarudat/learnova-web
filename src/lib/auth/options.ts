@@ -60,17 +60,17 @@ function applyNextAuthEnvironment(config: Pick<AuthRuntimeConfig, "authSecret" |
   }
 }
 
-function hasProviderConfig(provider: string, config: ProviderConfig) {
+function hasProviderConfig(provider: string, config: ProviderConfig, logMissingProvider: boolean) {
   const isReady = Boolean(config.clientId && config.clientSecret);
 
-  if (!isReady) {
+  if (!isReady && logMissingProvider) {
     console.error(`[next-auth] ${provider} provider is missing clientId or clientSecret.`);
   }
 
   return isReady;
 }
 
-function buildProviders(config: AuthRuntimeConfig): AuthOptions["providers"] {
+function buildProviders(config: AuthRuntimeConfig, logMissingProvider: boolean): AuthOptions["providers"] {
   const providers: AuthOptions["providers"] = [
     CredentialsProvider({
       name: "Email or username",
@@ -84,7 +84,7 @@ function buildProviders(config: AuthRuntimeConfig): AuthOptions["providers"] {
     }),
   ];
 
-  if (hasProviderConfig("facebook", config.providers.facebook)) {
+  if (hasProviderConfig("facebook", config.providers.facebook, logMissingProvider)) {
     providers.push(
       FacebookProvider({
         clientId: config.providers.facebook.clientId,
@@ -104,7 +104,7 @@ function buildProviders(config: AuthRuntimeConfig): AuthOptions["providers"] {
     );
   }
 
-  if (hasProviderConfig("google", config.providers.google)) {
+  if (hasProviderConfig("google", config.providers.google, logMissingProvider)) {
     providers.push(
       GoogleProvider({
         clientId: config.providers.google.clientId,
@@ -119,7 +119,7 @@ function buildProviders(config: AuthRuntimeConfig): AuthOptions["providers"] {
     );
   }
 
-  if (hasProviderConfig("line", config.providers.line)) {
+  if (hasProviderConfig("line", config.providers.line, logMissingProvider)) {
     providers.push(
       LineProvider({
         clientId: config.providers.line.clientId,
@@ -133,7 +133,7 @@ function buildProviders(config: AuthRuntimeConfig): AuthOptions["providers"] {
     );
   }
 
-  if (hasProviderConfig("github", config.providers.github)) {
+  if (hasProviderConfig("github", config.providers.github, logMissingProvider)) {
     providers.push(
       GitHubProvider({
         clientId: config.providers.github.clientId,
@@ -150,7 +150,7 @@ function buildProviders(config: AuthRuntimeConfig): AuthOptions["providers"] {
   return providers;
 }
 
-function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
+function buildAuthOptions(config: AuthRuntimeConfig, options: { logMissingProvider?: boolean } = {}): AuthOptions {
   applyNextAuthEnvironment(config);
 
   return {
@@ -167,7 +167,7 @@ function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
         console.error("[next-auth]", code, ...message);
       },
     },
-    providers: buildProviders(config),
+    providers: buildProviders(config, options.logMissingProvider ?? true),
     callbacks: {
       async signIn({ account, profile }) {
         if (account?.provider === "credentials") {
@@ -233,7 +233,7 @@ function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
   };
 }
 
-export const authOptions: AuthOptions = buildAuthOptions(resolveAuthRuntimeConfig([], process.env));
+export const authOptions: AuthOptions = buildAuthOptions(resolveAuthRuntimeConfig([], process.env), { logMissingProvider: false });
 
 export async function getAuthOptions() {
   return buildAuthOptions(await getAuthRuntimeConfig());
