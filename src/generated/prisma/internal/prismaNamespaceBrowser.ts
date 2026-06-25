@@ -53,7 +53,12 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   SocialAccount: 'SocialAccount',
-  system_config: 'system_config'
+  PasswordResetToken: 'PasswordResetToken',
+  system_config: 'system_config',
+  NewsSource: 'NewsSource',
+  NewsCategory: 'NewsCategory',
+  NewsArticle: 'NewsArticle',
+  NewsFetchLog: 'NewsFetchLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -108,6 +113,18 @@ export const SocialAccountScalarFieldEnum = {
 export type SocialAccountScalarFieldEnum = (typeof SocialAccountScalarFieldEnum)[keyof typeof SocialAccountScalarFieldEnum]
 
 
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
 export const System_configScalarFieldEnum = {
   id: 'id',
   value: 'value',
@@ -125,12 +142,99 @@ export const System_configScalarFieldEnum = {
 export type System_configScalarFieldEnum = (typeof System_configScalarFieldEnum)[keyof typeof System_configScalarFieldEnum]
 
 
+export const NewsSourceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  type: 'type',
+  isActive: 'isActive',
+  lastFetchAt: 'lastFetchAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsSourceScalarFieldEnum = (typeof NewsSourceScalarFieldEnum)[keyof typeof NewsSourceScalarFieldEnum]
+
+
+export const NewsCategoryScalarFieldEnum = {
+  id: 'id',
+  nameTh: 'nameTh',
+  nameEn: 'nameEn',
+  slug: 'slug',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsCategoryScalarFieldEnum = (typeof NewsCategoryScalarFieldEnum)[keyof typeof NewsCategoryScalarFieldEnum]
+
+
+export const NewsArticleScalarFieldEnum = {
+  id: 'id',
+  sourceId: 'sourceId',
+  categoryId: 'categoryId',
+  title: 'title',
+  slug: 'slug',
+  excerpt: 'excerpt',
+  summary: 'summary',
+  content: 'content',
+  sourceName: 'sourceName',
+  sourceUrl: 'sourceUrl',
+  imageUrl: 'imageUrl',
+  tags: 'tags',
+  status: 'status',
+  relevanceScore: 'relevanceScore',
+  viewCount: 'viewCount',
+  isFeatured: 'isFeatured',
+  sourcePublishedAt: 'sourcePublishedAt',
+  publishedAt: 'publishedAt',
+  fetchedAt: 'fetchedAt',
+  rawData: 'rawData',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsArticleScalarFieldEnum = (typeof NewsArticleScalarFieldEnum)[keyof typeof NewsArticleScalarFieldEnum]
+
+
+export const NewsFetchLogScalarFieldEnum = {
+  id: 'id',
+  sourceId: 'sourceId',
+  sourceName: 'sourceName',
+  sourceUrl: 'sourceUrl',
+  status: 'status',
+  totalFound: 'totalFound',
+  totalInserted: 'totalInserted',
+  totalSkipped: 'totalSkipped',
+  totalFailed: 'totalFailed',
+  message: 'message',
+  errorMessage: 'errorMessage',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type NewsFetchLogScalarFieldEnum = (typeof NewsFetchLogScalarFieldEnum)[keyof typeof NewsFetchLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -147,4 +251,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

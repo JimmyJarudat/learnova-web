@@ -2,81 +2,218 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import type { Prisma } from "@/generated/prisma/client";
+import prisma from "@/lib/db/postgres";
+import {
+  formatNewsDate,
+  getNewsCategoryColor,
+  getNewsImageUrl,
+  getNewsSummary,
+  getSafeNewsPage,
+  getVisibleNewsStatuses,
+} from "@/lib/news-display";
 
-const featuredImage =
-  "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=1400&q=80";
 const heroImage = "/images/news-hero-teacher-officials.png";
+const pageSize = 10;
 
-const categories = ["ทั้งหมด", "ประกาศระบบ", "ข่าวสอบ", "อัปเดตคลังข้อสอบ", "กิจกรรม"];
+export const dynamic = "force-dynamic";
 
-const featuredNews = {
-  tag: "ข่าวสอบ",
-  color: "bg-[#e94b7b]",
-  date: "24 มิ.ย. 2569",
-  title: "สพฐ. ประกาศปฏิทินสอบครูผู้ช่วย ปี 2569 เช็กกำหนดการเตรียมตัวที่นี่",
-  detail:
-    "สรุปช่วงเวลาเปิดรับสมัคร ภาค ก ภาค ข และภาค ค พร้อมจุดที่ผู้สอบทุกสังกัดต้องวางแผนอ่านหนังสือให้ทันก่อนปิดรับสมัคร",
-  href: "/news/obec-exam-calendar-2569",
+type NewsSearchParams = {
+  q?: string | string[];
+  category?: string | string[];
+  page?: string | string[];
 };
 
-const newsItems = [
-  {
-    tag: "อัปเดตคลังข้อสอบ",
-    color: "bg-[#0b66c3]",
-    date: "20 มิ.ย. 2569",
-    title: "เพิ่มชุดข้อสอบ สอศ. ครูผู้ช่วยสายอาชีวะ อีก 120 ข้อ",
-    detail: "เก็บแนวข้อสอบสมรรถนะครูสายอาชีวะและงานอาชีวศึกษาเพิ่มเติม พร้อมเฉลยแยกประเด็นรายข้อ",
-    image: "/images/teacher-card-ovec.png",
-    href: "/news/ovec-question-bank-update",
-  },
-  {
-    tag: "ประกาศระบบ",
-    color: "bg-[#00a86b]",
-    date: "18 มิ.ย. 2569",
-    title: "ปรับปรุงระบบวัดระดับให้แม่นยำขึ้น แยกคะแนนตามหมวดวิชา",
-    detail: "ผลวัดระดับจะแสดงคะแนนแยกภาค ก วิชาชีพครู และกฎหมายการศึกษา เพื่อวางแผนอ่านได้ตรงจุดมากขึ้น",
-    image: "/images/teacher-card-general.png",
-    href: "/news/scoring-system-update",
-  },
-  {
-    tag: "ข่าวสอบ",
-    color: "bg-[#e94b7b]",
-    date: "15 มิ.ย. 2569",
-    title: "อปท. เปิดรับสมัครครูผู้ช่วยท้องถิ่นรอบใหม่",
-    detail: "สรุปคุณสมบัติผู้สมัคร ขอบเขตเนื้อหา และช่วงเวลาที่ต้องเตรียมเอกสารให้พร้อมก่อนปิดรับสมัคร",
-    image: "/images/teacher-card-law.png",
-    href: "/news/dla-recruitment-2569",
-  },
-  {
-    tag: "กิจกรรม",
-    color: "bg-[#f6b21a]",
-    date: "10 มิ.ย. 2569",
-    title: "ไลฟ์ติวฟรี กฎหมายการศึกษาที่ออกสอบบ่อยทุกสังกัด",
-    detail: "ทบทวนมาตราที่ออกสอบซ้ำหลายปี พร้อมแนวคำถามที่มักเจอในสนามจริงของ สพฐ. และ สอศ.",
-    image: "/images/teacher-card-law.png",
-    href: "/news/free-live-education-law",
-  },
-  {
-    tag: "อัปเดตคลังข้อสอบ",
-    color: "bg-[#0b66c3]",
-    date: "5 มิ.ย. 2569",
-    title: "เพิ่มแนวข้อสอบ สกร. งานการศึกษานอกระบบ 80 ข้อ",
-    detail: "ครอบคลุมการเรียนรู้ตลอดชีวิต งานชุมชน และบทบาทครูยุคใหม่ พร้อมเฉลยอ้างอิงเนื้อหา",
-    image: "/images/teacher-card-general.png",
-    href: "/news/dole-question-bank-update",
-  },
-  {
-    tag: "ประกาศระบบ",
-    color: "bg-[#00a86b]",
-    date: "1 มิ.ย. 2569",
-    title: "เปิดให้ดาวน์โหลดสรุปเนื้อหาเป็น PDF สำหรับสมาชิก",
-    detail: "สรุปเนื้อหารายหมวดสามารถบันทึกเป็น PDF เพื่ออ่านออฟไลน์ได้แล้วในหน้าสรุปเนื้อหาแต่ละหัวข้อ",
-    image: "/images/teacher-card-ovec.png",
-    href: "/news/pdf-summary-export",
-  },
-];
+type ArticleWhere = Prisma.NewsArticleWhereInput;
 
-export default function NewsPage() {
+function getSingleParam(value?: string | string[]): string {
+  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+function buildNewsHref({
+  categorySlug,
+  page,
+  query,
+}: {
+  categorySlug?: string;
+  page?: number;
+  query: string;
+}) {
+  const params = new URLSearchParams();
+
+  if (query) {
+    params.set("q", query);
+  }
+
+  if (categorySlug) {
+    params.set("category", categorySlug);
+  }
+
+  if (page && page > 1) {
+    params.set("page", String(page));
+  }
+
+  const search = params.toString();
+  return search ? `/news?${search}` : "/news";
+}
+
+function NewsImage({
+  src,
+  alt,
+  className,
+  sizes,
+}: {
+  src: string;
+  alt: string;
+  className: string;
+  sizes: string;
+}) {
+  if (src.startsWith("/")) {
+    return <Image src={src} alt={alt} fill sizes={sizes} className={className} />;
+  }
+
+  return <img src={src} alt={alt} className={`h-full w-full ${className}`} loading="lazy" />;
+}
+
+async function getNewsData(query: string, categorySlug: string, requestedPage: string) {
+  const searchWhere = query
+    ? {
+        OR: [
+          { title: { contains: query, mode: "insensitive" as const } },
+          { excerpt: { contains: query, mode: "insensitive" as const } },
+          { summary: { contains: query, mode: "insensitive" as const } },
+          { sourceName: { contains: query, mode: "insensitive" as const } },
+        ],
+      }
+    : {};
+  const categoryWhere = categorySlug ? { category: { slug: categorySlug } } : {};
+  const where = {
+    ...searchWhere,
+    ...categoryWhere,
+  } satisfies ArticleWhere;
+  const orderBy = [
+    { isFeatured: "desc" as const },
+    { publishedAt: "desc" as const },
+    { sourcePublishedAt: "desc" as const },
+    { fetchedAt: "desc" as const },
+  ];
+
+  const visibleStatuses = getVisibleNewsStatuses();
+  const articleWhere = { ...where, status: { in: visibleStatuses } } satisfies ArticleWhere;
+  const [categories, totalCount] = await Promise.all([
+    prisma.newsCategory.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: "asc" }, { nameTh: "asc" }],
+      select: { nameTh: true, slug: true },
+    }),
+    prisma.newsArticle.count({ where: articleWhere }),
+  ]);
+  const { currentPage, pageCount } = getSafeNewsPage(requestedPage, totalCount, pageSize);
+  const articles = await prisma.newsArticle.findMany({
+    where: articleWhere,
+    include: { category: true, source: true },
+    orderBy,
+    skip: (currentPage - 1) * pageSize,
+    take: pageSize,
+  });
+
+  return {
+    articles,
+    categories,
+    currentPage,
+    pageCount,
+    totalCount,
+  };
+}
+
+function getPaginationPages(currentPage: number, pageCount: number) {
+  const pages = new Set([1, pageCount, currentPage - 1, currentPage, currentPage + 1]);
+
+  return Array.from(pages)
+    .filter((page) => page >= 1 && page <= pageCount)
+    .sort((a, b) => a - b);
+}
+
+function Pagination({
+  categorySlug,
+  currentPage,
+  pageCount,
+  query,
+}: {
+  categorySlug: string;
+  currentPage: number;
+  pageCount: number;
+  query: string;
+}) {
+  if (pageCount <= 1) {
+    return null;
+  }
+
+  const pages = getPaginationPages(currentPage, pageCount);
+  const previousPage = Math.max(1, currentPage - 1);
+  const nextPage = Math.min(pageCount, currentPage + 1);
+
+  return (
+    <nav className="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label="pagination">
+      <Link
+        href={buildNewsHref({ categorySlug, page: previousPage, query })}
+        aria-disabled={currentPage === 1}
+        className={`flex h-10 items-center justify-center rounded-xl border px-4 text-sm font-black transition ${
+          currentPage === 1
+            ? "pointer-events-none border-slate-200 bg-slate-100 text-slate-400"
+            : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+        }`}
+      >
+        ก่อนหน้า
+      </Link>
+
+      {pages.map((page, index) => (
+        <div key={page} className="flex items-center gap-2">
+          {index > 0 && page - pages[index - 1] > 1 ? (
+            <span className="px-1 text-sm font-black text-slate-400">...</span>
+          ) : null}
+          <Link
+            href={buildNewsHref({ categorySlug, page, query })}
+            aria-current={page === currentPage ? "page" : undefined}
+            className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black transition ${
+              page === currentPage
+                ? "bg-[#071f4a] text-white"
+                : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            {page}
+          </Link>
+        </div>
+      ))}
+
+      <Link
+        href={buildNewsHref({ categorySlug, page: nextPage, query })}
+        aria-disabled={currentPage === pageCount}
+        className={`flex h-10 items-center justify-center rounded-xl border px-4 text-sm font-black transition ${
+          currentPage === pageCount
+            ? "pointer-events-none border-slate-200 bg-slate-100 text-slate-400"
+            : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+        }`}
+      >
+        ถัดไป
+      </Link>
+    </nav>
+  );
+}
+
+export default async function NewsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<NewsSearchParams>;
+}) {
+  const params = (await searchParams) ?? {};
+  const query = getSingleParam(params.q).trim();
+  const selectedCategory = getSingleParam(params.category).trim();
+  const requestedPage = getSingleParam(params.page).trim();
+  const { articles, categories, currentPage, pageCount, totalCount } = await getNewsData(query, selectedCategory, requestedPage);
+  const featuredNews = articles.find((article) => article.isFeatured) ?? articles[0];
+  const newsItems = featuredNews ? articles.filter((article) => article.id !== featuredNews.id) : articles;
+
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
       <SiteHeader />
@@ -114,10 +251,13 @@ export default function NewsPage() {
               </label>
               <input
                 id="news-search"
+                name="q"
                 type="search"
+                defaultValue={query}
                 placeholder="ค้นหาข่าว ประกาศ หรือหน่วยงาน"
                 className="min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400"
               />
+              {selectedCategory ? <input type="hidden" name="category" value={selectedCategory} /> : null}
               <button
                 type="submit"
                 className="bg-[#0b66c3] px-5 text-sm font-black text-white transition hover:bg-[#0856a6]"
@@ -127,18 +267,28 @@ export default function NewsPage() {
             </form>
 
             <div className="flex flex-wrap gap-2">
-              {categories.map((category, index) => (
-                <button
-                  key={category}
-                  type="button"
+              <Link
+                href={buildNewsHref({ query })}
+                className={`rounded-lg px-4 py-2 text-sm font-black transition ${
+                  selectedCategory === ""
+                    ? "bg-[#071f4a] text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                ทั้งหมด
+              </Link>
+              {categories.map((category) => (
+                <Link
+                  key={category.slug}
+                  href={buildNewsHref({ categorySlug: category.slug, query })}
                   className={`rounded-lg px-4 py-2 text-sm font-black transition ${
-                    index === 0
+                    selectedCategory === category.slug
                       ? "bg-[#071f4a] text-white"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
-                  {category}
-                </button>
+                  {category.nameTh}
+                </Link>
               ))}
             </div>
           </div>
@@ -152,80 +302,102 @@ export default function NewsPage() {
               <p className="text-sm font-black text-[#0b66c3]">ข่าวที่ควรติดตาม</p>
               <h2 className="mt-1 text-2xl font-black text-[#071f4a]">ข่าวล่าสุด</h2>
             </div>
-            <p className="text-sm font-semibold text-slate-500">แสดงข่าวตัวอย่าง {newsItems.length + 1} รายการ</p>
+            <p className="text-sm font-semibold text-slate-500">
+              ข่าวทั้งหมด {totalCount} รายการ · หน้า {currentPage} จาก {pageCount}
+            </p>
           </div>
 
-          <Link
-            href={featuredNews.href}
-            className="group grid overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)]"
-          >
-            <div className="flex flex-col justify-center p-6 lg:p-10">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className={`rounded-md ${featuredNews.color} px-3 py-1 text-xs font-black text-white`}>
-                  {featuredNews.tag}
-                </span>
-                <span className="text-sm font-bold text-slate-500">{featuredNews.date}</span>
+          {featuredNews ? (
+            <Link
+              href={featuredNews.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group grid overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)]"
+            >
+              <div className="flex flex-col justify-center p-6 lg:p-10">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span
+                    className={`rounded-md ${getNewsCategoryColor(featuredNews.category?.slug)} px-3 py-1 text-xs font-black text-white`}
+                  >
+                    {featuredNews.category?.nameTh ?? featuredNews.source?.type ?? "ข่าวสาร"}
+                  </span>
+                  <span className="text-sm font-bold text-slate-500">
+                    {formatNewsDate(featuredNews.publishedAt ?? featuredNews.sourcePublishedAt ?? featuredNews.fetchedAt)}
+                  </span>
+                  {featuredNews.sourceName ? (
+                    <span className="text-sm font-bold text-slate-400">จาก {featuredNews.sourceName}</span>
+                  ) : null}
+                </div>
+                <h3 className="mt-4 text-2xl font-black leading-tight text-[#071f4a] group-hover:text-[#0b66c3] sm:text-3xl">
+                  {featuredNews.title}
+                </h3>
+                <p className="mt-4 max-w-2xl text-sm font-semibold leading-7 text-slate-600">
+                  {getNewsSummary(featuredNews)}
+                </p>
+                <span className="mt-6 text-sm font-black text-[#0b66c3]">อ่านจากแหล่งข่าว →</span>
               </div>
-              <h3 className="mt-4 text-2xl font-black leading-tight text-[#071f4a] group-hover:text-[#0b66c3] sm:text-3xl">
-                {featuredNews.title}
-              </h3>
-              <p className="mt-4 max-w-2xl text-sm font-semibold leading-7 text-slate-600">
-                {featuredNews.detail}
+              <div className="relative h-72 border-t border-slate-100 sm:h-80 lg:h-full lg:min-h-96 lg:border-l lg:border-t-0">
+                <NewsImage
+                  src={getNewsImageUrl(featuredNews.imageUrl)}
+                  alt=""
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
+              </div>
+            </Link>
+          ) : (
+            <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center">
+              <h3 className="text-xl font-black text-[#071f4a]">ยังไม่พบข่าว</h3>
+              <p className="mt-2 text-sm font-semibold text-slate-500">
+                ลองเปลี่ยนคำค้นหา หรือรอ n8n ดึงข่าวเข้ามาเพิ่มเติม
               </p>
-              <span className="mt-6 text-sm font-black text-[#0b66c3]">อ่านต่อ →</span>
             </div>
-            <div className="relative h-56 border-t border-slate-100 lg:h-full lg:border-l lg:border-t-0">
-              <Image
-                src={featuredImage}
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover transition duration-500 group-hover:scale-105"
-              />
-            </div>
-          </Link>
+          )}
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {newsItems.length > 0 ? <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {newsItems.map((item) => (
               <Link
-                key={item.href}
-                href={item.href}
+                key={item.id}
+                href={item.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="group grid overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <div className="relative h-36 bg-slate-50">
-                  <Image
-                    src={item.image}
+                <div className="relative h-52 bg-slate-50 sm:h-56">
+                  <NewsImage
+                    src={getNewsImageUrl(item.imageUrl)}
                     alt=""
-                    fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-contain p-5 transition duration-500 group-hover:scale-105"
+                    className="object-cover transition duration-500 group-hover:scale-105"
                   />
                 </div>
                 <div className="p-5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className={`rounded-md ${item.color} px-2.5 py-1 text-xs font-black text-white`}>
-                      {item.tag}
+                    <span className={`rounded-md ${getNewsCategoryColor(item.category?.slug)} px-2.5 py-1 text-xs font-black text-white`}>
+                      {item.category?.nameTh ?? item.source?.type ?? "ข่าวสาร"}
                     </span>
-                    <span className="text-xs font-bold text-slate-500">{item.date}</span>
+                    <span className="text-xs font-bold text-slate-500">
+                      {formatNewsDate(item.publishedAt ?? item.sourcePublishedAt ?? item.fetchedAt)}
+                    </span>
                   </div>
                   <h3 className="mt-3 min-h-14 text-lg font-black leading-7 text-[#071f4a] group-hover:text-[#0b66c3]">
                     {item.title}
                   </h3>
                   <p className="mt-3 min-h-16 text-sm font-semibold leading-6 text-slate-600">
-                    {item.detail}
+                    {getNewsSummary(item)}
                   </p>
-                  <span className="mt-4 inline-block text-sm font-black text-[#0b66c3]">อ่านต่อ →</span>
+                  <span className="mt-4 inline-block text-sm font-black text-[#0b66c3]">อ่านจากแหล่งข่าว →</span>
                 </div>
               </Link>
             ))}
-          </div>
+          </div> : null}
 
-          <div className="mt-10 flex items-center justify-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#071f4a] text-sm font-black text-white">1</span>
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-black text-slate-600 hover:bg-slate-50">2</span>
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-black text-slate-600 hover:bg-slate-50">3</span>
-            <span className="flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 hover:bg-slate-50">ถัดไป →</span>
-          </div>
+          <Pagination
+            categorySlug={selectedCategory}
+            currentPage={currentPage}
+            pageCount={pageCount}
+            query={query}
+          />
         </div>
       </section>
 

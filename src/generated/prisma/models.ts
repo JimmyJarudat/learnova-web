@@ -10,5 +10,10 @@
  */
 export type * from './models/User'
 export type * from './models/SocialAccount'
+export type * from './models/PasswordResetToken'
 export type * from './models/system_config'
+export type * from './models/NewsSource'
+export type * from './models/NewsCategory'
+export type * from './models/NewsArticle'
+export type * from './models/NewsFetchLog'
 export type * from './commonInputTypes'

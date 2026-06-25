@@ -52,7 +52,32 @@ export type User = Prisma.UserModel
  */
 export type SocialAccount = Prisma.SocialAccountModel
 /**
+ * Model PasswordResetToken
+ * 
+ */
+export type PasswordResetToken = Prisma.PasswordResetTokenModel
+/**
  * Model system_config
  * 
  */
 export type system_config = Prisma.system_configModel
+/**
+ * Model NewsSource
+ * 
+ */
+export type NewsSource = Prisma.NewsSourceModel
+/**
+ * Model NewsCategory
+ * 
+ */
+export type NewsCategory = Prisma.NewsCategoryModel
+/**
+ * Model NewsArticle
+ * 
+ */
+export type NewsArticle = Prisma.NewsArticleModel
+/**
+ * Model NewsFetchLog
+ * 
+ */
+export type NewsFetchLog = Prisma.NewsFetchLogModel
