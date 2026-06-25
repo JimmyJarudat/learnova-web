@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, spyOn, test } from "bun:test";
 import { getAuthConfigIds, normalizeSystemConfigRows, resolveAuthRuntimeConfig, resolveOAuthConfig } from "@/lib/auth/oauth-config";
 
 describe("auth runtime config", () => {
@@ -55,28 +55,36 @@ describe("auth runtime config", () => {
   });
 
   test("skips encrypted config values that cannot be decrypted", () => {
-    const rows = normalizeSystemConfigRows(
-      [
-        { id: "auth_secret", value: "broken-encrypted-value", is_encrypted: true },
-        { id: "auth_url", value: "https://db.example.com", is_encrypted: false },
-      ],
-      () => {
-        throw new Error("bad decrypt");
-      },
-    );
+    const consoleError = spyOn(console, "error").mockImplementation(() => {});
 
-    const config = resolveAuthRuntimeConfig(rows, {
-      AUTH_SECRET: "env-auth-secret",
-    });
+    try {
+      const rows = normalizeSystemConfigRows(
+        [
+          { id: "auth_secret", value: "broken-encrypted-value", is_encrypted: true },
+          { id: "auth_url", value: "https://db.example.com", is_encrypted: false },
+        ],
+        () => {
+          throw new Error("bad decrypt");
+        },
+      );
 
-    expect(config.authUrl).toBe("https://db.example.com");
-    expect(config.authSecret).toBe("env-auth-secret");
+      const config = resolveAuthRuntimeConfig(rows, {
+        AUTH_SECRET: "env-auth-secret",
+      });
+
+      expect(config.authUrl).toBe("https://db.example.com");
+      expect(config.authSecret).toBe("env-auth-secret");
+      expect(consoleError).toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   test("lists all auth config ids needed from system_config", () => {
     expect(getAuthConfigIds().sort()).toEqual([
       "auth_secret",
       "auth_url",
+      "encryption_secret_fingerprint",
       "facebook_oauth_client_id",
       "facebook_oauth_client_secret",
       "github_oauth_client_id",
