@@ -49,7 +49,7 @@ function getFallbackAuthUrl() {
 
 function applyNextAuthEnvironment(config: Pick<AuthRuntimeConfig, "authSecret" | "authUrl">) {
   const authUrl = process.env.NODE_ENV !== "production" ? "http://localhost:3000" : config.authUrl || getFallbackAuthUrl();
-  const authSecret = config.authSecret || process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+  const authSecret = config.authSecret || process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || process.env.ENCRYPTION_SECRET;
 
   if (authUrl) {
     process.env.NEXTAUTH_URL = authUrl;
@@ -60,34 +60,32 @@ function applyNextAuthEnvironment(config: Pick<AuthRuntimeConfig, "authSecret" |
   }
 }
 
-function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
-  applyNextAuthEnvironment(config);
+function hasProviderConfig(provider: string, config: ProviderConfig) {
+  const isReady = Boolean(config.clientId && config.clientSecret);
 
-  return {
-    secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
-    session: {
-      strategy: "jwt",
-    },
-    pages: {
-      signIn: "/login",
-    },
-    debug: process.env.NODE_ENV !== "production",
-    logger: {
-      error(code, ...message) {
-        console.error("[next-auth]", code, ...message);
+  if (!isReady) {
+    console.error(`[next-auth] ${provider} provider is missing clientId or clientSecret.`);
+  }
+
+  return isReady;
+}
+
+function buildProviders(config: AuthRuntimeConfig): AuthOptions["providers"] {
+  const providers: AuthOptions["providers"] = [
+    CredentialsProvider({
+      name: "Email or username",
+      credentials: {
+        identifier: { label: "Email or username", type: "text" },
+        password: { label: "Password", type: "password" },
       },
-    },
-    providers: [
-      CredentialsProvider({
-        name: "Email or username",
-        credentials: {
-          identifier: { label: "Email or username", type: "text" },
-          password: { label: "Password", type: "password" },
-        },
-        async authorize(credentials) {
-          return authorizePasswordUser(credentials?.identifier, credentials?.password);
-        },
-      }),
+      async authorize(credentials) {
+        return authorizePasswordUser(credentials?.identifier, credentials?.password);
+      },
+    }),
+  ];
+
+  if (hasProviderConfig("facebook", config.providers.facebook)) {
+    providers.push(
       FacebookProvider({
         clientId: config.providers.facebook.clientId,
         clientSecret: config.providers.facebook.clientSecret,
@@ -103,6 +101,11 @@ function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
           },
         },
       }),
+    );
+  }
+
+  if (hasProviderConfig("google", config.providers.google)) {
+    providers.push(
       GoogleProvider({
         clientId: config.providers.google.clientId,
         clientSecret: config.providers.google.clientSecret,
@@ -113,6 +116,11 @@ function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
           },
         },
       }),
+    );
+  }
+
+  if (hasProviderConfig("line", config.providers.line)) {
+    providers.push(
       LineProvider({
         clientId: config.providers.line.clientId,
         clientSecret: config.providers.line.clientSecret,
@@ -122,6 +130,11 @@ function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
           },
         },
       }),
+    );
+  }
+
+  if (hasProviderConfig("github", config.providers.github)) {
+    providers.push(
       GitHubProvider({
         clientId: config.providers.github.clientId,
         clientSecret: config.providers.github.clientSecret,
@@ -131,7 +144,30 @@ function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
           },
         },
       }),
-    ],
+    );
+  }
+
+  return providers;
+}
+
+function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
+  applyNextAuthEnvironment(config);
+
+  return {
+    secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET ?? process.env.ENCRYPTION_SECRET,
+    session: {
+      strategy: "jwt",
+    },
+    pages: {
+      signIn: "/login",
+    },
+    debug: process.env.NODE_ENV !== "production",
+    logger: {
+      error(code, ...message) {
+        console.error("[next-auth]", code, ...message);
+      },
+    },
+    providers: buildProviders(config),
     callbacks: {
       async signIn({ account, profile }) {
         if (account?.provider === "credentials") {
@@ -202,3 +238,4 @@ export const authOptions: AuthOptions = buildAuthOptions(resolveAuthRuntimeConfi
 export async function getAuthOptions() {
   return buildAuthOptions(await getAuthRuntimeConfig());
 }
+

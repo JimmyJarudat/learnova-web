@@ -74,7 +74,7 @@ export function resolveAuthRuntimeConfig(configs: SystemConfigValue[], env: Auth
 
   return {
     authUrl: configMap.get(authConfigIds.authUrl) || env.AUTH_URL || env.NEXTAUTH_URL || "",
-    authSecret: configMap.get(authConfigIds.authSecret) || env.AUTH_SECRET || env.NEXTAUTH_SECRET || "",
+    authSecret: configMap.get(authConfigIds.authSecret) || env.AUTH_SECRET || env.NEXTAUTH_SECRET || env.ENCRYPTION_SECRET || "",
     providers: {
       facebook: resolveOAuthConfig("facebook", configs, env),
       github: resolveOAuthConfig("github", configs, env),
