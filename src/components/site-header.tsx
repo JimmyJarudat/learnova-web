@@ -22,8 +22,17 @@ const affiliations = [
   { label: "อปท.", href: "/affiliations/dla" },
 ];
 
+async function getHeaderSession() {
+  try {
+    return await getServerSession(await getAuthOptions());
+  } catch (error) {
+    console.error("[site-header] Cannot load session. Rendering signed-out header.", error);
+    return null;
+  }
+}
+
 export async function SiteHeader() {
-  const session = await getServerSession(await getAuthOptions());
+  const session = await getHeaderSession();
   const user = session?.user;
 
   return (

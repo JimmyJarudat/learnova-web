@@ -112,21 +112,27 @@ export function normalizeSystemConfigRows(rows: SystemConfigValue[], decryptValu
 }
 
 export async function getAuthRuntimeConfig() {
-  const [{ default: prisma }, { decryptText }] = await Promise.all([
-    import("@/lib/db/postgres"),
-    import("@/utils/encryption"),
-  ]);
-  const rows = await prisma.system_config.findMany({
-    where: {
-      id: { in: getAuthConfigIds() },
-      is_active: true,
-    },
-    select: {
-      id: true,
-      value: true,
-      is_encrypted: true,
-    },
-  });
+  try {
+    const [{ default: prisma }, { decryptText }] = await Promise.all([
+      import("@/lib/db/postgres"),
+      import("@/utils/encryption"),
+    ]);
+    const rows = await prisma.system_config.findMany({
+      where: {
+        id: { in: getAuthConfigIds() },
+        is_active: true,
+      },
+      select: {
+        id: true,
+        value: true,
+        is_encrypted: true,
+      },
+    });
 
-  return resolveAuthRuntimeConfig(normalizeSystemConfigRows(rows, decryptText));
+    return resolveAuthRuntimeConfig(normalizeSystemConfigRows(rows, decryptText));
+  } catch (error) {
+    console.error("[auth-config] Cannot load auth config from database. Falling back to env values.", error);
+    return resolveAuthRuntimeConfig([]);
+  }
 }
+
