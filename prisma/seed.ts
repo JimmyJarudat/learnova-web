@@ -13,7 +13,7 @@ type SystemConfigSeed = {
   data_type?: "BOOLEAN" | "NUMBER" | "STRING";
   is_encrypted?: boolean;
   display_name?: string;
-  category?: "GENERAL" | "SMTP" | "REGIONAL" | "OAUTH";
+  category?: "GENERAL" | "SMTP" | "REGIONAL" | "OAUTH" | "AUTH";
 };
 
 const regionalConfigs: SystemConfigSeed[] = [
@@ -46,6 +46,7 @@ const regionalConfigs: SystemConfigSeed[] = [
     display_name: "Year Era",
   },
 ];
+
 const smtpConfigs: SystemConfigSeed[] = [
   {
     id: "smtp_enabled",
@@ -114,6 +115,24 @@ const smtpConfigs: SystemConfigSeed[] = [
   },
 ];
 
+const authConfigs: SystemConfigSeed[] = [
+  {
+    id: "auth_url",
+    value: "",
+    description: "Application auth base URL",
+    category: "AUTH",
+    display_name: "Auth URL",
+  },
+  {
+    id: "auth_secret",
+    value: "",
+    description: "NextAuth secret",
+    category: "AUTH",
+    is_encrypted: true,
+    display_name: "Auth Secret",
+  },
+];
+
 const oauthConfigs: SystemConfigSeed[] = [
   {
     id: "google_oauth_client_id",
@@ -130,7 +149,53 @@ const oauthConfigs: SystemConfigSeed[] = [
     is_encrypted: true,
     display_name: "Google Client Secret",
   },
+  {
+    id: "line_oauth_client_id",
+    value: "",
+    description: "LINE OAuth client ID",
+    category: "OAUTH",
+    display_name: "LINE Client ID",
+  },
+  {
+    id: "line_oauth_client_secret",
+    value: "",
+    description: "LINE OAuth client secret",
+    category: "OAUTH",
+    is_encrypted: true,
+    display_name: "LINE Client Secret",
+  },
+  {
+    id: "github_oauth_client_id",
+    value: "",
+    description: "GitHub OAuth client ID",
+    category: "OAUTH",
+    display_name: "GitHub Client ID",
+  },
+  {
+    id: "github_oauth_client_secret",
+    value: "",
+    description: "GitHub OAuth client secret",
+    category: "OAUTH",
+    is_encrypted: true,
+    display_name: "GitHub Client Secret",
+  },
+  {
+    id: "facebook_oauth_client_id",
+    value: "",
+    description: "Facebook OAuth client ID",
+    category: "OAUTH",
+    display_name: "Facebook Client ID",
+  },
+  {
+    id: "facebook_oauth_client_secret",
+    value: "",
+    description: "Facebook OAuth client secret",
+    category: "OAUTH",
+    is_encrypted: true,
+    display_name: "Facebook Client Secret",
+  },
 ];
+
 function encryptConfigValue(value: string) {
   if (!value) {
     return "";
@@ -167,7 +232,7 @@ async function seedTestUser() {
   console.log(`Seeded test user: ${user.email} (${user.username})`);
 }
 
-async function seedSystemConfigs(configs: SystemConfigSeed[], fallbackCategory: "SMTP" | "REGIONAL" | "OAUTH") {
+async function seedSystemConfigs(configs: SystemConfigSeed[], fallbackCategory: "SMTP" | "REGIONAL" | "OAUTH" | "AUTH") {
   let createdCount = 0;
   let skippedCount = 0;
 
@@ -207,6 +272,7 @@ async function main() {
   await seedTestUser();
   await seedSystemConfigs(regionalConfigs, "REGIONAL");
   await seedSystemConfigs(smtpConfigs, "SMTP");
+  await seedSystemConfigs(authConfigs, "AUTH");
   await seedSystemConfigs(oauthConfigs, "OAUTH");
 }
 
