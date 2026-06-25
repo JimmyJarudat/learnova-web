@@ -14,6 +14,7 @@
     "db:test": "node scripts/db/test-connection.mjs",
     "db:reset": "node scripts/db/reset-database.mjs",
     "auth:sync-config": "bun --env-file=.env scripts/db/sync-auth-config-from-env.ts",
+    "smtp:sync-config": "bun --env-file=.env scripts/db/sync-smtp-config-from-env.ts",
     "test": "bun test",
     "test:unit": "bun test tests/unit",
     "test:integration": "bun test tests/integration",

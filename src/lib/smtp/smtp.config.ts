@@ -39,8 +39,9 @@ async function getSmtpConfig(): Promise<SmtpConfig | null> {
           if (c.is_encrypted && c.value) {
             try {
               value = decryptText(c.value);
-            } catch {
-              value = c.value;
+            } catch (error) {
+              console.error(`[smtp-config] Cannot decrypt ${c.id}. Re-run smtp:sync-config.`, error);
+              value = "";
             }
           }
       }
@@ -87,6 +88,7 @@ async function initializeSmtp(): Promise<void> {
     await transporter.verify();
     isSmtpAvailable = true;
   } catch (error) {
+    console.error("[smtp-config] SMTP verify failed. Check smtp_host/smtp_port/smtp_user/smtp_password in system_config.", error);
     isSmtpAvailable = false;
     transporter = null;
   }
@@ -117,6 +119,7 @@ export async function pingSmtp(): Promise<{ connected: boolean; error?: string }
 export class EmailManager {
   static async sendMail(mailOptions: nodemailer.SendMailOptions): Promise<boolean> {
     if (!isSmtpAvailable || !transporter) {
+      console.error("[smtp-config] sendMail called while SMTP is unavailable. See earlier '[smtp-config]' logs for the cause.");
       return false;
     }
 
@@ -128,6 +131,7 @@ export class EmailManager {
       await transporter.sendMail(mailOptions);
       return true;
     } catch (error) {
+      console.error("[smtp-config] sendMail failed.", error);
       return false;
     }
   }

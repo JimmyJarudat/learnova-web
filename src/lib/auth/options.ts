@@ -163,8 +163,8 @@ function buildAuthOptions(config: AuthRuntimeConfig, options: { logMissingProvid
     },
     debug: process.env.NODE_ENV !== "production",
     logger: {
-      error(code, ...message) {
-        console.error("[next-auth]", code, ...message);
+      error(code) {
+        console.error("[next-auth]", code);
       },
     },
     providers: buildProviders(config, options.logMissingProvider ?? true),

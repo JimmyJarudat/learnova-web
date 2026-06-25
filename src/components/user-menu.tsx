@@ -17,8 +17,14 @@ function getInitial(name?: string | null, email?: string | null) {
 export function UserMenu({ name, email, image }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const displayName = name ?? email ?? "บัญชีของฉัน";
+
+  async function handleSignOut() {
+    setIsSigningOut(true);
+    await signOut({ callbackUrl: "/" });
+  }
 
   useEffect(() => {
     setImageFailed(false);
@@ -110,10 +116,14 @@ export function UserMenu({ name, email, image }: UserMenuProps) {
             <button
               type="button"
               role="menuitem"
-              onClick={() => void signOut({ callbackUrl: "/" })}
-              className="mt-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-black text-[#c62828] transition hover:bg-[#fff1f1]"
+              disabled={isSigningOut}
+              onClick={() => void handleSignOut()}
+              className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-black text-[#c62828] transition hover:bg-[#fff1f1] disabled:cursor-wait disabled:opacity-70"
             >
-              ออกจากระบบ
+              {isSigningOut ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#c62828]/25 border-t-[#c62828]" aria-hidden="true" />
+              ) : null}
+              {isSigningOut ? "กำลังออกจากระบบ..." : "ออกจากระบบ"}
             </button>
           </div>
         </div>

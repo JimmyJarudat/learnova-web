@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+
 export type OAuthProviderKey = "facebook" | "github" | "google" | "line";
 
 type SystemConfigValue = {
@@ -47,12 +49,21 @@ const oauthConfigIds: Record<OAuthProviderKey, OAuthProviderIds> = {
 const authConfigIds = {
   authUrl: "auth_url",
   authSecret: "auth_secret",
+  encryptionSecretFingerprint: "encryption_secret_fingerprint",
 } as const;
 
 const oauthProviders = Object.keys(oauthConfigIds) as OAuthProviderKey[];
 
 function configMapFrom(configs: SystemConfigValue[]) {
   return new Map(configs.map((config) => [config.id, config.value]));
+}
+
+function encryptionSecretFingerprint(value: string | undefined) {
+  if (!value) {
+    return "missing";
+  }
+
+  return crypto.createHash("sha256").update(value).digest("hex").slice(0, 16);
 }
 
 export function resolveOAuthConfig(
@@ -88,6 +99,7 @@ export function getAuthConfigIds() {
   return [
     authConfigIds.authUrl,
     authConfigIds.authSecret,
+    authConfigIds.encryptionSecretFingerprint,
     ...oauthProviders.flatMap((provider) => {
       const ids = oauthConfigIds[provider];
 
@@ -111,6 +123,24 @@ export function normalizeSystemConfigRows(rows: SystemConfigValue[], decryptValu
   });
 }
 
+export function hasMatchingEncryptionFingerprint(rows: SystemConfigValue[], env: AuthConfigEnv = process.env) {
+  const dbFingerprint = rows.find((row) => row.id === authConfigIds.encryptionSecretFingerprint)?.value;
+  const runtimeFingerprint = encryptionSecretFingerprint(env.ENCRYPTION_SECRET);
+
+  if (!dbFingerprint) {
+    console.error(`[auth-config] Missing ${authConfigIds.encryptionSecretFingerprint} in database. Re-run auth:sync-config.`);
+    return true;
+  }
+
+  if (dbFingerprint !== runtimeFingerprint) {
+    console.error(`[auth-config] ENCRYPTION_SECRET fingerprint mismatch. db=${dbFingerprint} runtime=${runtimeFingerprint}. Re-run auth:sync-config with the same key used by this deployment.`);
+    return false;
+  }
+
+  console.info(`[auth-config] ENCRYPTION_SECRET fingerprint matched: ${runtimeFingerprint}`);
+  return true;
+}
+
 export async function getAuthRuntimeConfig() {
   try {
     const [{ default: prisma }, { decryptText }] = await Promise.all([
@@ -129,10 +159,13 @@ export async function getAuthRuntimeConfig() {
       },
     });
 
+    if (!hasMatchingEncryptionFingerprint(rows)) {
+      return resolveAuthRuntimeConfig([]);
+    }
+
     return resolveAuthRuntimeConfig(normalizeSystemConfigRows(rows, decryptText));
   } catch (error) {
     console.error("[auth-config] Cannot load auth config from database. Falling back to env values.", error);
     return resolveAuthRuntimeConfig([]);
   }
 }
-

@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../src/generated/prisma/client";
 import { encryptText } from "../../src/utils/encryption";
@@ -13,6 +14,8 @@ type AuthConfigInput = {
   displayName: string;
   isEncrypted: boolean;
 };
+
+const encryptionSecretFingerprintId = "encryption_secret_fingerprint";
 
 const authConfigs: AuthConfigInput[] = [
   {
@@ -107,9 +110,13 @@ function requireEnv(name: string) {
   return value;
 }
 
+function fingerprint(value: string) {
+  return crypto.createHash("sha256").update(value).digest("hex").slice(0, 16);
+}
+
 async function main() {
   requireEnv("DATABASE_URL");
-  requireEnv("ENCRYPTION_SECRET");
+  const encryptionSecret = requireEnv("ENCRYPTION_SECRET");
 
   const missing = authConfigs
     .filter((config) => !process.env[config.envName])
@@ -148,7 +155,31 @@ async function main() {
     });
   }
 
-  console.log(`Synced auth config: ${authConfigs.length} updated, ${authConfigs.filter((config) => config.isEncrypted).length} encrypted`);
+  await prisma.system_config.upsert({
+    where: { id: encryptionSecretFingerprintId },
+    create: {
+      id: encryptionSecretFingerprintId,
+      value: fingerprint(encryptionSecret),
+      description: "Fingerprint of ENCRYPTION_SECRET used to encrypt auth config",
+      category: "AUTH",
+      data_type: "STRING",
+      is_active: true,
+      is_encrypted: false,
+      display_name: "Encryption Secret Fingerprint",
+    },
+    update: {
+      value: fingerprint(encryptionSecret),
+      description: "Fingerprint of ENCRYPTION_SECRET used to encrypt auth config",
+      category: "AUTH",
+      data_type: "STRING",
+      is_active: true,
+      is_encrypted: false,
+      display_name: "Encryption Secret Fingerprint",
+      updated_at: new Date(),
+    },
+  });
+
+  console.log(`Synced auth config: ${authConfigs.length} updated, ${authConfigs.filter((config) => config.isEncrypted).length} encrypted, fingerprint updated`);
 }
 
 main()
