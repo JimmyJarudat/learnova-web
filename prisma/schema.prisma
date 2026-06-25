@@ -89,3 +89,132 @@ model system_config {
   @@index([category, is_active], map: "ix_system_config_category_is_active")
   @@map("system_config")
 }
+
+
+model NewsSource {
+  id          String    @id @default(uuid()) @db.Uuid
+
+  name        String    @db.VarChar(150)
+  url         String    @unique @db.Text
+
+  /// government, teacher_exam, education_news, social, other
+  type        String    @default("other") @db.VarChar(50)
+
+  isActive    Boolean   @default(true) @map("is_active")
+  lastFetchAt DateTime? @map("last_fetch_at") @db.Timestamptz(6)
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  articles    NewsArticle[]
+
+  @@index([type])
+  @@index([isActive])
+  @@map("news_sources")
+}
+
+model NewsCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+
+  nameTh      String   @map("name_th") @db.VarChar(100)
+  nameEn      String?  @map("name_en") @db.VarChar(100)
+
+  /// teacher-exam, obec, otep, ksp, recruitment
+  slug        String   @unique @db.VarChar(120)
+
+  description String?  @db.Text
+
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  articles    NewsArticle[]
+
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("news_categories")
+}
+
+model NewsArticle {
+  id                String        @id @default(uuid()) @db.Uuid
+
+  sourceId          String?       @map("source_id") @db.Uuid
+  source            NewsSource?   @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+
+  categoryId        String?       @map("category_id") @db.Uuid
+  category          NewsCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  title             String        @db.VarChar(255)
+  slug              String        @unique @db.VarChar(255)
+
+  excerpt           String?       @db.VarChar(500)
+  summary           String?       @db.Text
+  content           String?       @db.Text
+
+  sourceName        String?       @map("source_name") @db.VarChar(150)
+  sourceUrl         String        @unique @map("source_url") @db.Text
+  imageUrl          String?       @map("image_url") @db.Text
+
+  tags              String[]      @default([])
+
+  /// draft, published, archived, rejected
+  status            String        @default("draft") @db.VarChar(30)
+
+  relevanceScore    Int           @default(0) @map("relevance_score")
+  viewCount         Int           @default(0) @map("view_count")
+
+  isFeatured        Boolean       @default(false) @map("is_featured")
+
+  sourcePublishedAt DateTime?     @map("source_published_at") @db.Timestamptz(6)
+  publishedAt       DateTime?     @map("published_at") @db.Timestamptz(6)
+  fetchedAt         DateTime      @default(now()) @map("fetched_at") @db.Timestamptz(6)
+
+  rawData           Json?         @map("raw_data")
+
+  createdBy         String?       @map("created_by") @db.Uuid
+  updatedBy         String?       @map("updated_by") @db.Uuid
+
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([sourceId])
+  @@index([publishedAt])
+  @@index([sourcePublishedAt])
+  @@index([relevanceScore])
+  @@index([viewCount])
+  @@index([isFeatured])
+  @@map("news_articles")
+}
+
+model NewsFetchLog {
+  id            String    @id @default(uuid()) @db.Uuid
+
+  sourceId      String?   @map("source_id") @db.Uuid
+  sourceName    String?   @map("source_name") @db.VarChar(150)
+  sourceUrl     String?   @map("source_url") @db.Text
+
+  /// success, partial_success, failed
+  status        String    @default("success") @db.VarChar(30)
+
+  totalFound    Int       @default(0) @map("total_found")
+  totalInserted Int       @default(0) @map("total_inserted")
+  totalSkipped  Int       @default(0) @map("total_skipped")
+  totalFailed   Int       @default(0) @map("total_failed")
+
+  message       String?   @db.Text
+  errorMessage  String?   @map("error_message") @db.Text
+
+  startedAt     DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt    DateTime? @map("finished_at") @db.Timestamptz(6)
+
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([sourceId])
+  @@index([status])
+  @@index([startedAt])
+  @@map("news_fetch_logs")
+}
