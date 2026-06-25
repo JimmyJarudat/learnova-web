@@ -7,7 +7,23 @@ import LineProvider from "next-auth/providers/line";
 import { getUsableAvatarUrl } from "@/server/auth/avatar-url";
 import { authorizePasswordUser } from "@/server/auth/credentials-user";
 import { findOrCreateFacebookUser, findOrCreateGitHubUser, findOrCreateGoogleUser, findOrCreateLineUser } from "@/server/auth/google-user";
-import { getOAuthProviderConfig } from "./oauth-config";
+import { getAuthRuntimeConfig, resolveAuthRuntimeConfig } from "./oauth-config";
+
+type ProviderConfig = {
+  clientId: string;
+  clientSecret: string;
+};
+
+type AuthRuntimeConfig = {
+  authUrl: string;
+  authSecret: string;
+  providers: {
+    facebook: ProviderConfig;
+    github: ProviderConfig;
+    google: ProviderConfig;
+    line: ProviderConfig;
+  };
+};
 
 function toHttpsUrl(host: string | undefined) {
   if (!host) {
@@ -17,7 +33,7 @@ function toHttpsUrl(host: string | undefined) {
   return host.startsWith("http") ? host : `https://${host}`;
 }
 
-function getAuthUrl() {
+function getFallbackAuthUrl() {
   if (process.env.NODE_ENV !== "production") {
     return "http://localhost:3000";
   }
@@ -26,21 +42,27 @@ function getAuthUrl() {
     process.env.AUTH_URL ??
     process.env.NEXTAUTH_URL ??
     toHttpsUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
-    toHttpsUrl(process.env.VERCEL_URL)
+    toHttpsUrl(process.env.VERCEL_URL) ??
+    ""
   );
 }
 
-const authUrl = getAuthUrl();
+function applyNextAuthEnvironment(config: Pick<AuthRuntimeConfig, "authSecret" | "authUrl">) {
+  const authUrl = process.env.NODE_ENV !== "production" ? "http://localhost:3000" : config.authUrl || getFallbackAuthUrl();
+  const authSecret = config.authSecret || process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
 
-if (authUrl) {
-  process.env.NEXTAUTH_URL = authUrl;
+  if (authUrl) {
+    process.env.NEXTAUTH_URL = authUrl;
+  }
+
+  if (authSecret) {
+    process.env.NEXTAUTH_SECRET = authSecret;
+  }
 }
 
-if (!process.env.NEXTAUTH_SECRET && process.env.AUTH_SECRET) {
-  process.env.NEXTAUTH_SECRET = process.env.AUTH_SECRET;
-}
+function buildAuthOptions(config: AuthRuntimeConfig): AuthOptions {
+  applyNextAuthEnvironment(config);
 
-function buildAuthOptions(googleConfig: { clientId: string; clientSecret: string }): AuthOptions {
   return {
     secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
     session: {
@@ -67,8 +89,8 @@ function buildAuthOptions(googleConfig: { clientId: string; clientSecret: string
         },
       }),
       FacebookProvider({
-        clientId: process.env.FACEBOOK_CLIENT_ID!,
-        clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+        clientId: config.providers.facebook.clientId,
+        clientSecret: config.providers.facebook.clientSecret,
         authorization: {
           params: {
             scope: "public_profile",
@@ -82,8 +104,8 @@ function buildAuthOptions(googleConfig: { clientId: string; clientSecret: string
         },
       }),
       GoogleProvider({
-        clientId: googleConfig.clientId,
-        clientSecret: googleConfig.clientSecret,
+        clientId: config.providers.google.clientId,
+        clientSecret: config.providers.google.clientSecret,
         authorization: {
           params: {
             scope: "openid email profile",
@@ -92,8 +114,8 @@ function buildAuthOptions(googleConfig: { clientId: string; clientSecret: string
         },
       }),
       LineProvider({
-        clientId: process.env.LINE_CLIENT_ID ?? "",
-        clientSecret: process.env.LINE_CLIENT_SECRET ?? "",
+        clientId: config.providers.line.clientId,
+        clientSecret: config.providers.line.clientSecret,
         authorization: {
           params: {
             scope: "openid profile email",
@@ -101,8 +123,8 @@ function buildAuthOptions(googleConfig: { clientId: string; clientSecret: string
         },
       }),
       GitHubProvider({
-        clientId: process.env.GITHUB_CLIENT_ID ?? "",
-        clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
+        clientId: config.providers.github.clientId,
+        clientSecret: config.providers.github.clientSecret,
         authorization: {
           params: {
             scope: "read:user user:email",
@@ -175,12 +197,8 @@ function buildAuthOptions(googleConfig: { clientId: string; clientSecret: string
   };
 }
 
-export const authOptions: AuthOptions = buildAuthOptions({
-  clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-});
+export const authOptions: AuthOptions = buildAuthOptions(resolveAuthRuntimeConfig([], process.env));
 
 export async function getAuthOptions() {
-  return buildAuthOptions(await getOAuthProviderConfig("google"));
+  return buildAuthOptions(await getAuthRuntimeConfig());
 }
-

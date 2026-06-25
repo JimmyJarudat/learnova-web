@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { resolveOAuthConfig } from "@/lib/auth/oauth-config";
+import { getAuthConfigIds, resolveAuthRuntimeConfig, resolveOAuthConfig } from "@/lib/auth/oauth-config";
 
-describe("resolveOAuthConfig", () => {
+describe("auth runtime config", () => {
   test("uses Google OAuth config from system config before env", () => {
     const config = resolveOAuthConfig(
       "google",
@@ -19,14 +19,53 @@ describe("resolveOAuthConfig", () => {
     expect(config.clientSecret).toBe("db-client-secret");
   });
 
-  test("falls back to Google OAuth env values when system config is empty", () => {
-    const config = resolveOAuthConfig("google", [], {
-      GOOGLE_CLIENT_ID: "env-client-id",
-      GOOGLE_CLIENT_SECRET: "env-client-secret",
+  test("falls back to OAuth env values when system config is empty", () => {
+    const config = resolveOAuthConfig("line", [], {
+      LINE_CLIENT_ID: "env-client-id",
+      LINE_CLIENT_SECRET: "env-client-secret",
     });
 
     expect(config.clientId).toBe("env-client-id");
     expect(config.clientSecret).toBe("env-client-secret");
   });
-});
 
+  test("resolves Auth and all OAuth providers from system config", () => {
+    const config = resolveAuthRuntimeConfig(
+      [
+        { id: "auth_url", value: "https://db.example.com", is_encrypted: false },
+        { id: "auth_secret", value: "db-auth-secret", is_encrypted: true },
+        { id: "facebook_oauth_client_id", value: "fb-id", is_encrypted: false },
+        { id: "facebook_oauth_client_secret", value: "fb-secret", is_encrypted: true },
+        { id: "github_oauth_client_id", value: "gh-id", is_encrypted: false },
+        { id: "github_oauth_client_secret", value: "gh-secret", is_encrypted: true },
+        { id: "google_oauth_client_id", value: "google-id", is_encrypted: false },
+        { id: "google_oauth_client_secret", value: "google-secret", is_encrypted: true },
+        { id: "line_oauth_client_id", value: "line-id", is_encrypted: false },
+        { id: "line_oauth_client_secret", value: "line-secret", is_encrypted: true },
+      ],
+      {},
+    );
+
+    expect(config.authUrl).toBe("https://db.example.com");
+    expect(config.authSecret).toBe("db-auth-secret");
+    expect(config.providers.facebook.clientId).toBe("fb-id");
+    expect(config.providers.github.clientSecret).toBe("gh-secret");
+    expect(config.providers.google.clientId).toBe("google-id");
+    expect(config.providers.line.clientSecret).toBe("line-secret");
+  });
+
+  test("lists all auth config ids needed from system_config", () => {
+    expect(getAuthConfigIds().sort()).toEqual([
+      "auth_secret",
+      "auth_url",
+      "facebook_oauth_client_id",
+      "facebook_oauth_client_secret",
+      "github_oauth_client_id",
+      "github_oauth_client_secret",
+      "google_oauth_client_id",
+      "google_oauth_client_secret",
+      "line_oauth_client_id",
+      "line_oauth_client_secret",
+    ]);
+  });
+});
