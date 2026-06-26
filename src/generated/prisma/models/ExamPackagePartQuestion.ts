@@ -40,6 +40,7 @@ export type ExamPackagePartQuestionSumAggregateOutputType = {
 export type ExamPackagePartQuestionMinAggregateOutputType = {
   id: string | null
   partId: string | null
+  sectionId: string | null
   questionId: string | null
   position: number | null
   score: runtime.Decimal | null
@@ -49,6 +50,7 @@ export type ExamPackagePartQuestionMinAggregateOutputType = {
 export type ExamPackagePartQuestionMaxAggregateOutputType = {
   id: string | null
   partId: string | null
+  sectionId: string | null
   questionId: string | null
   position: number | null
   score: runtime.Decimal | null
@@ -58,6 +60,7 @@ export type ExamPackagePartQuestionMaxAggregateOutputType = {
 export type ExamPackagePartQuestionCountAggregateOutputType = {
   id: number
   partId: number
+  sectionId: number
   questionId: number
   position: number
   score: number
@@ -79,6 +82,7 @@ export type ExamPackagePartQuestionSumAggregateInputType = {
 export type ExamPackagePartQuestionMinAggregateInputType = {
   id?: true
   partId?: true
+  sectionId?: true
   questionId?: true
   position?: true
   score?: true
@@ -88,6 +92,7 @@ export type ExamPackagePartQuestionMinAggregateInputType = {
 export type ExamPackagePartQuestionMaxAggregateInputType = {
   id?: true
   partId?: true
+  sectionId?: true
   questionId?: true
   position?: true
   score?: true
@@ -97,6 +102,7 @@ export type ExamPackagePartQuestionMaxAggregateInputType = {
 export type ExamPackagePartQuestionCountAggregateInputType = {
   id?: true
   partId?: true
+  sectionId?: true
   questionId?: true
   position?: true
   score?: true
@@ -193,6 +199,7 @@ export type ExamPackagePartQuestionGroupByArgs<ExtArgs extends runtime.Types.Ext
 export type ExamPackagePartQuestionGroupByOutputType = {
   id: string
   partId: string
+  sectionId: string | null
   questionId: string
   position: number
   score: runtime.Decimal
@@ -225,22 +232,26 @@ export type ExamPackagePartQuestionWhereInput = {
   NOT?: Prisma.ExamPackagePartQuestionWhereInput | Prisma.ExamPackagePartQuestionWhereInput[]
   id?: Prisma.UuidFilter<"ExamPackagePartQuestion"> | string
   partId?: Prisma.UuidFilter<"ExamPackagePartQuestion"> | string
+  sectionId?: Prisma.UuidNullableFilter<"ExamPackagePartQuestion"> | string | null
   questionId?: Prisma.UuidFilter<"ExamPackagePartQuestion"> | string
   position?: Prisma.IntFilter<"ExamPackagePartQuestion"> | number
   score?: Prisma.DecimalFilter<"ExamPackagePartQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ExamPackagePartQuestion"> | Date | string
   part?: Prisma.XOR<Prisma.ExamPackagePartScalarRelationFilter, Prisma.ExamPackagePartWhereInput>
+  section?: Prisma.XOR<Prisma.ExamSectionNullableScalarRelationFilter, Prisma.ExamSectionWhereInput> | null
   question?: Prisma.XOR<Prisma.ExamQuestionScalarRelationFilter, Prisma.ExamQuestionWhereInput>
 }
 
 export type ExamPackagePartQuestionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   partId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   part?: Prisma.ExamPackagePartOrderByWithRelationInput
+  section?: Prisma.ExamSectionOrderByWithRelationInput
   question?: Prisma.ExamQuestionOrderByWithRelationInput
 }
 
@@ -252,17 +263,20 @@ export type ExamPackagePartQuestionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ExamPackagePartQuestionWhereInput[]
   NOT?: Prisma.ExamPackagePartQuestionWhereInput | Prisma.ExamPackagePartQuestionWhereInput[]
   partId?: Prisma.UuidFilter<"ExamPackagePartQuestion"> | string
+  sectionId?: Prisma.UuidNullableFilter<"ExamPackagePartQuestion"> | string | null
   questionId?: Prisma.UuidFilter<"ExamPackagePartQuestion"> | string
   position?: Prisma.IntFilter<"ExamPackagePartQuestion"> | number
   score?: Prisma.DecimalFilter<"ExamPackagePartQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ExamPackagePartQuestion"> | Date | string
   part?: Prisma.XOR<Prisma.ExamPackagePartScalarRelationFilter, Prisma.ExamPackagePartWhereInput>
+  section?: Prisma.XOR<Prisma.ExamSectionNullableScalarRelationFilter, Prisma.ExamSectionWhereInput> | null
   question?: Prisma.XOR<Prisma.ExamQuestionScalarRelationFilter, Prisma.ExamQuestionWhereInput>
 }, "id" | "partId_questionId" | "partId_position">
 
 export type ExamPackagePartQuestionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   partId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -280,6 +294,7 @@ export type ExamPackagePartQuestionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ExamPackagePartQuestionScalarWhereWithAggregatesInput | Prisma.ExamPackagePartQuestionScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"ExamPackagePartQuestion"> | string
   partId?: Prisma.UuidWithAggregatesFilter<"ExamPackagePartQuestion"> | string
+  sectionId?: Prisma.UuidNullableWithAggregatesFilter<"ExamPackagePartQuestion"> | string | null
   questionId?: Prisma.UuidWithAggregatesFilter<"ExamPackagePartQuestion"> | string
   position?: Prisma.IntWithAggregatesFilter<"ExamPackagePartQuestion"> | number
   score?: Prisma.DecimalWithAggregatesFilter<"ExamPackagePartQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -292,12 +307,14 @@ export type ExamPackagePartQuestionCreateInput = {
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   part: Prisma.ExamPackagePartCreateNestedOneWithoutItemsInput
+  section?: Prisma.ExamSectionCreateNestedOneWithoutPackageItemsInput
   question: Prisma.ExamQuestionCreateNestedOneWithoutPackageItemsInput
 }
 
 export type ExamPackagePartQuestionUncheckedCreateInput = {
   id?: string
   partId: string
+  sectionId?: string | null
   questionId: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -310,12 +327,14 @@ export type ExamPackagePartQuestionUpdateInput = {
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   part?: Prisma.ExamPackagePartUpdateOneRequiredWithoutItemsNestedInput
+  section?: Prisma.ExamSectionUpdateOneWithoutPackageItemsNestedInput
   question?: Prisma.ExamQuestionUpdateOneRequiredWithoutPackageItemsNestedInput
 }
 
 export type ExamPackagePartQuestionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partId?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -325,6 +344,7 @@ export type ExamPackagePartQuestionUncheckedUpdateInput = {
 export type ExamPackagePartQuestionCreateManyInput = {
   id?: string
   partId: string
+  sectionId?: string | null
   questionId: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -341,6 +361,7 @@ export type ExamPackagePartQuestionUpdateManyMutationInput = {
 export type ExamPackagePartQuestionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partId?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -370,6 +391,7 @@ export type ExamPackagePartQuestionPartIdPositionCompoundUniqueInput = {
 export type ExamPackagePartQuestionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -384,6 +406,7 @@ export type ExamPackagePartQuestionAvgOrderByAggregateInput = {
 export type ExamPackagePartQuestionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -393,6 +416,7 @@ export type ExamPackagePartQuestionMaxOrderByAggregateInput = {
 export type ExamPackagePartQuestionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -446,6 +470,48 @@ export type ExamPackagePartQuestionUncheckedUpdateManyWithoutPartNestedInput = {
   deleteMany?: Prisma.ExamPackagePartQuestionScalarWhereInput | Prisma.ExamPackagePartQuestionScalarWhereInput[]
 }
 
+export type ExamPackagePartQuestionCreateNestedManyWithoutSectionInput = {
+  create?: Prisma.XOR<Prisma.ExamPackagePartQuestionCreateWithoutSectionInput, Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput> | Prisma.ExamPackagePartQuestionCreateWithoutSectionInput[] | Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput[]
+  connectOrCreate?: Prisma.ExamPackagePartQuestionCreateOrConnectWithoutSectionInput | Prisma.ExamPackagePartQuestionCreateOrConnectWithoutSectionInput[]
+  createMany?: Prisma.ExamPackagePartQuestionCreateManySectionInputEnvelope
+  connect?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+}
+
+export type ExamPackagePartQuestionUncheckedCreateNestedManyWithoutSectionInput = {
+  create?: Prisma.XOR<Prisma.ExamPackagePartQuestionCreateWithoutSectionInput, Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput> | Prisma.ExamPackagePartQuestionCreateWithoutSectionInput[] | Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput[]
+  connectOrCreate?: Prisma.ExamPackagePartQuestionCreateOrConnectWithoutSectionInput | Prisma.ExamPackagePartQuestionCreateOrConnectWithoutSectionInput[]
+  createMany?: Prisma.ExamPackagePartQuestionCreateManySectionInputEnvelope
+  connect?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+}
+
+export type ExamPackagePartQuestionUpdateManyWithoutSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.ExamPackagePartQuestionCreateWithoutSectionInput, Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput> | Prisma.ExamPackagePartQuestionCreateWithoutSectionInput[] | Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput[]
+  connectOrCreate?: Prisma.ExamPackagePartQuestionCreateOrConnectWithoutSectionInput | Prisma.ExamPackagePartQuestionCreateOrConnectWithoutSectionInput[]
+  upsert?: Prisma.ExamPackagePartQuestionUpsertWithWhereUniqueWithoutSectionInput | Prisma.ExamPackagePartQuestionUpsertWithWhereUniqueWithoutSectionInput[]
+  createMany?: Prisma.ExamPackagePartQuestionCreateManySectionInputEnvelope
+  set?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+  disconnect?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+  delete?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+  connect?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+  update?: Prisma.ExamPackagePartQuestionUpdateWithWhereUniqueWithoutSectionInput | Prisma.ExamPackagePartQuestionUpdateWithWhereUniqueWithoutSectionInput[]
+  updateMany?: Prisma.ExamPackagePartQuestionUpdateManyWithWhereWithoutSectionInput | Prisma.ExamPackagePartQuestionUpdateManyWithWhereWithoutSectionInput[]
+  deleteMany?: Prisma.ExamPackagePartQuestionScalarWhereInput | Prisma.ExamPackagePartQuestionScalarWhereInput[]
+}
+
+export type ExamPackagePartQuestionUncheckedUpdateManyWithoutSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.ExamPackagePartQuestionCreateWithoutSectionInput, Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput> | Prisma.ExamPackagePartQuestionCreateWithoutSectionInput[] | Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput[]
+  connectOrCreate?: Prisma.ExamPackagePartQuestionCreateOrConnectWithoutSectionInput | Prisma.ExamPackagePartQuestionCreateOrConnectWithoutSectionInput[]
+  upsert?: Prisma.ExamPackagePartQuestionUpsertWithWhereUniqueWithoutSectionInput | Prisma.ExamPackagePartQuestionUpsertWithWhereUniqueWithoutSectionInput[]
+  createMany?: Prisma.ExamPackagePartQuestionCreateManySectionInputEnvelope
+  set?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+  disconnect?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+  delete?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+  connect?: Prisma.ExamPackagePartQuestionWhereUniqueInput | Prisma.ExamPackagePartQuestionWhereUniqueInput[]
+  update?: Prisma.ExamPackagePartQuestionUpdateWithWhereUniqueWithoutSectionInput | Prisma.ExamPackagePartQuestionUpdateWithWhereUniqueWithoutSectionInput[]
+  updateMany?: Prisma.ExamPackagePartQuestionUpdateManyWithWhereWithoutSectionInput | Prisma.ExamPackagePartQuestionUpdateManyWithWhereWithoutSectionInput[]
+  deleteMany?: Prisma.ExamPackagePartQuestionScalarWhereInput | Prisma.ExamPackagePartQuestionScalarWhereInput[]
+}
+
 export type ExamPackagePartQuestionCreateNestedManyWithoutQuestionInput = {
   create?: Prisma.XOR<Prisma.ExamPackagePartQuestionCreateWithoutQuestionInput, Prisma.ExamPackagePartQuestionUncheckedCreateWithoutQuestionInput> | Prisma.ExamPackagePartQuestionCreateWithoutQuestionInput[] | Prisma.ExamPackagePartQuestionUncheckedCreateWithoutQuestionInput[]
   connectOrCreate?: Prisma.ExamPackagePartQuestionCreateOrConnectWithoutQuestionInput | Prisma.ExamPackagePartQuestionCreateOrConnectWithoutQuestionInput[]
@@ -493,11 +559,13 @@ export type ExamPackagePartQuestionCreateWithoutPartInput = {
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  section?: Prisma.ExamSectionCreateNestedOneWithoutPackageItemsInput
   question: Prisma.ExamQuestionCreateNestedOneWithoutPackageItemsInput
 }
 
 export type ExamPackagePartQuestionUncheckedCreateWithoutPartInput = {
   id?: string
+  sectionId?: string | null
   questionId: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -536,10 +604,55 @@ export type ExamPackagePartQuestionScalarWhereInput = {
   NOT?: Prisma.ExamPackagePartQuestionScalarWhereInput | Prisma.ExamPackagePartQuestionScalarWhereInput[]
   id?: Prisma.UuidFilter<"ExamPackagePartQuestion"> | string
   partId?: Prisma.UuidFilter<"ExamPackagePartQuestion"> | string
+  sectionId?: Prisma.UuidNullableFilter<"ExamPackagePartQuestion"> | string | null
   questionId?: Prisma.UuidFilter<"ExamPackagePartQuestion"> | string
   position?: Prisma.IntFilter<"ExamPackagePartQuestion"> | number
   score?: Prisma.DecimalFilter<"ExamPackagePartQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"ExamPackagePartQuestion"> | Date | string
+}
+
+export type ExamPackagePartQuestionCreateWithoutSectionInput = {
+  id?: string
+  position: number
+  score?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+  part: Prisma.ExamPackagePartCreateNestedOneWithoutItemsInput
+  question: Prisma.ExamQuestionCreateNestedOneWithoutPackageItemsInput
+}
+
+export type ExamPackagePartQuestionUncheckedCreateWithoutSectionInput = {
+  id?: string
+  partId: string
+  questionId: string
+  position: number
+  score?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+}
+
+export type ExamPackagePartQuestionCreateOrConnectWithoutSectionInput = {
+  where: Prisma.ExamPackagePartQuestionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExamPackagePartQuestionCreateWithoutSectionInput, Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput>
+}
+
+export type ExamPackagePartQuestionCreateManySectionInputEnvelope = {
+  data: Prisma.ExamPackagePartQuestionCreateManySectionInput | Prisma.ExamPackagePartQuestionCreateManySectionInput[]
+  skipDuplicates?: boolean
+}
+
+export type ExamPackagePartQuestionUpsertWithWhereUniqueWithoutSectionInput = {
+  where: Prisma.ExamPackagePartQuestionWhereUniqueInput
+  update: Prisma.XOR<Prisma.ExamPackagePartQuestionUpdateWithoutSectionInput, Prisma.ExamPackagePartQuestionUncheckedUpdateWithoutSectionInput>
+  create: Prisma.XOR<Prisma.ExamPackagePartQuestionCreateWithoutSectionInput, Prisma.ExamPackagePartQuestionUncheckedCreateWithoutSectionInput>
+}
+
+export type ExamPackagePartQuestionUpdateWithWhereUniqueWithoutSectionInput = {
+  where: Prisma.ExamPackagePartQuestionWhereUniqueInput
+  data: Prisma.XOR<Prisma.ExamPackagePartQuestionUpdateWithoutSectionInput, Prisma.ExamPackagePartQuestionUncheckedUpdateWithoutSectionInput>
+}
+
+export type ExamPackagePartQuestionUpdateManyWithWhereWithoutSectionInput = {
+  where: Prisma.ExamPackagePartQuestionScalarWhereInput
+  data: Prisma.XOR<Prisma.ExamPackagePartQuestionUpdateManyMutationInput, Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutSectionInput>
 }
 
 export type ExamPackagePartQuestionCreateWithoutQuestionInput = {
@@ -548,11 +661,13 @@ export type ExamPackagePartQuestionCreateWithoutQuestionInput = {
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   part: Prisma.ExamPackagePartCreateNestedOneWithoutItemsInput
+  section?: Prisma.ExamSectionCreateNestedOneWithoutPackageItemsInput
 }
 
 export type ExamPackagePartQuestionUncheckedCreateWithoutQuestionInput = {
   id?: string
   partId: string
+  sectionId?: string | null
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
@@ -586,6 +701,7 @@ export type ExamPackagePartQuestionUpdateManyWithWhereWithoutQuestionInput = {
 
 export type ExamPackagePartQuestionCreateManyPartInput = {
   id?: string
+  sectionId?: string | null
   questionId: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -597,11 +713,13 @@ export type ExamPackagePartQuestionUpdateWithoutPartInput = {
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  section?: Prisma.ExamSectionUpdateOneWithoutPackageItemsNestedInput
   question?: Prisma.ExamQuestionUpdateOneRequiredWithoutPackageItemsNestedInput
 }
 
 export type ExamPackagePartQuestionUncheckedUpdateWithoutPartInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -610,6 +728,43 @@ export type ExamPackagePartQuestionUncheckedUpdateWithoutPartInput = {
 
 export type ExamPackagePartQuestionUncheckedUpdateManyWithoutPartInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  questionId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ExamPackagePartQuestionCreateManySectionInput = {
+  id?: string
+  partId: string
+  questionId: string
+  position: number
+  score?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+}
+
+export type ExamPackagePartQuestionUpdateWithoutSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  part?: Prisma.ExamPackagePartUpdateOneRequiredWithoutItemsNestedInput
+  question?: Prisma.ExamQuestionUpdateOneRequiredWithoutPackageItemsNestedInput
+}
+
+export type ExamPackagePartQuestionUncheckedUpdateWithoutSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  partId?: Prisma.StringFieldUpdateOperationsInput | string
+  questionId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ExamPackagePartQuestionUncheckedUpdateManyWithoutSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  partId?: Prisma.StringFieldUpdateOperationsInput | string
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -619,6 +774,7 @@ export type ExamPackagePartQuestionUncheckedUpdateManyWithoutPartInput = {
 export type ExamPackagePartQuestionCreateManyQuestionInput = {
   id?: string
   partId: string
+  sectionId?: string | null
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
@@ -630,11 +786,13 @@ export type ExamPackagePartQuestionUpdateWithoutQuestionInput = {
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   part?: Prisma.ExamPackagePartUpdateOneRequiredWithoutItemsNestedInput
+  section?: Prisma.ExamSectionUpdateOneWithoutPackageItemsNestedInput
 }
 
 export type ExamPackagePartQuestionUncheckedUpdateWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partId?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -643,6 +801,7 @@ export type ExamPackagePartQuestionUncheckedUpdateWithoutQuestionInput = {
 export type ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partId?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -653,56 +812,66 @@ export type ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionInput = {
 export type ExamPackagePartQuestionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   partId?: boolean
+  sectionId?: boolean
   questionId?: boolean
   position?: boolean
   score?: boolean
   createdAt?: boolean
   part?: boolean | Prisma.ExamPackagePartDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.ExamPackagePartQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["examPackagePartQuestion"]>
 
 export type ExamPackagePartQuestionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   partId?: boolean
+  sectionId?: boolean
   questionId?: boolean
   position?: boolean
   score?: boolean
   createdAt?: boolean
   part?: boolean | Prisma.ExamPackagePartDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.ExamPackagePartQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["examPackagePartQuestion"]>
 
 export type ExamPackagePartQuestionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   partId?: boolean
+  sectionId?: boolean
   questionId?: boolean
   position?: boolean
   score?: boolean
   createdAt?: boolean
   part?: boolean | Prisma.ExamPackagePartDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.ExamPackagePartQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["examPackagePartQuestion"]>
 
 export type ExamPackagePartQuestionSelectScalar = {
   id?: boolean
   partId?: boolean
+  sectionId?: boolean
   questionId?: boolean
   position?: boolean
   score?: boolean
   createdAt?: boolean
 }
 
-export type ExamPackagePartQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partId" | "questionId" | "position" | "score" | "createdAt", ExtArgs["result"]["examPackagePartQuestion"]>
+export type ExamPackagePartQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partId" | "sectionId" | "questionId" | "position" | "score" | "createdAt", ExtArgs["result"]["examPackagePartQuestion"]>
 export type ExamPackagePartQuestionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   part?: boolean | Prisma.ExamPackagePartDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.ExamPackagePartQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }
 export type ExamPackagePartQuestionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   part?: boolean | Prisma.ExamPackagePartDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.ExamPackagePartQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }
 export type ExamPackagePartQuestionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   part?: boolean | Prisma.ExamPackagePartDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.ExamPackagePartQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }
 
@@ -710,11 +879,13 @@ export type $ExamPackagePartQuestionPayload<ExtArgs extends runtime.Types.Extens
   name: "ExamPackagePartQuestion"
   objects: {
     part: Prisma.$ExamPackagePartPayload<ExtArgs>
+    section: Prisma.$ExamSectionPayload<ExtArgs> | null
     question: Prisma.$ExamQuestionPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     partId: string
+    sectionId: string | null
     questionId: string
     position: number
     score: runtime.Decimal
@@ -1114,6 +1285,7 @@ readonly fields: ExamPackagePartQuestionFieldRefs;
 export interface Prisma__ExamPackagePartQuestionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   part<T extends Prisma.ExamPackagePartDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamPackagePartDefaultArgs<ExtArgs>>): Prisma.Prisma__ExamPackagePartClient<runtime.Types.Result.GetResult<Prisma.$ExamPackagePartPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  section<T extends Prisma.ExamPackagePartQuestion$sectionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamPackagePartQuestion$sectionArgs<ExtArgs>>): Prisma.Prisma__ExamSectionClient<runtime.Types.Result.GetResult<Prisma.$ExamSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   question<T extends Prisma.ExamQuestionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamQuestionDefaultArgs<ExtArgs>>): Prisma.Prisma__ExamQuestionClient<runtime.Types.Result.GetResult<Prisma.$ExamQuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1146,6 +1318,7 @@ export interface Prisma__ExamPackagePartQuestionClient<T, Null = never, ExtArgs 
 export interface ExamPackagePartQuestionFieldRefs {
   readonly id: Prisma.FieldRef<"ExamPackagePartQuestion", 'String'>
   readonly partId: Prisma.FieldRef<"ExamPackagePartQuestion", 'String'>
+  readonly sectionId: Prisma.FieldRef<"ExamPackagePartQuestion", 'String'>
   readonly questionId: Prisma.FieldRef<"ExamPackagePartQuestion", 'String'>
   readonly position: Prisma.FieldRef<"ExamPackagePartQuestion", 'Int'>
   readonly score: Prisma.FieldRef<"ExamPackagePartQuestion", 'Decimal'>
@@ -1548,6 +1721,25 @@ export type ExamPackagePartQuestionDeleteManyArgs<ExtArgs extends runtime.Types.
    * Limit how many ExamPackagePartQuestions to delete.
    */
   limit?: number
+}
+
+/**
+ * ExamPackagePartQuestion.section
+ */
+export type ExamPackagePartQuestion$sectionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExamSection
+   */
+  select?: Prisma.ExamSectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExamSection
+   */
+  omit?: Prisma.ExamSectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamSectionInclude<ExtArgs> | null
+  where?: Prisma.ExamSectionWhereInput
 }
 
 /**

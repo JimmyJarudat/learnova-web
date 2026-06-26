@@ -246,6 +246,50 @@ export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>
 }
 
+export type UuidNullableFilter<$PrismaModel = never> = {
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  mode?: Prisma.QueryMode
+  not?: Prisma.NestedUuidNullableFilter<$PrismaModel> | string | null
+}
+
+export type EnumExamContentFormatFilter<$PrismaModel = never> = {
+  equals?: $Enums.ExamContentFormat | Prisma.EnumExamContentFormatFieldRefInput<$PrismaModel>
+  in?: $Enums.ExamContentFormat[] | Prisma.ListEnumExamContentFormatFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ExamContentFormat[] | Prisma.ListEnumExamContentFormatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumExamContentFormatFilter<$PrismaModel> | $Enums.ExamContentFormat
+}
+
+export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  mode?: Prisma.QueryMode
+  not?: Prisma.NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
+}
+
+export type EnumExamContentFormatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ExamContentFormat | Prisma.EnumExamContentFormatFieldRefInput<$PrismaModel>
+  in?: $Enums.ExamContentFormat[] | Prisma.ListEnumExamContentFormatFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ExamContentFormat[] | Prisma.ListEnumExamContentFormatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumExamContentFormatWithAggregatesFilter<$PrismaModel> | $Enums.ExamContentFormat
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumExamContentFormatFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumExamContentFormatFilter<$PrismaModel>
+}
+
 export type EnumExamQuestionTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ExamQuestionType | Prisma.EnumExamQuestionTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ExamQuestionType[] | Prisma.ListEnumExamQuestionTypeFieldRefInput<$PrismaModel>
@@ -261,18 +305,6 @@ export type EnumExamQuestionTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumExamQuestionTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumExamQuestionTypeFilter<$PrismaModel>
-}
-
-export type UuidNullableFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  mode?: Prisma.QueryMode
-  not?: Prisma.NestedUuidNullableFilter<$PrismaModel> | string | null
 }
 
 export type EnumExamAttemptStatusFilter<$PrismaModel = never> = {
@@ -291,21 +323,6 @@ export type IntNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
-}
-
-export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  mode?: Prisma.QueryMode
-  not?: Prisma.NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
 }
 
 export type EnumExamAttemptStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -658,6 +675,48 @@ export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>
 }
 
+export type NestedUuidNullableFilter<$PrismaModel = never> = {
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedUuidNullableFilter<$PrismaModel> | string | null
+}
+
+export type NestedEnumExamContentFormatFilter<$PrismaModel = never> = {
+  equals?: $Enums.ExamContentFormat | Prisma.EnumExamContentFormatFieldRefInput<$PrismaModel>
+  in?: $Enums.ExamContentFormat[] | Prisma.ListEnumExamContentFormatFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ExamContentFormat[] | Prisma.ListEnumExamContentFormatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumExamContentFormatFilter<$PrismaModel> | $Enums.ExamContentFormat
+}
+
+export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumExamContentFormatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ExamContentFormat | Prisma.EnumExamContentFormatFieldRefInput<$PrismaModel>
+  in?: $Enums.ExamContentFormat[] | Prisma.ListEnumExamContentFormatFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ExamContentFormat[] | Prisma.ListEnumExamContentFormatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumExamContentFormatWithAggregatesFilter<$PrismaModel> | $Enums.ExamContentFormat
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumExamContentFormatFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumExamContentFormatFilter<$PrismaModel>
+}
+
 export type NestedEnumExamQuestionTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ExamQuestionType | Prisma.EnumExamQuestionTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ExamQuestionType[] | Prisma.ListEnumExamQuestionTypeFieldRefInput<$PrismaModel>
@@ -675,36 +734,11 @@ export type NestedEnumExamQuestionTypeWithAggregatesFilter<$PrismaModel = never>
   _max?: Prisma.NestedEnumExamQuestionTypeFilter<$PrismaModel>
 }
 
-export type NestedUuidNullableFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedUuidNullableFilter<$PrismaModel> | string | null
-}
-
 export type NestedEnumExamAttemptStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ExamAttemptStatus | Prisma.EnumExamAttemptStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ExamAttemptStatus[] | Prisma.ListEnumExamAttemptStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.ExamAttemptStatus[] | Prisma.ListEnumExamAttemptStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumExamAttemptStatusFilter<$PrismaModel> | $Enums.ExamAttemptStatus
-}
-
-export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumExamAttemptStatusWithAggregatesFilter<$PrismaModel = never> = {

@@ -390,10 +390,13 @@ export const ModelName = {
   ExamTrack: 'ExamTrack',
   ExamPackage: 'ExamPackage',
   ExamPackagePart: 'ExamPackagePart',
+  ExamSection: 'ExamSection',
   PracticeCategory: 'PracticeCategory',
   PracticeSet: 'PracticeSet',
   PracticeSetAffiliation: 'PracticeSetAffiliation',
   ExamQuestion: 'ExamQuestion',
+  ExamPassage: 'ExamPassage',
+  ExamQuestionAsset: 'ExamQuestionAsset',
   ExamQuestionChoice: 'ExamQuestionChoice',
   ExamQuestionAcceptedAnswer: 'ExamQuestionAcceptedAnswer',
   ExamPackagePartQuestion: 'ExamPackagePartQuestion',
@@ -423,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "examAffiliation" | "examMajor" | "examTrack" | "examPackage" | "examPackagePart" | "practiceCategory" | "practiceSet" | "practiceSetAffiliation" | "examQuestion" | "examQuestionChoice" | "examQuestionAcceptedAnswer" | "examPackagePartQuestion" | "practiceSetQuestion" | "examAttempt" | "examAttemptAnswer" | "examAttemptAnswerChoice" | "socialAccount" | "passwordResetToken" | "system_config" | "newsSource" | "newsCategory" | "newsArticle" | "newsFetchLog"
+    modelProps: "user" | "examAffiliation" | "examMajor" | "examTrack" | "examPackage" | "examPackagePart" | "examSection" | "practiceCategory" | "practiceSet" | "practiceSetAffiliation" | "examQuestion" | "examPassage" | "examQuestionAsset" | "examQuestionChoice" | "examQuestionAcceptedAnswer" | "examPackagePartQuestion" | "practiceSetQuestion" | "examAttempt" | "examAttemptAnswer" | "examAttemptAnswerChoice" | "socialAccount" | "passwordResetToken" | "system_config" | "newsSource" | "newsCategory" | "newsArticle" | "newsFetchLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -871,6 +874,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ExamSection: {
+      payload: Prisma.$ExamSectionPayload<ExtArgs>
+      fields: Prisma.ExamSectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExamSectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExamSectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>
+        }
+        findFirst: {
+          args: Prisma.ExamSectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExamSectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>
+        }
+        findMany: {
+          args: Prisma.ExamSectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>[]
+        }
+        create: {
+          args: Prisma.ExamSectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>
+        }
+        createMany: {
+          args: Prisma.ExamSectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExamSectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>[]
+        }
+        delete: {
+          args: Prisma.ExamSectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>
+        }
+        update: {
+          args: Prisma.ExamSectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExamSectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExamSectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExamSectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExamSectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamSectionPayload>
+        }
+        aggregate: {
+          args: Prisma.ExamSectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExamSection>
+        }
+        groupBy: {
+          args: Prisma.ExamSectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExamSectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExamSectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExamSectionCountAggregateOutputType> | number
+        }
+      }
+    }
     PracticeCategory: {
       payload: Prisma.$PracticeCategoryPayload<ExtArgs>
       fields: Prisma.PracticeCategoryFieldRefs
@@ -1164,6 +1241,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ExamQuestionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ExamQuestionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExamPassage: {
+      payload: Prisma.$ExamPassagePayload<ExtArgs>
+      fields: Prisma.ExamPassageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExamPassageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExamPassageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>
+        }
+        findFirst: {
+          args: Prisma.ExamPassageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExamPassageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>
+        }
+        findMany: {
+          args: Prisma.ExamPassageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>[]
+        }
+        create: {
+          args: Prisma.ExamPassageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>
+        }
+        createMany: {
+          args: Prisma.ExamPassageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExamPassageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>[]
+        }
+        delete: {
+          args: Prisma.ExamPassageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>
+        }
+        update: {
+          args: Prisma.ExamPassageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExamPassageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExamPassageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExamPassageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ExamPassageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamPassagePayload>
+        }
+        aggregate: {
+          args: Prisma.ExamPassageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExamPassage>
+        }
+        groupBy: {
+          args: Prisma.ExamPassageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExamPassageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExamPassageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExamPassageCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExamQuestionAsset: {
+      payload: Prisma.$ExamQuestionAssetPayload<ExtArgs>
+      fields: Prisma.ExamQuestionAssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExamQuestionAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExamQuestionAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>
+        }
+        findFirst: {
+          args: Prisma.ExamQuestionAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExamQuestionAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>
+        }
+        findMany: {
+          args: Prisma.ExamQuestionAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>[]
+        }
+        create: {
+          args: Prisma.ExamQuestionAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>
+        }
+        createMany: {
+          args: Prisma.ExamQuestionAssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExamQuestionAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>[]
+        }
+        delete: {
+          args: Prisma.ExamQuestionAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>
+        }
+        update: {
+          args: Prisma.ExamQuestionAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExamQuestionAssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExamQuestionAssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExamQuestionAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExamQuestionAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamQuestionAssetPayload>
+        }
+        aggregate: {
+          args: Prisma.ExamQuestionAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExamQuestionAsset>
+        }
+        groupBy: {
+          args: Prisma.ExamQuestionAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExamQuestionAssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExamQuestionAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExamQuestionAssetCountAggregateOutputType> | number
         }
       }
     }
@@ -2346,6 +2571,21 @@ export const ExamPackagePartScalarFieldEnum = {
 export type ExamPackagePartScalarFieldEnum = (typeof ExamPackagePartScalarFieldEnum)[keyof typeof ExamPackagePartScalarFieldEnum]
 
 
+export const ExamSectionScalarFieldEnum = {
+  id: 'id',
+  partId: 'partId',
+  practiceSetId: 'practiceSetId',
+  title: 'title',
+  description: 'description',
+  contentFormat: 'contentFormat',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamSectionScalarFieldEnum = (typeof ExamSectionScalarFieldEnum)[keyof typeof ExamSectionScalarFieldEnum]
+
+
 export const PracticeCategoryScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
@@ -2395,11 +2635,15 @@ export type PracticeSetAffiliationScalarFieldEnum = (typeof PracticeSetAffiliati
 
 export const ExamQuestionScalarFieldEnum = {
   id: 'id',
+  passageId: 'passageId',
   type: 'type',
+  contentFormat: 'contentFormat',
   stem: 'stem',
-  passage: 'passage',
+  inlinePassage: 'inlinePassage',
   imageUrl: 'imageUrl',
   explanation: 'explanation',
+  explanationFormat: 'explanationFormat',
+  explanationImageUrl: 'explanationImageUrl',
   difficulty: 'difficulty',
   tags: 'tags',
   sourceLabel: 'sourceLabel',
@@ -2411,13 +2655,46 @@ export const ExamQuestionScalarFieldEnum = {
 export type ExamQuestionScalarFieldEnum = (typeof ExamQuestionScalarFieldEnum)[keyof typeof ExamQuestionScalarFieldEnum]
 
 
+export const ExamPassageScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  contentFormat: 'contentFormat',
+  imageUrl: 'imageUrl',
+  sourceLabel: 'sourceLabel',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamPassageScalarFieldEnum = (typeof ExamPassageScalarFieldEnum)[keyof typeof ExamPassageScalarFieldEnum]
+
+
+export const ExamQuestionAssetScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  url: 'url',
+  altText: 'altText',
+  caption: 'caption',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamQuestionAssetScalarFieldEnum = (typeof ExamQuestionAssetScalarFieldEnum)[keyof typeof ExamQuestionAssetScalarFieldEnum]
+
+
 export const ExamQuestionChoiceScalarFieldEnum = {
   id: 'id',
   questionId: 'questionId',
   label: 'label',
   text: 'text',
+  contentFormat: 'contentFormat',
+  imageUrl: 'imageUrl',
   isCorrect: 'isCorrect',
   explanation: 'explanation',
+  explanationFormat: 'explanationFormat',
+  explanationImageUrl: 'explanationImageUrl',
   sortOrder: 'sortOrder',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2431,6 +2708,7 @@ export const ExamQuestionAcceptedAnswerScalarFieldEnum = {
   questionId: 'questionId',
   text: 'text',
   normalizedText: 'normalizedText',
+  contentFormat: 'contentFormat',
   isCaseSensitive: 'isCaseSensitive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2442,6 +2720,7 @@ export type ExamQuestionAcceptedAnswerScalarFieldEnum = (typeof ExamQuestionAcce
 export const ExamPackagePartQuestionScalarFieldEnum = {
   id: 'id',
   partId: 'partId',
+  sectionId: 'sectionId',
   questionId: 'questionId',
   position: 'position',
   score: 'score',
@@ -2454,6 +2733,7 @@ export type ExamPackagePartQuestionScalarFieldEnum = (typeof ExamPackagePartQues
 export const PracticeSetQuestionScalarFieldEnum = {
   id: 'id',
   setId: 'setId',
+  sectionId: 'sectionId',
   questionId: 'questionId',
   position: 'position',
   score: 'score',
@@ -2766,6 +3046,20 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 
 
 /**
+ * Reference to a field of type 'ExamContentFormat'
+ */
+export type EnumExamContentFormatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExamContentFormat'>
+    
+
+
+/**
+ * Reference to a field of type 'ExamContentFormat[]'
+ */
+export type ListEnumExamContentFormatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExamContentFormat[]'>
+    
+
+
+/**
  * Reference to a field of type 'ExamQuestionType'
  */
 export type EnumExamQuestionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExamQuestionType'>
@@ -2950,10 +3244,13 @@ export type GlobalOmitConfig = {
   examTrack?: Prisma.ExamTrackOmit
   examPackage?: Prisma.ExamPackageOmit
   examPackagePart?: Prisma.ExamPackagePartOmit
+  examSection?: Prisma.ExamSectionOmit
   practiceCategory?: Prisma.PracticeCategoryOmit
   practiceSet?: Prisma.PracticeSetOmit
   practiceSetAffiliation?: Prisma.PracticeSetAffiliationOmit
   examQuestion?: Prisma.ExamQuestionOmit
+  examPassage?: Prisma.ExamPassageOmit
+  examQuestionAsset?: Prisma.ExamQuestionAssetOmit
   examQuestionChoice?: Prisma.ExamQuestionChoiceOmit
   examQuestionAcceptedAnswer?: Prisma.ExamQuestionAcceptedAnswerOmit
   examPackagePartQuestion?: Prisma.ExamPackagePartQuestionOmit

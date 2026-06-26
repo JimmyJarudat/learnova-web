@@ -40,6 +40,15 @@ export const ExamQuestionType = {
 export type ExamQuestionType = (typeof ExamQuestionType)[keyof typeof ExamQuestionType]
 
 
+export const ExamContentFormat = {
+  PLAIN_TEXT: 'PLAIN_TEXT',
+  MARKDOWN: 'MARKDOWN',
+  HTML: 'HTML'
+} as const
+
+export type ExamContentFormat = (typeof ExamContentFormat)[keyof typeof ExamContentFormat]
+
+
 export const ExamAttemptStatus = {
   IN_PROGRESS: 'IN_PROGRESS',
   SUBMITTED: 'SUBMITTED',

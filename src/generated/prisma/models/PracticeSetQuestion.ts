@@ -40,6 +40,7 @@ export type PracticeSetQuestionSumAggregateOutputType = {
 export type PracticeSetQuestionMinAggregateOutputType = {
   id: string | null
   setId: string | null
+  sectionId: string | null
   questionId: string | null
   position: number | null
   score: runtime.Decimal | null
@@ -49,6 +50,7 @@ export type PracticeSetQuestionMinAggregateOutputType = {
 export type PracticeSetQuestionMaxAggregateOutputType = {
   id: string | null
   setId: string | null
+  sectionId: string | null
   questionId: string | null
   position: number | null
   score: runtime.Decimal | null
@@ -58,6 +60,7 @@ export type PracticeSetQuestionMaxAggregateOutputType = {
 export type PracticeSetQuestionCountAggregateOutputType = {
   id: number
   setId: number
+  sectionId: number
   questionId: number
   position: number
   score: number
@@ -79,6 +82,7 @@ export type PracticeSetQuestionSumAggregateInputType = {
 export type PracticeSetQuestionMinAggregateInputType = {
   id?: true
   setId?: true
+  sectionId?: true
   questionId?: true
   position?: true
   score?: true
@@ -88,6 +92,7 @@ export type PracticeSetQuestionMinAggregateInputType = {
 export type PracticeSetQuestionMaxAggregateInputType = {
   id?: true
   setId?: true
+  sectionId?: true
   questionId?: true
   position?: true
   score?: true
@@ -97,6 +102,7 @@ export type PracticeSetQuestionMaxAggregateInputType = {
 export type PracticeSetQuestionCountAggregateInputType = {
   id?: true
   setId?: true
+  sectionId?: true
   questionId?: true
   position?: true
   score?: true
@@ -193,6 +199,7 @@ export type PracticeSetQuestionGroupByArgs<ExtArgs extends runtime.Types.Extensi
 export type PracticeSetQuestionGroupByOutputType = {
   id: string
   setId: string
+  sectionId: string | null
   questionId: string
   position: number
   score: runtime.Decimal
@@ -225,22 +232,26 @@ export type PracticeSetQuestionWhereInput = {
   NOT?: Prisma.PracticeSetQuestionWhereInput | Prisma.PracticeSetQuestionWhereInput[]
   id?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
   setId?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
+  sectionId?: Prisma.UuidNullableFilter<"PracticeSetQuestion"> | string | null
   questionId?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
   position?: Prisma.IntFilter<"PracticeSetQuestion"> | number
   score?: Prisma.DecimalFilter<"PracticeSetQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"PracticeSetQuestion"> | Date | string
   set?: Prisma.XOR<Prisma.PracticeSetScalarRelationFilter, Prisma.PracticeSetWhereInput>
+  section?: Prisma.XOR<Prisma.ExamSectionNullableScalarRelationFilter, Prisma.ExamSectionWhereInput> | null
   question?: Prisma.XOR<Prisma.ExamQuestionScalarRelationFilter, Prisma.ExamQuestionWhereInput>
 }
 
 export type PracticeSetQuestionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   setId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   set?: Prisma.PracticeSetOrderByWithRelationInput
+  section?: Prisma.ExamSectionOrderByWithRelationInput
   question?: Prisma.ExamQuestionOrderByWithRelationInput
 }
 
@@ -252,17 +263,20 @@ export type PracticeSetQuestionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PracticeSetQuestionWhereInput[]
   NOT?: Prisma.PracticeSetQuestionWhereInput | Prisma.PracticeSetQuestionWhereInput[]
   setId?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
+  sectionId?: Prisma.UuidNullableFilter<"PracticeSetQuestion"> | string | null
   questionId?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
   position?: Prisma.IntFilter<"PracticeSetQuestion"> | number
   score?: Prisma.DecimalFilter<"PracticeSetQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"PracticeSetQuestion"> | Date | string
   set?: Prisma.XOR<Prisma.PracticeSetScalarRelationFilter, Prisma.PracticeSetWhereInput>
+  section?: Prisma.XOR<Prisma.ExamSectionNullableScalarRelationFilter, Prisma.ExamSectionWhereInput> | null
   question?: Prisma.XOR<Prisma.ExamQuestionScalarRelationFilter, Prisma.ExamQuestionWhereInput>
 }, "id" | "setId_questionId" | "setId_position">
 
 export type PracticeSetQuestionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   setId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -280,6 +294,7 @@ export type PracticeSetQuestionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PracticeSetQuestionScalarWhereWithAggregatesInput | Prisma.PracticeSetQuestionScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"PracticeSetQuestion"> | string
   setId?: Prisma.UuidWithAggregatesFilter<"PracticeSetQuestion"> | string
+  sectionId?: Prisma.UuidNullableWithAggregatesFilter<"PracticeSetQuestion"> | string | null
   questionId?: Prisma.UuidWithAggregatesFilter<"PracticeSetQuestion"> | string
   position?: Prisma.IntWithAggregatesFilter<"PracticeSetQuestion"> | number
   score?: Prisma.DecimalWithAggregatesFilter<"PracticeSetQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -292,12 +307,14 @@ export type PracticeSetQuestionCreateInput = {
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   set: Prisma.PracticeSetCreateNestedOneWithoutItemsInput
+  section?: Prisma.ExamSectionCreateNestedOneWithoutPracticeItemsInput
   question: Prisma.ExamQuestionCreateNestedOneWithoutPracticeItemsInput
 }
 
 export type PracticeSetQuestionUncheckedCreateInput = {
   id?: string
   setId: string
+  sectionId?: string | null
   questionId: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -310,12 +327,14 @@ export type PracticeSetQuestionUpdateInput = {
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   set?: Prisma.PracticeSetUpdateOneRequiredWithoutItemsNestedInput
+  section?: Prisma.ExamSectionUpdateOneWithoutPracticeItemsNestedInput
   question?: Prisma.ExamQuestionUpdateOneRequiredWithoutPracticeItemsNestedInput
 }
 
 export type PracticeSetQuestionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   setId?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -325,6 +344,7 @@ export type PracticeSetQuestionUncheckedUpdateInput = {
 export type PracticeSetQuestionCreateManyInput = {
   id?: string
   setId: string
+  sectionId?: string | null
   questionId: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -341,6 +361,7 @@ export type PracticeSetQuestionUpdateManyMutationInput = {
 export type PracticeSetQuestionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   setId?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -370,6 +391,7 @@ export type PracticeSetQuestionSetIdPositionCompoundUniqueInput = {
 export type PracticeSetQuestionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   setId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -384,6 +406,7 @@ export type PracticeSetQuestionAvgOrderByAggregateInput = {
 export type PracticeSetQuestionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   setId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -393,6 +416,7 @@ export type PracticeSetQuestionMaxOrderByAggregateInput = {
 export type PracticeSetQuestionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   setId?: Prisma.SortOrder
+  sectionId?: Prisma.SortOrder
   questionId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
@@ -402,6 +426,48 @@ export type PracticeSetQuestionMinOrderByAggregateInput = {
 export type PracticeSetQuestionSumOrderByAggregateInput = {
   position?: Prisma.SortOrder
   score?: Prisma.SortOrder
+}
+
+export type PracticeSetQuestionCreateNestedManyWithoutSectionInput = {
+  create?: Prisma.XOR<Prisma.PracticeSetQuestionCreateWithoutSectionInput, Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput> | Prisma.PracticeSetQuestionCreateWithoutSectionInput[] | Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput[]
+  connectOrCreate?: Prisma.PracticeSetQuestionCreateOrConnectWithoutSectionInput | Prisma.PracticeSetQuestionCreateOrConnectWithoutSectionInput[]
+  createMany?: Prisma.PracticeSetQuestionCreateManySectionInputEnvelope
+  connect?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+}
+
+export type PracticeSetQuestionUncheckedCreateNestedManyWithoutSectionInput = {
+  create?: Prisma.XOR<Prisma.PracticeSetQuestionCreateWithoutSectionInput, Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput> | Prisma.PracticeSetQuestionCreateWithoutSectionInput[] | Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput[]
+  connectOrCreate?: Prisma.PracticeSetQuestionCreateOrConnectWithoutSectionInput | Prisma.PracticeSetQuestionCreateOrConnectWithoutSectionInput[]
+  createMany?: Prisma.PracticeSetQuestionCreateManySectionInputEnvelope
+  connect?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+}
+
+export type PracticeSetQuestionUpdateManyWithoutSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.PracticeSetQuestionCreateWithoutSectionInput, Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput> | Prisma.PracticeSetQuestionCreateWithoutSectionInput[] | Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput[]
+  connectOrCreate?: Prisma.PracticeSetQuestionCreateOrConnectWithoutSectionInput | Prisma.PracticeSetQuestionCreateOrConnectWithoutSectionInput[]
+  upsert?: Prisma.PracticeSetQuestionUpsertWithWhereUniqueWithoutSectionInput | Prisma.PracticeSetQuestionUpsertWithWhereUniqueWithoutSectionInput[]
+  createMany?: Prisma.PracticeSetQuestionCreateManySectionInputEnvelope
+  set?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+  disconnect?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+  delete?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+  connect?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+  update?: Prisma.PracticeSetQuestionUpdateWithWhereUniqueWithoutSectionInput | Prisma.PracticeSetQuestionUpdateWithWhereUniqueWithoutSectionInput[]
+  updateMany?: Prisma.PracticeSetQuestionUpdateManyWithWhereWithoutSectionInput | Prisma.PracticeSetQuestionUpdateManyWithWhereWithoutSectionInput[]
+  deleteMany?: Prisma.PracticeSetQuestionScalarWhereInput | Prisma.PracticeSetQuestionScalarWhereInput[]
+}
+
+export type PracticeSetQuestionUncheckedUpdateManyWithoutSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.PracticeSetQuestionCreateWithoutSectionInput, Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput> | Prisma.PracticeSetQuestionCreateWithoutSectionInput[] | Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput[]
+  connectOrCreate?: Prisma.PracticeSetQuestionCreateOrConnectWithoutSectionInput | Prisma.PracticeSetQuestionCreateOrConnectWithoutSectionInput[]
+  upsert?: Prisma.PracticeSetQuestionUpsertWithWhereUniqueWithoutSectionInput | Prisma.PracticeSetQuestionUpsertWithWhereUniqueWithoutSectionInput[]
+  createMany?: Prisma.PracticeSetQuestionCreateManySectionInputEnvelope
+  set?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+  disconnect?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+  delete?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+  connect?: Prisma.PracticeSetQuestionWhereUniqueInput | Prisma.PracticeSetQuestionWhereUniqueInput[]
+  update?: Prisma.PracticeSetQuestionUpdateWithWhereUniqueWithoutSectionInput | Prisma.PracticeSetQuestionUpdateWithWhereUniqueWithoutSectionInput[]
+  updateMany?: Prisma.PracticeSetQuestionUpdateManyWithWhereWithoutSectionInput | Prisma.PracticeSetQuestionUpdateManyWithWhereWithoutSectionInput[]
+  deleteMany?: Prisma.PracticeSetQuestionScalarWhereInput | Prisma.PracticeSetQuestionScalarWhereInput[]
 }
 
 export type PracticeSetQuestionCreateNestedManyWithoutSetInput = {
@@ -488,16 +554,75 @@ export type PracticeSetQuestionUncheckedUpdateManyWithoutQuestionNestedInput = {
   deleteMany?: Prisma.PracticeSetQuestionScalarWhereInput | Prisma.PracticeSetQuestionScalarWhereInput[]
 }
 
+export type PracticeSetQuestionCreateWithoutSectionInput = {
+  id?: string
+  position: number
+  score?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+  set: Prisma.PracticeSetCreateNestedOneWithoutItemsInput
+  question: Prisma.ExamQuestionCreateNestedOneWithoutPracticeItemsInput
+}
+
+export type PracticeSetQuestionUncheckedCreateWithoutSectionInput = {
+  id?: string
+  setId: string
+  questionId: string
+  position: number
+  score?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+}
+
+export type PracticeSetQuestionCreateOrConnectWithoutSectionInput = {
+  where: Prisma.PracticeSetQuestionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PracticeSetQuestionCreateWithoutSectionInput, Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput>
+}
+
+export type PracticeSetQuestionCreateManySectionInputEnvelope = {
+  data: Prisma.PracticeSetQuestionCreateManySectionInput | Prisma.PracticeSetQuestionCreateManySectionInput[]
+  skipDuplicates?: boolean
+}
+
+export type PracticeSetQuestionUpsertWithWhereUniqueWithoutSectionInput = {
+  where: Prisma.PracticeSetQuestionWhereUniqueInput
+  update: Prisma.XOR<Prisma.PracticeSetQuestionUpdateWithoutSectionInput, Prisma.PracticeSetQuestionUncheckedUpdateWithoutSectionInput>
+  create: Prisma.XOR<Prisma.PracticeSetQuestionCreateWithoutSectionInput, Prisma.PracticeSetQuestionUncheckedCreateWithoutSectionInput>
+}
+
+export type PracticeSetQuestionUpdateWithWhereUniqueWithoutSectionInput = {
+  where: Prisma.PracticeSetQuestionWhereUniqueInput
+  data: Prisma.XOR<Prisma.PracticeSetQuestionUpdateWithoutSectionInput, Prisma.PracticeSetQuestionUncheckedUpdateWithoutSectionInput>
+}
+
+export type PracticeSetQuestionUpdateManyWithWhereWithoutSectionInput = {
+  where: Prisma.PracticeSetQuestionScalarWhereInput
+  data: Prisma.XOR<Prisma.PracticeSetQuestionUpdateManyMutationInput, Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutSectionInput>
+}
+
+export type PracticeSetQuestionScalarWhereInput = {
+  AND?: Prisma.PracticeSetQuestionScalarWhereInput | Prisma.PracticeSetQuestionScalarWhereInput[]
+  OR?: Prisma.PracticeSetQuestionScalarWhereInput[]
+  NOT?: Prisma.PracticeSetQuestionScalarWhereInput | Prisma.PracticeSetQuestionScalarWhereInput[]
+  id?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
+  setId?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
+  sectionId?: Prisma.UuidNullableFilter<"PracticeSetQuestion"> | string | null
+  questionId?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
+  position?: Prisma.IntFilter<"PracticeSetQuestion"> | number
+  score?: Prisma.DecimalFilter<"PracticeSetQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFilter<"PracticeSetQuestion"> | Date | string
+}
+
 export type PracticeSetQuestionCreateWithoutSetInput = {
   id?: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  section?: Prisma.ExamSectionCreateNestedOneWithoutPracticeItemsInput
   question: Prisma.ExamQuestionCreateNestedOneWithoutPracticeItemsInput
 }
 
 export type PracticeSetQuestionUncheckedCreateWithoutSetInput = {
   id?: string
+  sectionId?: string | null
   questionId: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -530,29 +655,19 @@ export type PracticeSetQuestionUpdateManyWithWhereWithoutSetInput = {
   data: Prisma.XOR<Prisma.PracticeSetQuestionUpdateManyMutationInput, Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutSetInput>
 }
 
-export type PracticeSetQuestionScalarWhereInput = {
-  AND?: Prisma.PracticeSetQuestionScalarWhereInput | Prisma.PracticeSetQuestionScalarWhereInput[]
-  OR?: Prisma.PracticeSetQuestionScalarWhereInput[]
-  NOT?: Prisma.PracticeSetQuestionScalarWhereInput | Prisma.PracticeSetQuestionScalarWhereInput[]
-  id?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
-  setId?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
-  questionId?: Prisma.UuidFilter<"PracticeSetQuestion"> | string
-  position?: Prisma.IntFilter<"PracticeSetQuestion"> | number
-  score?: Prisma.DecimalFilter<"PracticeSetQuestion"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  createdAt?: Prisma.DateTimeFilter<"PracticeSetQuestion"> | Date | string
-}
-
 export type PracticeSetQuestionCreateWithoutQuestionInput = {
   id?: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   set: Prisma.PracticeSetCreateNestedOneWithoutItemsInput
+  section?: Prisma.ExamSectionCreateNestedOneWithoutPracticeItemsInput
 }
 
 export type PracticeSetQuestionUncheckedCreateWithoutQuestionInput = {
   id?: string
   setId: string
+  sectionId?: string | null
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
@@ -584,8 +699,45 @@ export type PracticeSetQuestionUpdateManyWithWhereWithoutQuestionInput = {
   data: Prisma.XOR<Prisma.PracticeSetQuestionUpdateManyMutationInput, Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutQuestionInput>
 }
 
+export type PracticeSetQuestionCreateManySectionInput = {
+  id?: string
+  setId: string
+  questionId: string
+  position: number
+  score?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+}
+
+export type PracticeSetQuestionUpdateWithoutSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  set?: Prisma.PracticeSetUpdateOneRequiredWithoutItemsNestedInput
+  question?: Prisma.ExamQuestionUpdateOneRequiredWithoutPracticeItemsNestedInput
+}
+
+export type PracticeSetQuestionUncheckedUpdateWithoutSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  setId?: Prisma.StringFieldUpdateOperationsInput | string
+  questionId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PracticeSetQuestionUncheckedUpdateManyWithoutSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  setId?: Prisma.StringFieldUpdateOperationsInput | string
+  questionId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type PracticeSetQuestionCreateManySetInput = {
   id?: string
+  sectionId?: string | null
   questionId: string
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -597,11 +749,13 @@ export type PracticeSetQuestionUpdateWithoutSetInput = {
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  section?: Prisma.ExamSectionUpdateOneWithoutPracticeItemsNestedInput
   question?: Prisma.ExamQuestionUpdateOneRequiredWithoutPracticeItemsNestedInput
 }
 
 export type PracticeSetQuestionUncheckedUpdateWithoutSetInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -610,6 +764,7 @@ export type PracticeSetQuestionUncheckedUpdateWithoutSetInput = {
 
 export type PracticeSetQuestionUncheckedUpdateManyWithoutSetInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -619,6 +774,7 @@ export type PracticeSetQuestionUncheckedUpdateManyWithoutSetInput = {
 export type PracticeSetQuestionCreateManyQuestionInput = {
   id?: string
   setId: string
+  sectionId?: string | null
   position: number
   score?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
@@ -630,11 +786,13 @@ export type PracticeSetQuestionUpdateWithoutQuestionInput = {
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   set?: Prisma.PracticeSetUpdateOneRequiredWithoutItemsNestedInput
+  section?: Prisma.ExamSectionUpdateOneWithoutPracticeItemsNestedInput
 }
 
 export type PracticeSetQuestionUncheckedUpdateWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   setId?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -643,6 +801,7 @@ export type PracticeSetQuestionUncheckedUpdateWithoutQuestionInput = {
 export type PracticeSetQuestionUncheckedUpdateManyWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   setId?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   score?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -653,56 +812,66 @@ export type PracticeSetQuestionUncheckedUpdateManyWithoutQuestionInput = {
 export type PracticeSetQuestionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   setId?: boolean
+  sectionId?: boolean
   questionId?: boolean
   position?: boolean
   score?: boolean
   createdAt?: boolean
   set?: boolean | Prisma.PracticeSetDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.PracticeSetQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["practiceSetQuestion"]>
 
 export type PracticeSetQuestionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   setId?: boolean
+  sectionId?: boolean
   questionId?: boolean
   position?: boolean
   score?: boolean
   createdAt?: boolean
   set?: boolean | Prisma.PracticeSetDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.PracticeSetQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["practiceSetQuestion"]>
 
 export type PracticeSetQuestionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   setId?: boolean
+  sectionId?: boolean
   questionId?: boolean
   position?: boolean
   score?: boolean
   createdAt?: boolean
   set?: boolean | Prisma.PracticeSetDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.PracticeSetQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["practiceSetQuestion"]>
 
 export type PracticeSetQuestionSelectScalar = {
   id?: boolean
   setId?: boolean
+  sectionId?: boolean
   questionId?: boolean
   position?: boolean
   score?: boolean
   createdAt?: boolean
 }
 
-export type PracticeSetQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "setId" | "questionId" | "position" | "score" | "createdAt", ExtArgs["result"]["practiceSetQuestion"]>
+export type PracticeSetQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "setId" | "sectionId" | "questionId" | "position" | "score" | "createdAt", ExtArgs["result"]["practiceSetQuestion"]>
 export type PracticeSetQuestionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   set?: boolean | Prisma.PracticeSetDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.PracticeSetQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }
 export type PracticeSetQuestionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   set?: boolean | Prisma.PracticeSetDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.PracticeSetQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }
 export type PracticeSetQuestionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   set?: boolean | Prisma.PracticeSetDefaultArgs<ExtArgs>
+  section?: boolean | Prisma.PracticeSetQuestion$sectionArgs<ExtArgs>
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }
 
@@ -710,11 +879,13 @@ export type $PracticeSetQuestionPayload<ExtArgs extends runtime.Types.Extensions
   name: "PracticeSetQuestion"
   objects: {
     set: Prisma.$PracticeSetPayload<ExtArgs>
+    section: Prisma.$ExamSectionPayload<ExtArgs> | null
     question: Prisma.$ExamQuestionPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     setId: string
+    sectionId: string | null
     questionId: string
     position: number
     score: runtime.Decimal
@@ -1114,6 +1285,7 @@ readonly fields: PracticeSetQuestionFieldRefs;
 export interface Prisma__PracticeSetQuestionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   set<T extends Prisma.PracticeSetDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PracticeSetDefaultArgs<ExtArgs>>): Prisma.Prisma__PracticeSetClient<runtime.Types.Result.GetResult<Prisma.$PracticeSetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  section<T extends Prisma.PracticeSetQuestion$sectionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PracticeSetQuestion$sectionArgs<ExtArgs>>): Prisma.Prisma__ExamSectionClient<runtime.Types.Result.GetResult<Prisma.$ExamSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   question<T extends Prisma.ExamQuestionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamQuestionDefaultArgs<ExtArgs>>): Prisma.Prisma__ExamQuestionClient<runtime.Types.Result.GetResult<Prisma.$ExamQuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1146,6 +1318,7 @@ export interface Prisma__PracticeSetQuestionClient<T, Null = never, ExtArgs exte
 export interface PracticeSetQuestionFieldRefs {
   readonly id: Prisma.FieldRef<"PracticeSetQuestion", 'String'>
   readonly setId: Prisma.FieldRef<"PracticeSetQuestion", 'String'>
+  readonly sectionId: Prisma.FieldRef<"PracticeSetQuestion", 'String'>
   readonly questionId: Prisma.FieldRef<"PracticeSetQuestion", 'String'>
   readonly position: Prisma.FieldRef<"PracticeSetQuestion", 'Int'>
   readonly score: Prisma.FieldRef<"PracticeSetQuestion", 'Decimal'>
@@ -1548,6 +1721,25 @@ export type PracticeSetQuestionDeleteManyArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many PracticeSetQuestions to delete.
    */
   limit?: number
+}
+
+/**
+ * PracticeSetQuestion.section
+ */
+export type PracticeSetQuestion$sectionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExamSection
+   */
+  select?: Prisma.ExamSectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExamSection
+   */
+  omit?: Prisma.ExamSectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamSectionInclude<ExtArgs> | null
+  where?: Prisma.ExamSectionWhereInput
 }
 
 /**

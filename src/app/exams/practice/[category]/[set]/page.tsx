@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { Fragment } from "react";
+import { RichContent } from "@/components/exams/rich-content";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getPracticeSet } from "@/server/exams/exam-data";
@@ -71,27 +73,64 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_320px] lg:px-8">
         <div className="space-y-5">
           {practiceSet.questions.length > 0 ? (
-            practiceSet.questions.map((question) => (
-              <article key={question.id} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-black text-[#0b66c3]">ข้อ {question.no}</p>
-                  <h2 className="mt-2 text-xl font-black leading-8 text-[#071f4a]">{question.stem}</h2>
-                </div>
-                <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">
-                  {question.score} คะแนน
-                </span>
-              </div>
+            practiceSet.questions.map((question, index) => (
+              <Fragment key={question.id}>
+                {question.section && question.section.id !== practiceSet.questions[index - 1]?.section?.id ? (
+                  <section className="rounded-lg border border-[#0b66c3]/20 bg-[#0b66c3] p-5 text-white shadow-sm">
+                    <p className="text-sm font-black text-[#ffd35a]">หัวข้อ</p>
+                    <h2 className="mt-1 text-2xl font-black">{question.section.title}</h2>
+                    <RichContent content={question.section.description} format={question.section.contentFormat} className="mt-2 text-sm font-semibold text-white/80" />
+                  </section>
+                ) : null}
 
-              <div className="mt-5 grid gap-3">
-                {question.choices.map((choice) => (
-                  <label key={choice.id} className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-[#0b66c3] hover:bg-white">
-                    <input type="radio" name={`question-${question.id}`} className="mt-1 h-4 w-4 accent-[#0b66c3]" />
-                    <span className="text-sm font-semibold leading-6 text-slate-700">{choice.label}. {choice.text}</span>
-                  </label>
-                ))}
-              </div>
-            </article>
+                {question.passage && question.passage.id !== practiceSet.questions[index - 1]?.passage?.id ? (
+                  <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                    <p className="text-sm font-black text-[#0b66c3]">อ่านข้อความต่อไปนี้ แล้วตอบคำถามที่เกี่ยวข้อง</p>
+                    {question.passage.title ? <h2 className="mt-2 text-xl font-black text-[#071f4a]">{question.passage.title}</h2> : null}
+                    {question.passage.imageUrl ? (
+                      <img src={question.passage.imageUrl} alt="" className="mt-4 max-h-[420px] w-auto max-w-full rounded-lg border border-slate-200 object-contain" />
+                    ) : null}
+                    <RichContent content={question.passage.content} format={question.passage.contentFormat} className="mt-3 text-sm font-semibold text-slate-700" />
+                  </section>
+                ) : null}
+
+                <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-black text-[#0b66c3]">ข้อ {question.no}</p>
+                      {question.inlinePassage ? (
+                        <RichContent content={question.inlinePassage} format={question.contentFormat} className="mt-3 rounded-lg bg-slate-50 p-4 text-sm font-semibold text-slate-700" />
+                      ) : null}
+                      {question.imageUrl ? (
+                        <img src={question.imageUrl} alt="" className="mt-4 max-h-[420px] w-auto max-w-full rounded-lg border border-slate-200 object-contain" />
+                      ) : null}
+                      {question.assets.map((asset) => (
+                        <figure key={asset.id} className="mt-4">
+                          <img src={asset.url} alt={asset.altText ?? ""} className="max-h-[420px] w-auto max-w-full rounded-lg border border-slate-200 object-contain" />
+                          {asset.caption ? <figcaption className="mt-2 text-xs font-semibold text-slate-500">{asset.caption}</figcaption> : null}
+                        </figure>
+                      ))}
+                      <RichContent content={question.stem} format={question.contentFormat} className="mt-2 text-xl font-black leading-8 text-[#071f4a]" />
+                    </div>
+                    <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">
+                      {question.score} คะแนน
+                    </span>
+                  </div>
+
+                  <div className="mt-5 grid gap-3">
+                    {question.choices.map((choice) => (
+                      <label key={choice.id} className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-[#0b66c3] hover:bg-white">
+                        <input type="radio" name={`question-${question.id}`} className="mt-1 h-4 w-4 accent-[#0b66c3]" />
+                        <span className="text-sm font-semibold leading-6 text-slate-700">
+                          <span className="font-black">{choice.label}.</span>
+                          <RichContent content={choice.text} format={choice.contentFormat} className="ml-1 inline-block" />
+                          {choice.imageUrl ? <img src={choice.imageUrl} alt="" className="mt-3 max-h-64 w-auto max-w-full rounded-lg border border-slate-200 object-contain" /> : null}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </article>
+              </Fragment>
             ))
           ) : (
             <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">

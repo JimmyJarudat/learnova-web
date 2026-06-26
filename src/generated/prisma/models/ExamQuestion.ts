@@ -27,11 +27,15 @@ export type AggregateExamQuestion = {
 
 export type ExamQuestionMinAggregateOutputType = {
   id: string | null
+  passageId: string | null
   type: $Enums.ExamQuestionType | null
+  contentFormat: $Enums.ExamContentFormat | null
   stem: string | null
-  passage: string | null
+  inlinePassage: string | null
   imageUrl: string | null
   explanation: string | null
+  explanationFormat: $Enums.ExamContentFormat | null
+  explanationImageUrl: string | null
   difficulty: string | null
   sourceLabel: string | null
   isActive: boolean | null
@@ -41,11 +45,15 @@ export type ExamQuestionMinAggregateOutputType = {
 
 export type ExamQuestionMaxAggregateOutputType = {
   id: string | null
+  passageId: string | null
   type: $Enums.ExamQuestionType | null
+  contentFormat: $Enums.ExamContentFormat | null
   stem: string | null
-  passage: string | null
+  inlinePassage: string | null
   imageUrl: string | null
   explanation: string | null
+  explanationFormat: $Enums.ExamContentFormat | null
+  explanationImageUrl: string | null
   difficulty: string | null
   sourceLabel: string | null
   isActive: boolean | null
@@ -55,11 +63,15 @@ export type ExamQuestionMaxAggregateOutputType = {
 
 export type ExamQuestionCountAggregateOutputType = {
   id: number
+  passageId: number
   type: number
+  contentFormat: number
   stem: number
-  passage: number
+  inlinePassage: number
   imageUrl: number
   explanation: number
+  explanationFormat: number
+  explanationImageUrl: number
   difficulty: number
   tags: number
   sourceLabel: number
@@ -72,11 +84,15 @@ export type ExamQuestionCountAggregateOutputType = {
 
 export type ExamQuestionMinAggregateInputType = {
   id?: true
+  passageId?: true
   type?: true
+  contentFormat?: true
   stem?: true
-  passage?: true
+  inlinePassage?: true
   imageUrl?: true
   explanation?: true
+  explanationFormat?: true
+  explanationImageUrl?: true
   difficulty?: true
   sourceLabel?: true
   isActive?: true
@@ -86,11 +102,15 @@ export type ExamQuestionMinAggregateInputType = {
 
 export type ExamQuestionMaxAggregateInputType = {
   id?: true
+  passageId?: true
   type?: true
+  contentFormat?: true
   stem?: true
-  passage?: true
+  inlinePassage?: true
   imageUrl?: true
   explanation?: true
+  explanationFormat?: true
+  explanationImageUrl?: true
   difficulty?: true
   sourceLabel?: true
   isActive?: true
@@ -100,11 +120,15 @@ export type ExamQuestionMaxAggregateInputType = {
 
 export type ExamQuestionCountAggregateInputType = {
   id?: true
+  passageId?: true
   type?: true
+  contentFormat?: true
   stem?: true
-  passage?: true
+  inlinePassage?: true
   imageUrl?: true
   explanation?: true
+  explanationFormat?: true
+  explanationImageUrl?: true
   difficulty?: true
   tags?: true
   sourceLabel?: true
@@ -188,11 +212,15 @@ export type ExamQuestionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type ExamQuestionGroupByOutputType = {
   id: string
+  passageId: string | null
   type: $Enums.ExamQuestionType
+  contentFormat: $Enums.ExamContentFormat
   stem: string
-  passage: string | null
+  inlinePassage: string | null
   imageUrl: string | null
   explanation: string | null
+  explanationFormat: $Enums.ExamContentFormat
+  explanationImageUrl: string | null
   difficulty: string | null
   tags: string[]
   sourceLabel: string | null
@@ -224,18 +252,24 @@ export type ExamQuestionWhereInput = {
   OR?: Prisma.ExamQuestionWhereInput[]
   NOT?: Prisma.ExamQuestionWhereInput | Prisma.ExamQuestionWhereInput[]
   id?: Prisma.UuidFilter<"ExamQuestion"> | string
+  passageId?: Prisma.UuidNullableFilter<"ExamQuestion"> | string | null
   type?: Prisma.EnumExamQuestionTypeFilter<"ExamQuestion"> | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestion"> | $Enums.ExamContentFormat
   stem?: Prisma.StringFilter<"ExamQuestion"> | string
-  passage?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  inlinePassage?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   explanation?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestion"> | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   difficulty?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   tags?: Prisma.StringNullableListFilter<"ExamQuestion">
   sourceLabel?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   isActive?: Prisma.BoolFilter<"ExamQuestion"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ExamQuestion"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamQuestion"> | Date | string
+  sharedPassage?: Prisma.XOR<Prisma.ExamPassageNullableScalarRelationFilter, Prisma.ExamPassageWhereInput> | null
   choices?: Prisma.ExamQuestionChoiceListRelationFilter
+  assets?: Prisma.ExamQuestionAssetListRelationFilter
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerListRelationFilter
   packageItems?: Prisma.ExamPackagePartQuestionListRelationFilter
   practiceItems?: Prisma.PracticeSetQuestionListRelationFilter
@@ -244,18 +278,24 @@ export type ExamQuestionWhereInput = {
 
 export type ExamQuestionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  passageId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   stem?: Prisma.SortOrder
-  passage?: Prisma.SortOrderInput | Prisma.SortOrder
+  inlinePassage?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   explanation?: Prisma.SortOrderInput | Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
   sourceLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  sharedPassage?: Prisma.ExamPassageOrderByWithRelationInput
   choices?: Prisma.ExamQuestionChoiceOrderByRelationAggregateInput
+  assets?: Prisma.ExamQuestionAssetOrderByRelationAggregateInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerOrderByRelationAggregateInput
   packageItems?: Prisma.ExamPackagePartQuestionOrderByRelationAggregateInput
   practiceItems?: Prisma.PracticeSetQuestionOrderByRelationAggregateInput
@@ -267,18 +307,24 @@ export type ExamQuestionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ExamQuestionWhereInput | Prisma.ExamQuestionWhereInput[]
   OR?: Prisma.ExamQuestionWhereInput[]
   NOT?: Prisma.ExamQuestionWhereInput | Prisma.ExamQuestionWhereInput[]
+  passageId?: Prisma.UuidNullableFilter<"ExamQuestion"> | string | null
   type?: Prisma.EnumExamQuestionTypeFilter<"ExamQuestion"> | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestion"> | $Enums.ExamContentFormat
   stem?: Prisma.StringFilter<"ExamQuestion"> | string
-  passage?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  inlinePassage?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   explanation?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestion"> | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   difficulty?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   tags?: Prisma.StringNullableListFilter<"ExamQuestion">
   sourceLabel?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
   isActive?: Prisma.BoolFilter<"ExamQuestion"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ExamQuestion"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamQuestion"> | Date | string
+  sharedPassage?: Prisma.XOR<Prisma.ExamPassageNullableScalarRelationFilter, Prisma.ExamPassageWhereInput> | null
   choices?: Prisma.ExamQuestionChoiceListRelationFilter
+  assets?: Prisma.ExamQuestionAssetListRelationFilter
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerListRelationFilter
   packageItems?: Prisma.ExamPackagePartQuestionListRelationFilter
   practiceItems?: Prisma.PracticeSetQuestionListRelationFilter
@@ -287,11 +333,15 @@ export type ExamQuestionWhereUniqueInput = Prisma.AtLeast<{
 
 export type ExamQuestionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  passageId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   stem?: Prisma.SortOrder
-  passage?: Prisma.SortOrderInput | Prisma.SortOrder
+  inlinePassage?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   explanation?: Prisma.SortOrderInput | Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
   sourceLabel?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -308,11 +358,15 @@ export type ExamQuestionScalarWhereWithAggregatesInput = {
   OR?: Prisma.ExamQuestionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ExamQuestionScalarWhereWithAggregatesInput | Prisma.ExamQuestionScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"ExamQuestion"> | string
+  passageId?: Prisma.UuidNullableWithAggregatesFilter<"ExamQuestion"> | string | null
   type?: Prisma.EnumExamQuestionTypeWithAggregatesFilter<"ExamQuestion"> | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatWithAggregatesFilter<"ExamQuestion"> | $Enums.ExamContentFormat
   stem?: Prisma.StringWithAggregatesFilter<"ExamQuestion"> | string
-  passage?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestion"> | string | null
+  inlinePassage?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestion"> | string | null
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestion"> | string | null
   explanation?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestion"> | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatWithAggregatesFilter<"ExamQuestion"> | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestion"> | string | null
   difficulty?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestion"> | string | null
   tags?: Prisma.StringNullableListFilter<"ExamQuestion">
   sourceLabel?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestion"> | string | null
@@ -324,17 +378,22 @@ export type ExamQuestionScalarWhereWithAggregatesInput = {
 export type ExamQuestionCreateInput = {
   id?: string
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sharedPassage?: Prisma.ExamPassageCreateNestedOneWithoutQuestionsInput
   choices?: Prisma.ExamQuestionChoiceCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionCreateNestedManyWithoutQuestionInput
@@ -343,11 +402,15 @@ export type ExamQuestionCreateInput = {
 
 export type ExamQuestionUncheckedCreateInput = {
   id?: string
+  passageId?: string | null
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
@@ -355,6 +418,7 @@ export type ExamQuestionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetUncheckedCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutQuestionInput
@@ -364,17 +428,22 @@ export type ExamQuestionUncheckedCreateInput = {
 export type ExamQuestionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sharedPassage?: Prisma.ExamPassageUpdateOneWithoutQuestionsNestedInput
   choices?: Prisma.ExamQuestionChoiceUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUpdateManyWithoutQuestionNestedInput
@@ -383,11 +452,15 @@ export type ExamQuestionUpdateInput = {
 
 export type ExamQuestionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  passageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -395,6 +468,7 @@ export type ExamQuestionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUncheckedUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutQuestionNestedInput
@@ -403,11 +477,15 @@ export type ExamQuestionUncheckedUpdateInput = {
 
 export type ExamQuestionCreateManyInput = {
   id?: string
+  passageId?: string | null
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
@@ -419,10 +497,13 @@ export type ExamQuestionCreateManyInput = {
 export type ExamQuestionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -433,11 +514,15 @@ export type ExamQuestionUpdateManyMutationInput = {
 
 export type ExamQuestionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  passageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -456,11 +541,15 @@ export type StringNullableListFilter<$PrismaModel = never> = {
 
 export type ExamQuestionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  passageId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   stem?: Prisma.SortOrder
-  passage?: Prisma.SortOrder
+  inlinePassage?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   explanation?: Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrder
   difficulty?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   sourceLabel?: Prisma.SortOrder
@@ -471,11 +560,15 @@ export type ExamQuestionCountOrderByAggregateInput = {
 
 export type ExamQuestionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  passageId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   stem?: Prisma.SortOrder
-  passage?: Prisma.SortOrder
+  inlinePassage?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   explanation?: Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrder
   difficulty?: Prisma.SortOrder
   sourceLabel?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -485,16 +578,30 @@ export type ExamQuestionMaxOrderByAggregateInput = {
 
 export type ExamQuestionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  passageId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   stem?: Prisma.SortOrder
-  passage?: Prisma.SortOrder
+  inlinePassage?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   explanation?: Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrder
   difficulty?: Prisma.SortOrder
   sourceLabel?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ExamQuestionListRelationFilter = {
+  every?: Prisma.ExamQuestionWhereInput
+  some?: Prisma.ExamQuestionWhereInput
+  none?: Prisma.ExamQuestionWhereInput
+}
+
+export type ExamQuestionOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ExamQuestionScalarRelationFilter = {
@@ -513,6 +620,62 @@ export type EnumExamQuestionTypeFieldUpdateOperationsInput = {
 export type ExamQuestionUpdatetagsInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type ExamQuestionCreateNestedManyWithoutSharedPassageInput = {
+  create?: Prisma.XOR<Prisma.ExamQuestionCreateWithoutSharedPassageInput, Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput> | Prisma.ExamQuestionCreateWithoutSharedPassageInput[] | Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput[]
+  connectOrCreate?: Prisma.ExamQuestionCreateOrConnectWithoutSharedPassageInput | Prisma.ExamQuestionCreateOrConnectWithoutSharedPassageInput[]
+  createMany?: Prisma.ExamQuestionCreateManySharedPassageInputEnvelope
+  connect?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+}
+
+export type ExamQuestionUncheckedCreateNestedManyWithoutSharedPassageInput = {
+  create?: Prisma.XOR<Prisma.ExamQuestionCreateWithoutSharedPassageInput, Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput> | Prisma.ExamQuestionCreateWithoutSharedPassageInput[] | Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput[]
+  connectOrCreate?: Prisma.ExamQuestionCreateOrConnectWithoutSharedPassageInput | Prisma.ExamQuestionCreateOrConnectWithoutSharedPassageInput[]
+  createMany?: Prisma.ExamQuestionCreateManySharedPassageInputEnvelope
+  connect?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+}
+
+export type ExamQuestionUpdateManyWithoutSharedPassageNestedInput = {
+  create?: Prisma.XOR<Prisma.ExamQuestionCreateWithoutSharedPassageInput, Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput> | Prisma.ExamQuestionCreateWithoutSharedPassageInput[] | Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput[]
+  connectOrCreate?: Prisma.ExamQuestionCreateOrConnectWithoutSharedPassageInput | Prisma.ExamQuestionCreateOrConnectWithoutSharedPassageInput[]
+  upsert?: Prisma.ExamQuestionUpsertWithWhereUniqueWithoutSharedPassageInput | Prisma.ExamQuestionUpsertWithWhereUniqueWithoutSharedPassageInput[]
+  createMany?: Prisma.ExamQuestionCreateManySharedPassageInputEnvelope
+  set?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+  disconnect?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+  delete?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+  connect?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+  update?: Prisma.ExamQuestionUpdateWithWhereUniqueWithoutSharedPassageInput | Prisma.ExamQuestionUpdateWithWhereUniqueWithoutSharedPassageInput[]
+  updateMany?: Prisma.ExamQuestionUpdateManyWithWhereWithoutSharedPassageInput | Prisma.ExamQuestionUpdateManyWithWhereWithoutSharedPassageInput[]
+  deleteMany?: Prisma.ExamQuestionScalarWhereInput | Prisma.ExamQuestionScalarWhereInput[]
+}
+
+export type ExamQuestionUncheckedUpdateManyWithoutSharedPassageNestedInput = {
+  create?: Prisma.XOR<Prisma.ExamQuestionCreateWithoutSharedPassageInput, Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput> | Prisma.ExamQuestionCreateWithoutSharedPassageInput[] | Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput[]
+  connectOrCreate?: Prisma.ExamQuestionCreateOrConnectWithoutSharedPassageInput | Prisma.ExamQuestionCreateOrConnectWithoutSharedPassageInput[]
+  upsert?: Prisma.ExamQuestionUpsertWithWhereUniqueWithoutSharedPassageInput | Prisma.ExamQuestionUpsertWithWhereUniqueWithoutSharedPassageInput[]
+  createMany?: Prisma.ExamQuestionCreateManySharedPassageInputEnvelope
+  set?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+  disconnect?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+  delete?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+  connect?: Prisma.ExamQuestionWhereUniqueInput | Prisma.ExamQuestionWhereUniqueInput[]
+  update?: Prisma.ExamQuestionUpdateWithWhereUniqueWithoutSharedPassageInput | Prisma.ExamQuestionUpdateWithWhereUniqueWithoutSharedPassageInput[]
+  updateMany?: Prisma.ExamQuestionUpdateManyWithWhereWithoutSharedPassageInput | Prisma.ExamQuestionUpdateManyWithWhereWithoutSharedPassageInput[]
+  deleteMany?: Prisma.ExamQuestionScalarWhereInput | Prisma.ExamQuestionScalarWhereInput[]
+}
+
+export type ExamQuestionCreateNestedOneWithoutAssetsInput = {
+  create?: Prisma.XOR<Prisma.ExamQuestionCreateWithoutAssetsInput, Prisma.ExamQuestionUncheckedCreateWithoutAssetsInput>
+  connectOrCreate?: Prisma.ExamQuestionCreateOrConnectWithoutAssetsInput
+  connect?: Prisma.ExamQuestionWhereUniqueInput
+}
+
+export type ExamQuestionUpdateOneRequiredWithoutAssetsNestedInput = {
+  create?: Prisma.XOR<Prisma.ExamQuestionCreateWithoutAssetsInput, Prisma.ExamQuestionUncheckedCreateWithoutAssetsInput>
+  connectOrCreate?: Prisma.ExamQuestionCreateOrConnectWithoutAssetsInput
+  upsert?: Prisma.ExamQuestionUpsertWithoutAssetsInput
+  connect?: Prisma.ExamQuestionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ExamQuestionUpdateToOneWithWhereWithoutAssetsInput, Prisma.ExamQuestionUpdateWithoutAssetsInput>, Prisma.ExamQuestionUncheckedUpdateWithoutAssetsInput>
 }
 
 export type ExamQuestionCreateNestedOneWithoutChoicesInput = {
@@ -585,19 +748,232 @@ export type ExamQuestionUpdateOneRequiredWithoutAnswersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExamQuestionUpdateToOneWithWhereWithoutAnswersInput, Prisma.ExamQuestionUpdateWithoutAnswersInput>, Prisma.ExamQuestionUncheckedUpdateWithoutAnswersInput>
 }
 
-export type ExamQuestionCreateWithoutChoicesInput = {
+export type ExamQuestionCreateWithoutSharedPassageInput = {
   id?: string
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  choices?: Prisma.ExamQuestionChoiceCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetCreateNestedManyWithoutQuestionInput
+  acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerCreateNestedManyWithoutQuestionInput
+  packageItems?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutQuestionInput
+  practiceItems?: Prisma.PracticeSetQuestionCreateNestedManyWithoutQuestionInput
+  answers?: Prisma.ExamAttemptAnswerCreateNestedManyWithoutQuestionInput
+}
+
+export type ExamQuestionUncheckedCreateWithoutSharedPassageInput = {
+  id?: string
+  type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
+  stem: string
+  inlinePassage?: string | null
+  imageUrl?: string | null
+  explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
+  difficulty?: string | null
+  tags?: Prisma.ExamQuestionCreatetagsInput | string[]
+  sourceLabel?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  choices?: Prisma.ExamQuestionChoiceUncheckedCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetUncheckedCreateNestedManyWithoutQuestionInput
+  acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedCreateNestedManyWithoutQuestionInput
+  packageItems?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutQuestionInput
+  practiceItems?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutQuestionInput
+  answers?: Prisma.ExamAttemptAnswerUncheckedCreateNestedManyWithoutQuestionInput
+}
+
+export type ExamQuestionCreateOrConnectWithoutSharedPassageInput = {
+  where: Prisma.ExamQuestionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExamQuestionCreateWithoutSharedPassageInput, Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput>
+}
+
+export type ExamQuestionCreateManySharedPassageInputEnvelope = {
+  data: Prisma.ExamQuestionCreateManySharedPassageInput | Prisma.ExamQuestionCreateManySharedPassageInput[]
+  skipDuplicates?: boolean
+}
+
+export type ExamQuestionUpsertWithWhereUniqueWithoutSharedPassageInput = {
+  where: Prisma.ExamQuestionWhereUniqueInput
+  update: Prisma.XOR<Prisma.ExamQuestionUpdateWithoutSharedPassageInput, Prisma.ExamQuestionUncheckedUpdateWithoutSharedPassageInput>
+  create: Prisma.XOR<Prisma.ExamQuestionCreateWithoutSharedPassageInput, Prisma.ExamQuestionUncheckedCreateWithoutSharedPassageInput>
+}
+
+export type ExamQuestionUpdateWithWhereUniqueWithoutSharedPassageInput = {
+  where: Prisma.ExamQuestionWhereUniqueInput
+  data: Prisma.XOR<Prisma.ExamQuestionUpdateWithoutSharedPassageInput, Prisma.ExamQuestionUncheckedUpdateWithoutSharedPassageInput>
+}
+
+export type ExamQuestionUpdateManyWithWhereWithoutSharedPassageInput = {
+  where: Prisma.ExamQuestionScalarWhereInput
+  data: Prisma.XOR<Prisma.ExamQuestionUpdateManyMutationInput, Prisma.ExamQuestionUncheckedUpdateManyWithoutSharedPassageInput>
+}
+
+export type ExamQuestionScalarWhereInput = {
+  AND?: Prisma.ExamQuestionScalarWhereInput | Prisma.ExamQuestionScalarWhereInput[]
+  OR?: Prisma.ExamQuestionScalarWhereInput[]
+  NOT?: Prisma.ExamQuestionScalarWhereInput | Prisma.ExamQuestionScalarWhereInput[]
+  id?: Prisma.UuidFilter<"ExamQuestion"> | string
+  passageId?: Prisma.UuidNullableFilter<"ExamQuestion"> | string | null
+  type?: Prisma.EnumExamQuestionTypeFilter<"ExamQuestion"> | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestion"> | $Enums.ExamContentFormat
+  stem?: Prisma.StringFilter<"ExamQuestion"> | string
+  inlinePassage?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  imageUrl?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  explanation?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestion"> | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  difficulty?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  tags?: Prisma.StringNullableListFilter<"ExamQuestion">
+  sourceLabel?: Prisma.StringNullableFilter<"ExamQuestion"> | string | null
+  isActive?: Prisma.BoolFilter<"ExamQuestion"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"ExamQuestion"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ExamQuestion"> | Date | string
+}
+
+export type ExamQuestionCreateWithoutAssetsInput = {
+  id?: string
+  type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
+  stem: string
+  inlinePassage?: string | null
+  imageUrl?: string | null
+  explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
+  difficulty?: string | null
+  tags?: Prisma.ExamQuestionCreatetagsInput | string[]
+  sourceLabel?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sharedPassage?: Prisma.ExamPassageCreateNestedOneWithoutQuestionsInput
+  choices?: Prisma.ExamQuestionChoiceCreateNestedManyWithoutQuestionInput
+  acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerCreateNestedManyWithoutQuestionInput
+  packageItems?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutQuestionInput
+  practiceItems?: Prisma.PracticeSetQuestionCreateNestedManyWithoutQuestionInput
+  answers?: Prisma.ExamAttemptAnswerCreateNestedManyWithoutQuestionInput
+}
+
+export type ExamQuestionUncheckedCreateWithoutAssetsInput = {
+  id?: string
+  passageId?: string | null
+  type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
+  stem: string
+  inlinePassage?: string | null
+  imageUrl?: string | null
+  explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
+  difficulty?: string | null
+  tags?: Prisma.ExamQuestionCreatetagsInput | string[]
+  sourceLabel?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  choices?: Prisma.ExamQuestionChoiceUncheckedCreateNestedManyWithoutQuestionInput
+  acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedCreateNestedManyWithoutQuestionInput
+  packageItems?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutQuestionInput
+  practiceItems?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutQuestionInput
+  answers?: Prisma.ExamAttemptAnswerUncheckedCreateNestedManyWithoutQuestionInput
+}
+
+export type ExamQuestionCreateOrConnectWithoutAssetsInput = {
+  where: Prisma.ExamQuestionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExamQuestionCreateWithoutAssetsInput, Prisma.ExamQuestionUncheckedCreateWithoutAssetsInput>
+}
+
+export type ExamQuestionUpsertWithoutAssetsInput = {
+  update: Prisma.XOR<Prisma.ExamQuestionUpdateWithoutAssetsInput, Prisma.ExamQuestionUncheckedUpdateWithoutAssetsInput>
+  create: Prisma.XOR<Prisma.ExamQuestionCreateWithoutAssetsInput, Prisma.ExamQuestionUncheckedCreateWithoutAssetsInput>
+  where?: Prisma.ExamQuestionWhereInput
+}
+
+export type ExamQuestionUpdateToOneWithWhereWithoutAssetsInput = {
+  where?: Prisma.ExamQuestionWhereInput
+  data: Prisma.XOR<Prisma.ExamQuestionUpdateWithoutAssetsInput, Prisma.ExamQuestionUncheckedUpdateWithoutAssetsInput>
+}
+
+export type ExamQuestionUpdateWithoutAssetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  stem?: Prisma.StringFieldUpdateOperationsInput | string
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sharedPassage?: Prisma.ExamPassageUpdateOneWithoutQuestionsNestedInput
+  choices?: Prisma.ExamQuestionChoiceUpdateManyWithoutQuestionNestedInput
+  acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUpdateManyWithoutQuestionNestedInput
+  packageItems?: Prisma.ExamPackagePartQuestionUpdateManyWithoutQuestionNestedInput
+  practiceItems?: Prisma.PracticeSetQuestionUpdateManyWithoutQuestionNestedInput
+  answers?: Prisma.ExamAttemptAnswerUpdateManyWithoutQuestionNestedInput
+}
+
+export type ExamQuestionUncheckedUpdateWithoutAssetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  passageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  stem?: Prisma.StringFieldUpdateOperationsInput | string
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  choices?: Prisma.ExamQuestionChoiceUncheckedUpdateManyWithoutQuestionNestedInput
+  acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+  packageItems?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionNestedInput
+  practiceItems?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutQuestionNestedInput
+  answers?: Prisma.ExamAttemptAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+}
+
+export type ExamQuestionCreateWithoutChoicesInput = {
+  id?: string
+  type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
+  stem: string
+  inlinePassage?: string | null
+  imageUrl?: string | null
+  explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
+  difficulty?: string | null
+  tags?: Prisma.ExamQuestionCreatetagsInput | string[]
+  sourceLabel?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sharedPassage?: Prisma.ExamPassageCreateNestedOneWithoutQuestionsInput
+  assets?: Prisma.ExamQuestionAssetCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionCreateNestedManyWithoutQuestionInput
@@ -606,17 +982,22 @@ export type ExamQuestionCreateWithoutChoicesInput = {
 
 export type ExamQuestionUncheckedCreateWithoutChoicesInput = {
   id?: string
+  passageId?: string | null
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  assets?: Prisma.ExamQuestionAssetUncheckedCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutQuestionInput
@@ -642,16 +1023,21 @@ export type ExamQuestionUpdateToOneWithWhereWithoutChoicesInput = {
 export type ExamQuestionUpdateWithoutChoicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sharedPassage?: Prisma.ExamPassageUpdateOneWithoutQuestionsNestedInput
+  assets?: Prisma.ExamQuestionAssetUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUpdateManyWithoutQuestionNestedInput
@@ -660,17 +1046,22 @@ export type ExamQuestionUpdateWithoutChoicesInput = {
 
 export type ExamQuestionUncheckedUpdateWithoutChoicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  passageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assets?: Prisma.ExamQuestionAssetUncheckedUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutQuestionNestedInput
@@ -680,17 +1071,22 @@ export type ExamQuestionUncheckedUpdateWithoutChoicesInput = {
 export type ExamQuestionCreateWithoutAcceptedAnswersInput = {
   id?: string
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sharedPassage?: Prisma.ExamPassageCreateNestedOneWithoutQuestionsInput
   choices?: Prisma.ExamQuestionChoiceCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionCreateNestedManyWithoutQuestionInput
   answers?: Prisma.ExamAttemptAnswerCreateNestedManyWithoutQuestionInput
@@ -698,11 +1094,15 @@ export type ExamQuestionCreateWithoutAcceptedAnswersInput = {
 
 export type ExamQuestionUncheckedCreateWithoutAcceptedAnswersInput = {
   id?: string
+  passageId?: string | null
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
@@ -710,6 +1110,7 @@ export type ExamQuestionUncheckedCreateWithoutAcceptedAnswersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetUncheckedCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutQuestionInput
   answers?: Prisma.ExamAttemptAnswerUncheckedCreateNestedManyWithoutQuestionInput
@@ -734,17 +1135,22 @@ export type ExamQuestionUpdateToOneWithWhereWithoutAcceptedAnswersInput = {
 export type ExamQuestionUpdateWithoutAcceptedAnswersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sharedPassage?: Prisma.ExamPassageUpdateOneWithoutQuestionsNestedInput
   choices?: Prisma.ExamQuestionChoiceUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUpdateManyWithoutQuestionNestedInput
   answers?: Prisma.ExamAttemptAnswerUpdateManyWithoutQuestionNestedInput
@@ -752,11 +1158,15 @@ export type ExamQuestionUpdateWithoutAcceptedAnswersInput = {
 
 export type ExamQuestionUncheckedUpdateWithoutAcceptedAnswersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  passageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -764,6 +1174,7 @@ export type ExamQuestionUncheckedUpdateWithoutAcceptedAnswersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUncheckedUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutQuestionNestedInput
   answers?: Prisma.ExamAttemptAnswerUncheckedUpdateManyWithoutQuestionNestedInput
@@ -772,17 +1183,22 @@ export type ExamQuestionUncheckedUpdateWithoutAcceptedAnswersInput = {
 export type ExamQuestionCreateWithoutPackageItemsInput = {
   id?: string
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sharedPassage?: Prisma.ExamPassageCreateNestedOneWithoutQuestionsInput
   choices?: Prisma.ExamQuestionChoiceCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionCreateNestedManyWithoutQuestionInput
   answers?: Prisma.ExamAttemptAnswerCreateNestedManyWithoutQuestionInput
@@ -790,11 +1206,15 @@ export type ExamQuestionCreateWithoutPackageItemsInput = {
 
 export type ExamQuestionUncheckedCreateWithoutPackageItemsInput = {
   id?: string
+  passageId?: string | null
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
@@ -802,6 +1222,7 @@ export type ExamQuestionUncheckedCreateWithoutPackageItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetUncheckedCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutQuestionInput
   answers?: Prisma.ExamAttemptAnswerUncheckedCreateNestedManyWithoutQuestionInput
@@ -826,17 +1247,22 @@ export type ExamQuestionUpdateToOneWithWhereWithoutPackageItemsInput = {
 export type ExamQuestionUpdateWithoutPackageItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sharedPassage?: Prisma.ExamPassageUpdateOneWithoutQuestionsNestedInput
   choices?: Prisma.ExamQuestionChoiceUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUpdateManyWithoutQuestionNestedInput
   answers?: Prisma.ExamAttemptAnswerUpdateManyWithoutQuestionNestedInput
@@ -844,11 +1270,15 @@ export type ExamQuestionUpdateWithoutPackageItemsInput = {
 
 export type ExamQuestionUncheckedUpdateWithoutPackageItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  passageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -856,6 +1286,7 @@ export type ExamQuestionUncheckedUpdateWithoutPackageItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUncheckedUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutQuestionNestedInput
   answers?: Prisma.ExamAttemptAnswerUncheckedUpdateManyWithoutQuestionNestedInput
@@ -864,17 +1295,22 @@ export type ExamQuestionUncheckedUpdateWithoutPackageItemsInput = {
 export type ExamQuestionCreateWithoutPracticeItemsInput = {
   id?: string
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sharedPassage?: Prisma.ExamPassageCreateNestedOneWithoutQuestionsInput
   choices?: Prisma.ExamQuestionChoiceCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutQuestionInput
   answers?: Prisma.ExamAttemptAnswerCreateNestedManyWithoutQuestionInput
@@ -882,11 +1318,15 @@ export type ExamQuestionCreateWithoutPracticeItemsInput = {
 
 export type ExamQuestionUncheckedCreateWithoutPracticeItemsInput = {
   id?: string
+  passageId?: string | null
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
@@ -894,6 +1334,7 @@ export type ExamQuestionUncheckedCreateWithoutPracticeItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetUncheckedCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutQuestionInput
   answers?: Prisma.ExamAttemptAnswerUncheckedCreateNestedManyWithoutQuestionInput
@@ -918,17 +1359,22 @@ export type ExamQuestionUpdateToOneWithWhereWithoutPracticeItemsInput = {
 export type ExamQuestionUpdateWithoutPracticeItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sharedPassage?: Prisma.ExamPassageUpdateOneWithoutQuestionsNestedInput
   choices?: Prisma.ExamQuestionChoiceUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUpdateManyWithoutQuestionNestedInput
   answers?: Prisma.ExamAttemptAnswerUpdateManyWithoutQuestionNestedInput
@@ -936,11 +1382,15 @@ export type ExamQuestionUpdateWithoutPracticeItemsInput = {
 
 export type ExamQuestionUncheckedUpdateWithoutPracticeItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  passageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -948,6 +1398,7 @@ export type ExamQuestionUncheckedUpdateWithoutPracticeItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUncheckedUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionNestedInput
   answers?: Prisma.ExamAttemptAnswerUncheckedUpdateManyWithoutQuestionNestedInput
@@ -956,17 +1407,22 @@ export type ExamQuestionUncheckedUpdateWithoutPracticeItemsInput = {
 export type ExamQuestionCreateWithoutAnswersInput = {
   id?: string
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sharedPassage?: Prisma.ExamPassageCreateNestedOneWithoutQuestionsInput
   choices?: Prisma.ExamQuestionChoiceCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionCreateNestedManyWithoutQuestionInput
@@ -974,11 +1430,15 @@ export type ExamQuestionCreateWithoutAnswersInput = {
 
 export type ExamQuestionUncheckedCreateWithoutAnswersInput = {
   id?: string
+  passageId?: string | null
   type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
   stem: string
-  passage?: string | null
+  inlinePassage?: string | null
   imageUrl?: string | null
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   difficulty?: string | null
   tags?: Prisma.ExamQuestionCreatetagsInput | string[]
   sourceLabel?: string | null
@@ -986,6 +1446,7 @@ export type ExamQuestionUncheckedCreateWithoutAnswersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedCreateNestedManyWithoutQuestionInput
+  assets?: Prisma.ExamQuestionAssetUncheckedCreateNestedManyWithoutQuestionInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedCreateNestedManyWithoutQuestionInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutQuestionInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutQuestionInput
@@ -1010,17 +1471,22 @@ export type ExamQuestionUpdateToOneWithWhereWithoutAnswersInput = {
 export type ExamQuestionUpdateWithoutAnswersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sharedPassage?: Prisma.ExamPassageUpdateOneWithoutQuestionsNestedInput
   choices?: Prisma.ExamQuestionChoiceUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUpdateManyWithoutQuestionNestedInput
@@ -1028,11 +1494,15 @@ export type ExamQuestionUpdateWithoutAnswersInput = {
 
 export type ExamQuestionUncheckedUpdateWithoutAnswersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  passageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   stem?: Prisma.StringFieldUpdateOperationsInput | string
-  passage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
   sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1040,9 +1510,94 @@ export type ExamQuestionUncheckedUpdateWithoutAnswersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   choices?: Prisma.ExamQuestionChoiceUncheckedUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUncheckedUpdateManyWithoutQuestionNestedInput
   acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedUpdateManyWithoutQuestionNestedInput
   packageItems?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionNestedInput
   practiceItems?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutQuestionNestedInput
+}
+
+export type ExamQuestionCreateManySharedPassageInput = {
+  id?: string
+  type?: $Enums.ExamQuestionType
+  contentFormat?: $Enums.ExamContentFormat
+  stem: string
+  inlinePassage?: string | null
+  imageUrl?: string | null
+  explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
+  difficulty?: string | null
+  tags?: Prisma.ExamQuestionCreatetagsInput | string[]
+  sourceLabel?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ExamQuestionUpdateWithoutSharedPassageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  stem?: Prisma.StringFieldUpdateOperationsInput | string
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  choices?: Prisma.ExamQuestionChoiceUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUpdateManyWithoutQuestionNestedInput
+  acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUpdateManyWithoutQuestionNestedInput
+  packageItems?: Prisma.ExamPackagePartQuestionUpdateManyWithoutQuestionNestedInput
+  practiceItems?: Prisma.PracticeSetQuestionUpdateManyWithoutQuestionNestedInput
+  answers?: Prisma.ExamAttemptAnswerUpdateManyWithoutQuestionNestedInput
+}
+
+export type ExamQuestionUncheckedUpdateWithoutSharedPassageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  stem?: Prisma.StringFieldUpdateOperationsInput | string
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  choices?: Prisma.ExamQuestionChoiceUncheckedUpdateManyWithoutQuestionNestedInput
+  assets?: Prisma.ExamQuestionAssetUncheckedUpdateManyWithoutQuestionNestedInput
+  acceptedAnswers?: Prisma.ExamQuestionAcceptedAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+  packageItems?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutQuestionNestedInput
+  practiceItems?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutQuestionNestedInput
+  answers?: Prisma.ExamAttemptAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+}
+
+export type ExamQuestionUncheckedUpdateManyWithoutSharedPassageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumExamQuestionTypeFieldUpdateOperationsInput | $Enums.ExamQuestionType
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  stem?: Prisma.StringFieldUpdateOperationsInput | string
+  inlinePassage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ExamQuestionUpdatetagsInput | string[]
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1052,6 +1607,7 @@ export type ExamQuestionUncheckedUpdateWithoutAnswersInput = {
 
 export type ExamQuestionCountOutputType = {
   choices: number
+  assets: number
   acceptedAnswers: number
   packageItems: number
   practiceItems: number
@@ -1060,6 +1616,7 @@ export type ExamQuestionCountOutputType = {
 
 export type ExamQuestionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   choices?: boolean | ExamQuestionCountOutputTypeCountChoicesArgs
+  assets?: boolean | ExamQuestionCountOutputTypeCountAssetsArgs
   acceptedAnswers?: boolean | ExamQuestionCountOutputTypeCountAcceptedAnswersArgs
   packageItems?: boolean | ExamQuestionCountOutputTypeCountPackageItemsArgs
   practiceItems?: boolean | ExamQuestionCountOutputTypeCountPracticeItemsArgs
@@ -1081,6 +1638,13 @@ export type ExamQuestionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types
  */
 export type ExamQuestionCountOutputTypeCountChoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ExamQuestionChoiceWhereInput
+}
+
+/**
+ * ExamQuestionCountOutputType without action
+ */
+export type ExamQuestionCountOutputTypeCountAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExamQuestionAssetWhereInput
 }
 
 /**
@@ -1114,18 +1678,24 @@ export type ExamQuestionCountOutputTypeCountAnswersArgs<ExtArgs extends runtime.
 
 export type ExamQuestionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  passageId?: boolean
   type?: boolean
+  contentFormat?: boolean
   stem?: boolean
-  passage?: boolean
+  inlinePassage?: boolean
   imageUrl?: boolean
   explanation?: boolean
+  explanationFormat?: boolean
+  explanationImageUrl?: boolean
   difficulty?: boolean
   tags?: boolean
   sourceLabel?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  sharedPassage?: boolean | Prisma.ExamQuestion$sharedPassageArgs<ExtArgs>
   choices?: boolean | Prisma.ExamQuestion$choicesArgs<ExtArgs>
+  assets?: boolean | Prisma.ExamQuestion$assetsArgs<ExtArgs>
   acceptedAnswers?: boolean | Prisma.ExamQuestion$acceptedAnswersArgs<ExtArgs>
   packageItems?: boolean | Prisma.ExamQuestion$packageItemsArgs<ExtArgs>
   practiceItems?: boolean | Prisma.ExamQuestion$practiceItemsArgs<ExtArgs>
@@ -1135,41 +1705,55 @@ export type ExamQuestionSelect<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type ExamQuestionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  passageId?: boolean
   type?: boolean
+  contentFormat?: boolean
   stem?: boolean
-  passage?: boolean
+  inlinePassage?: boolean
   imageUrl?: boolean
   explanation?: boolean
+  explanationFormat?: boolean
+  explanationImageUrl?: boolean
   difficulty?: boolean
   tags?: boolean
   sourceLabel?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  sharedPassage?: boolean | Prisma.ExamQuestion$sharedPassageArgs<ExtArgs>
 }, ExtArgs["result"]["examQuestion"]>
 
 export type ExamQuestionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  passageId?: boolean
   type?: boolean
+  contentFormat?: boolean
   stem?: boolean
-  passage?: boolean
+  inlinePassage?: boolean
   imageUrl?: boolean
   explanation?: boolean
+  explanationFormat?: boolean
+  explanationImageUrl?: boolean
   difficulty?: boolean
   tags?: boolean
   sourceLabel?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  sharedPassage?: boolean | Prisma.ExamQuestion$sharedPassageArgs<ExtArgs>
 }, ExtArgs["result"]["examQuestion"]>
 
 export type ExamQuestionSelectScalar = {
   id?: boolean
+  passageId?: boolean
   type?: boolean
+  contentFormat?: boolean
   stem?: boolean
-  passage?: boolean
+  inlinePassage?: boolean
   imageUrl?: boolean
   explanation?: boolean
+  explanationFormat?: boolean
+  explanationImageUrl?: boolean
   difficulty?: boolean
   tags?: boolean
   sourceLabel?: boolean
@@ -1178,22 +1762,30 @@ export type ExamQuestionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ExamQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "stem" | "passage" | "imageUrl" | "explanation" | "difficulty" | "tags" | "sourceLabel" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["examQuestion"]>
+export type ExamQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "passageId" | "type" | "contentFormat" | "stem" | "inlinePassage" | "imageUrl" | "explanation" | "explanationFormat" | "explanationImageUrl" | "difficulty" | "tags" | "sourceLabel" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["examQuestion"]>
 export type ExamQuestionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sharedPassage?: boolean | Prisma.ExamQuestion$sharedPassageArgs<ExtArgs>
   choices?: boolean | Prisma.ExamQuestion$choicesArgs<ExtArgs>
+  assets?: boolean | Prisma.ExamQuestion$assetsArgs<ExtArgs>
   acceptedAnswers?: boolean | Prisma.ExamQuestion$acceptedAnswersArgs<ExtArgs>
   packageItems?: boolean | Prisma.ExamQuestion$packageItemsArgs<ExtArgs>
   practiceItems?: boolean | Prisma.ExamQuestion$practiceItemsArgs<ExtArgs>
   answers?: boolean | Prisma.ExamQuestion$answersArgs<ExtArgs>
   _count?: boolean | Prisma.ExamQuestionCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ExamQuestionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ExamQuestionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ExamQuestionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sharedPassage?: boolean | Prisma.ExamQuestion$sharedPassageArgs<ExtArgs>
+}
+export type ExamQuestionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sharedPassage?: boolean | Prisma.ExamQuestion$sharedPassageArgs<ExtArgs>
+}
 
 export type $ExamQuestionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ExamQuestion"
   objects: {
+    sharedPassage: Prisma.$ExamPassagePayload<ExtArgs> | null
     choices: Prisma.$ExamQuestionChoicePayload<ExtArgs>[]
+    assets: Prisma.$ExamQuestionAssetPayload<ExtArgs>[]
     acceptedAnswers: Prisma.$ExamQuestionAcceptedAnswerPayload<ExtArgs>[]
     packageItems: Prisma.$ExamPackagePartQuestionPayload<ExtArgs>[]
     practiceItems: Prisma.$PracticeSetQuestionPayload<ExtArgs>[]
@@ -1201,11 +1793,15 @@ export type $ExamQuestionPayload<ExtArgs extends runtime.Types.Extensions.Intern
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    passageId: string | null
     type: $Enums.ExamQuestionType
+    contentFormat: $Enums.ExamContentFormat
     stem: string
-    passage: string | null
+    inlinePassage: string | null
     imageUrl: string | null
     explanation: string | null
+    explanationFormat: $Enums.ExamContentFormat
+    explanationImageUrl: string | null
     difficulty: string | null
     tags: string[]
     sourceLabel: string | null
@@ -1606,7 +2202,9 @@ readonly fields: ExamQuestionFieldRefs;
  */
 export interface Prisma__ExamQuestionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  sharedPassage<T extends Prisma.ExamQuestion$sharedPassageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamQuestion$sharedPassageArgs<ExtArgs>>): Prisma.Prisma__ExamPassageClient<runtime.Types.Result.GetResult<Prisma.$ExamPassagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   choices<T extends Prisma.ExamQuestion$choicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamQuestion$choicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamQuestionChoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assets<T extends Prisma.ExamQuestion$assetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamQuestion$assetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamQuestionAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   acceptedAnswers<T extends Prisma.ExamQuestion$acceptedAnswersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamQuestion$acceptedAnswersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamQuestionAcceptedAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   packageItems<T extends Prisma.ExamQuestion$packageItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamQuestion$packageItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamPackagePartQuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   practiceItems<T extends Prisma.ExamQuestion$practiceItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamQuestion$practiceItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PracticeSetQuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1641,11 +2239,15 @@ export interface Prisma__ExamQuestionClient<T, Null = never, ExtArgs extends run
  */
 export interface ExamQuestionFieldRefs {
   readonly id: Prisma.FieldRef<"ExamQuestion", 'String'>
+  readonly passageId: Prisma.FieldRef<"ExamQuestion", 'String'>
   readonly type: Prisma.FieldRef<"ExamQuestion", 'ExamQuestionType'>
+  readonly contentFormat: Prisma.FieldRef<"ExamQuestion", 'ExamContentFormat'>
   readonly stem: Prisma.FieldRef<"ExamQuestion", 'String'>
-  readonly passage: Prisma.FieldRef<"ExamQuestion", 'String'>
+  readonly inlinePassage: Prisma.FieldRef<"ExamQuestion", 'String'>
   readonly imageUrl: Prisma.FieldRef<"ExamQuestion", 'String'>
   readonly explanation: Prisma.FieldRef<"ExamQuestion", 'String'>
+  readonly explanationFormat: Prisma.FieldRef<"ExamQuestion", 'ExamContentFormat'>
+  readonly explanationImageUrl: Prisma.FieldRef<"ExamQuestion", 'String'>
   readonly difficulty: Prisma.FieldRef<"ExamQuestion", 'String'>
   readonly tags: Prisma.FieldRef<"ExamQuestion", 'String[]'>
   readonly sourceLabel: Prisma.FieldRef<"ExamQuestion", 'String'>
@@ -1906,6 +2508,10 @@ export type ExamQuestionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    */
   data: Prisma.ExamQuestionCreateManyInput | Prisma.ExamQuestionCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamQuestionIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1976,6 +2582,10 @@ export type ExamQuestionUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * Limit how many ExamQuestions to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamQuestionIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2045,6 +2655,25 @@ export type ExamQuestionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
+ * ExamQuestion.sharedPassage
+ */
+export type ExamQuestion$sharedPassageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExamPassage
+   */
+  select?: Prisma.ExamPassageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExamPassage
+   */
+  omit?: Prisma.ExamPassageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamPassageInclude<ExtArgs> | null
+  where?: Prisma.ExamPassageWhereInput
+}
+
+/**
  * ExamQuestion.choices
  */
 export type ExamQuestion$choicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2066,6 +2695,30 @@ export type ExamQuestion$choicesArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.ExamQuestionChoiceScalarFieldEnum | Prisma.ExamQuestionChoiceScalarFieldEnum[]
+}
+
+/**
+ * ExamQuestion.assets
+ */
+export type ExamQuestion$assetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExamQuestionAsset
+   */
+  select?: Prisma.ExamQuestionAssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExamQuestionAsset
+   */
+  omit?: Prisma.ExamQuestionAssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamQuestionAssetInclude<ExtArgs> | null
+  where?: Prisma.ExamQuestionAssetWhereInput
+  orderBy?: Prisma.ExamQuestionAssetOrderByWithRelationInput | Prisma.ExamQuestionAssetOrderByWithRelationInput[]
+  cursor?: Prisma.ExamQuestionAssetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExamQuestionAssetScalarFieldEnum | Prisma.ExamQuestionAssetScalarFieldEnum[]
 }
 
 /**

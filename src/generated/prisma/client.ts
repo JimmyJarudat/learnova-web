@@ -77,6 +77,12 @@ export type ExamPackage = Prisma.ExamPackageModel
  */
 export type ExamPackagePart = Prisma.ExamPackagePartModel
 /**
+ * Model ExamSection
+ * เก็บหัวข้อคั่นระหว่างข้อ เช่น ตอนที่ 1 ความสามารถด้านเหตุผล, ตอนที่ 2 ภาษาไทย
+ * ใช้แสดงเป็นแถบหัวข้อในหน้าทำข้อสอบ โดยไม่ต้องสร้างเป็นคำถามปลอม
+ */
+export type ExamSection = Prisma.ExamSectionModel
+/**
  * Model PracticeCategory
  * เก็บหมวดฝึกแบบไม่ต้องเลือกสังกัด/เอกก่อน เช่น ภาค ก รวมทุกสังกัด กฎหมาย วิชาชีพครู
  * ใช้แก้ปัญหาผู้ใช้ที่อยากฝึก ภาค ก หลายชุดติดกันโดยไม่เข้า flow สังกัด-เอก
@@ -100,6 +106,18 @@ export type PracticeSetAffiliation = Prisma.PracticeSetAffiliationModel
  * คำถามหนึ่งข้ออาจถูกนำไปอยู่หลายชุด ผ่านตาราง join ของ package part หรือ practice set
  */
 export type ExamQuestion = Prisma.ExamQuestionModel
+/**
+ * Model ExamPassage
+ * เก็บข้อความ/สถานการณ์/บทอ่านร่วมที่ใช้ตอบหลายข้อ เช่น "จากข้อความนี้ใช้ตอบคำถามข้อ 1-5"
+ * คำถามหลายข้อสามารถชี้ passage เดียวกันผ่าน ExamQuestion.passageId ได้
+ */
+export type ExamPassage = Prisma.ExamPassageModel
+/**
+ * Model ExamQuestionAsset
+ * เก็บรูป/ไฟล์ประกอบของคำถามได้หลายรายการ เช่น ตาราง กราฟ รูปเรขาคณิต หรือภาพประกอบเฉลย
+ * ถ้ามีรูปเดียวใช้ ExamQuestion.imageUrl ได้ แต่ถ้ามีหลายรูปให้ใช้ตารางนี้
+ */
+export type ExamQuestionAsset = Prisma.ExamQuestionAssetModel
 /**
  * Model ExamQuestionChoice
  * เก็บตัวเลือกของคำถาม เช่น ก ข ค ง พร้อมบอกว่าข้อไหนถูก

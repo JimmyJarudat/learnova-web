@@ -29,6 +29,12 @@ enum ExamQuestionType {
   SHORT_ANSWER
 }
 
+enum ExamContentFormat {
+  PLAIN_TEXT
+  MARKDOWN
+  HTML
+}
+
 enum ExamAttemptStatus {
   IN_PROGRESS
   SUBMITTED
@@ -175,12 +181,37 @@ model ExamPackagePart {
   package  ExamPackage               @relation(fields: [packageId], references: [id], onDelete: Cascade)
   items    ExamPackagePartQuestion[]
   attempts ExamAttempt[]
+  sections ExamSection[]
 
   @@unique([packageId, slug])
   @@index([kind])
   @@index([isActive])
   @@index([sortOrder])
   @@map("exam_package_parts")
+}
+
+/// เก็บหัวข้อคั่นระหว่างข้อ เช่น ตอนที่ 1 ความสามารถด้านเหตุผล, ตอนที่ 2 ภาษาไทย
+/// ใช้แสดงเป็นแถบหัวข้อในหน้าทำข้อสอบ โดยไม่ต้องสร้างเป็นคำถามปลอม
+model ExamSection {
+  id            String   @id @default(uuid()) @db.Uuid
+  partId        String?  @map("part_id") @db.Uuid
+  practiceSetId String?  @map("practice_set_id") @db.Uuid
+  title         String   @db.VarChar(255)
+  description   String?  @db.Text
+  contentFormat ExamContentFormat @default(MARKDOWN) @map("content_format")
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  part          ExamPackagePart? @relation(fields: [partId], references: [id], onDelete: Cascade)
+  practiceSet   PracticeSet?     @relation(fields: [practiceSetId], references: [id], onDelete: Cascade)
+  packageItems  ExamPackagePartQuestion[]
+  practiceItems PracticeSetQuestion[]
+
+  @@index([partId])
+  @@index([practiceSetId])
+  @@index([sortOrder])
+  @@map("exam_sections")
 }
 
 /// เก็บหมวดฝึกแบบไม่ต้องเลือกสังกัด/เอกก่อน เช่น ภาค ก รวมทุกสังกัด กฎหมาย วิชาชีพครู
@@ -227,6 +258,7 @@ model PracticeSet {
   affiliations PracticeSetAffiliation[]
   items        PracticeSetQuestion[]
   attempts     ExamAttempt[]
+  sections     ExamSection[]
 
   @@unique([categoryId, slug])
   @@index([isActive])
@@ -254,11 +286,15 @@ model PracticeSetAffiliation {
 /// คำถามหนึ่งข้ออาจถูกนำไปอยู่หลายชุด ผ่านตาราง join ของ package part หรือ practice set
 model ExamQuestion {
   id              String           @id @default(uuid()) @db.Uuid
+  passageId       String?          @map("passage_id") @db.Uuid
   type            ExamQuestionType @default(SINGLE_CHOICE)
+  contentFormat   ExamContentFormat @default(MARKDOWN) @map("content_format")
   stem            String           @db.Text
-  passage         String?          @db.Text
+  inlinePassage   String?          @map("passage") @db.Text
   imageUrl        String?          @map("image_url") @db.Text
   explanation     String?          @db.Text
+  explanationFormat ExamContentFormat @default(MARKDOWN) @map("explanation_format")
+  explanationImageUrl String?      @map("explanation_image_url") @db.Text
   difficulty      String?          @db.VarChar(50)
   tags            String[]         @default([])
   sourceLabel     String?          @map("source_label") @db.VarChar(150)
@@ -266,16 +302,57 @@ model ExamQuestion {
   createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  sharedPassage ExamPassage? @relation(fields: [passageId], references: [id], onDelete: SetNull)
   choices       ExamQuestionChoice[]
+  assets        ExamQuestionAsset[]
   acceptedAnswers ExamQuestionAcceptedAnswer[]
   packageItems  ExamPackagePartQuestion[]
   practiceItems PracticeSetQuestion[]
   answers       ExamAttemptAnswer[]
 
+  @@index([passageId])
   @@index([type])
   @@index([difficulty])
   @@index([isActive])
   @@map("exam_questions")
+}
+
+/// เก็บข้อความ/สถานการณ์/บทอ่านร่วมที่ใช้ตอบหลายข้อ เช่น "จากข้อความนี้ใช้ตอบคำถามข้อ 1-5"
+/// คำถามหลายข้อสามารถชี้ passage เดียวกันผ่าน ExamQuestion.passageId ได้
+model ExamPassage {
+  id            String   @id @default(uuid()) @db.Uuid
+  title         String?  @db.VarChar(255)
+  content       String   @db.Text
+  contentFormat ExamContentFormat @default(MARKDOWN) @map("content_format")
+  imageUrl      String?  @map("image_url") @db.Text
+  sourceLabel   String?  @map("source_label") @db.VarChar(150)
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  questions ExamQuestion[]
+
+  @@index([sortOrder])
+  @@map("exam_passages")
+}
+
+/// เก็บรูป/ไฟล์ประกอบของคำถามได้หลายรายการ เช่น ตาราง กราฟ รูปเรขาคณิต หรือภาพประกอบเฉลย
+/// ถ้ามีรูปเดียวใช้ ExamQuestion.imageUrl ได้ แต่ถ้ามีหลายรูปให้ใช้ตารางนี้
+model ExamQuestionAsset {
+  id          String   @id @default(uuid()) @db.Uuid
+  questionId  String   @map("question_id") @db.Uuid
+  url         String   @db.Text
+  altText     String?  @map("alt_text") @db.VarChar(255)
+  caption     String?  @db.Text
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  question ExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@index([sortOrder])
+  @@map("exam_question_assets")
 }
 
 /// เก็บตัวเลือกของคำถาม เช่น ก ข ค ง พร้อมบอกว่าข้อไหนถูก
@@ -285,8 +362,12 @@ model ExamQuestionChoice {
   questionId  String   @map("question_id") @db.Uuid
   label       String   @db.VarChar(20)
   text        String   @db.Text
+  contentFormat ExamContentFormat @default(MARKDOWN) @map("content_format")
+  imageUrl    String?  @map("image_url") @db.Text
   isCorrect   Boolean  @default(false) @map("is_correct")
   explanation String?  @db.Text
+  explanationFormat ExamContentFormat @default(MARKDOWN) @map("explanation_format")
+  explanationImageUrl String? @map("explanation_image_url") @db.Text
   sortOrder   Int      @default(0) @map("sort_order")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -307,6 +388,7 @@ model ExamQuestionAcceptedAnswer {
   questionId     String   @map("question_id") @db.Uuid
   text           String   @db.Text
   normalizedText String?  @map("normalized_text") @db.Text
+  contentFormat  ExamContentFormat @default(PLAIN_TEXT) @map("content_format")
   isCaseSensitive Boolean @default(false) @map("is_case_sensitive")
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -322,16 +404,19 @@ model ExamQuestionAcceptedAnswer {
 model ExamPackagePartQuestion {
   id        String   @id @default(uuid()) @db.Uuid
   partId    String   @map("part_id") @db.Uuid
+  sectionId String?  @map("section_id") @db.Uuid
   questionId String  @map("question_id") @db.Uuid
   position  Int
   score     Decimal  @default(1) @db.Decimal(8, 2)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   part     ExamPackagePart @relation(fields: [partId], references: [id], onDelete: Cascade)
+  section  ExamSection?    @relation(fields: [sectionId], references: [id], onDelete: SetNull)
   question ExamQuestion    @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@unique([partId, questionId])
   @@unique([partId, position])
+  @@index([sectionId])
   @@index([questionId])
   @@map("exam_package_part_questions")
 }
@@ -341,16 +426,19 @@ model ExamPackagePartQuestion {
 model PracticeSetQuestion {
   id        String   @id @default(uuid()) @db.Uuid
   setId     String   @map("set_id") @db.Uuid
+  sectionId String?  @map("section_id") @db.Uuid
   questionId String  @map("question_id") @db.Uuid
   position  Int
   score     Decimal  @default(1) @db.Decimal(8, 2)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   set      PracticeSet  @relation(fields: [setId], references: [id], onDelete: Cascade)
+  section  ExamSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
   question ExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@unique([setId, questionId])
   @@unique([setId, position])
+  @@index([sectionId])
   @@index([questionId])
   @@map("practice_set_questions")
 }

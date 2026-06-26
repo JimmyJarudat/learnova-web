@@ -30,6 +30,7 @@ export type ExamQuestionAcceptedAnswerMinAggregateOutputType = {
   questionId: string | null
   text: string | null
   normalizedText: string | null
+  contentFormat: $Enums.ExamContentFormat | null
   isCaseSensitive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -40,6 +41,7 @@ export type ExamQuestionAcceptedAnswerMaxAggregateOutputType = {
   questionId: string | null
   text: string | null
   normalizedText: string | null
+  contentFormat: $Enums.ExamContentFormat | null
   isCaseSensitive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -50,6 +52,7 @@ export type ExamQuestionAcceptedAnswerCountAggregateOutputType = {
   questionId: number
   text: number
   normalizedText: number
+  contentFormat: number
   isCaseSensitive: number
   createdAt: number
   updatedAt: number
@@ -62,6 +65,7 @@ export type ExamQuestionAcceptedAnswerMinAggregateInputType = {
   questionId?: true
   text?: true
   normalizedText?: true
+  contentFormat?: true
   isCaseSensitive?: true
   createdAt?: true
   updatedAt?: true
@@ -72,6 +76,7 @@ export type ExamQuestionAcceptedAnswerMaxAggregateInputType = {
   questionId?: true
   text?: true
   normalizedText?: true
+  contentFormat?: true
   isCaseSensitive?: true
   createdAt?: true
   updatedAt?: true
@@ -82,6 +87,7 @@ export type ExamQuestionAcceptedAnswerCountAggregateInputType = {
   questionId?: true
   text?: true
   normalizedText?: true
+  contentFormat?: true
   isCaseSensitive?: true
   createdAt?: true
   updatedAt?: true
@@ -165,6 +171,7 @@ export type ExamQuestionAcceptedAnswerGroupByOutputType = {
   questionId: string
   text: string
   normalizedText: string | null
+  contentFormat: $Enums.ExamContentFormat
   isCaseSensitive: boolean
   createdAt: Date
   updatedAt: Date
@@ -196,6 +203,7 @@ export type ExamQuestionAcceptedAnswerWhereInput = {
   questionId?: Prisma.UuidFilter<"ExamQuestionAcceptedAnswer"> | string
   text?: Prisma.StringFilter<"ExamQuestionAcceptedAnswer"> | string
   normalizedText?: Prisma.StringNullableFilter<"ExamQuestionAcceptedAnswer"> | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionAcceptedAnswer"> | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFilter<"ExamQuestionAcceptedAnswer"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ExamQuestionAcceptedAnswer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamQuestionAcceptedAnswer"> | Date | string
@@ -207,6 +215,7 @@ export type ExamQuestionAcceptedAnswerOrderByWithRelationInput = {
   questionId?: Prisma.SortOrder
   text?: Prisma.SortOrder
   normalizedText?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   isCaseSensitive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -221,6 +230,7 @@ export type ExamQuestionAcceptedAnswerWhereUniqueInput = Prisma.AtLeast<{
   questionId?: Prisma.UuidFilter<"ExamQuestionAcceptedAnswer"> | string
   text?: Prisma.StringFilter<"ExamQuestionAcceptedAnswer"> | string
   normalizedText?: Prisma.StringNullableFilter<"ExamQuestionAcceptedAnswer"> | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionAcceptedAnswer"> | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFilter<"ExamQuestionAcceptedAnswer"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ExamQuestionAcceptedAnswer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamQuestionAcceptedAnswer"> | Date | string
@@ -232,6 +242,7 @@ export type ExamQuestionAcceptedAnswerOrderByWithAggregationInput = {
   questionId?: Prisma.SortOrder
   text?: Prisma.SortOrder
   normalizedText?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   isCaseSensitive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -248,6 +259,7 @@ export type ExamQuestionAcceptedAnswerScalarWhereWithAggregatesInput = {
   questionId?: Prisma.UuidWithAggregatesFilter<"ExamQuestionAcceptedAnswer"> | string
   text?: Prisma.StringWithAggregatesFilter<"ExamQuestionAcceptedAnswer"> | string
   normalizedText?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestionAcceptedAnswer"> | string | null
+  contentFormat?: Prisma.EnumExamContentFormatWithAggregatesFilter<"ExamQuestionAcceptedAnswer"> | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolWithAggregatesFilter<"ExamQuestionAcceptedAnswer"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ExamQuestionAcceptedAnswer"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ExamQuestionAcceptedAnswer"> | Date | string
@@ -257,6 +269,7 @@ export type ExamQuestionAcceptedAnswerCreateInput = {
   id?: string
   text: string
   normalizedText?: string | null
+  contentFormat?: $Enums.ExamContentFormat
   isCaseSensitive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -268,6 +281,7 @@ export type ExamQuestionAcceptedAnswerUncheckedCreateInput = {
   questionId: string
   text: string
   normalizedText?: string | null
+  contentFormat?: $Enums.ExamContentFormat
   isCaseSensitive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -277,6 +291,7 @@ export type ExamQuestionAcceptedAnswerUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -288,6 +303,7 @@ export type ExamQuestionAcceptedAnswerUncheckedUpdateInput = {
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -298,6 +314,7 @@ export type ExamQuestionAcceptedAnswerCreateManyInput = {
   questionId: string
   text: string
   normalizedText?: string | null
+  contentFormat?: $Enums.ExamContentFormat
   isCaseSensitive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -307,6 +324,7 @@ export type ExamQuestionAcceptedAnswerUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -317,6 +335,7 @@ export type ExamQuestionAcceptedAnswerUncheckedUpdateManyInput = {
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -337,6 +356,7 @@ export type ExamQuestionAcceptedAnswerCountOrderByAggregateInput = {
   questionId?: Prisma.SortOrder
   text?: Prisma.SortOrder
   normalizedText?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   isCaseSensitive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -347,6 +367,7 @@ export type ExamQuestionAcceptedAnswerMaxOrderByAggregateInput = {
   questionId?: Prisma.SortOrder
   text?: Prisma.SortOrder
   normalizedText?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   isCaseSensitive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -357,6 +378,7 @@ export type ExamQuestionAcceptedAnswerMinOrderByAggregateInput = {
   questionId?: Prisma.SortOrder
   text?: Prisma.SortOrder
   normalizedText?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
   isCaseSensitive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -408,6 +430,7 @@ export type ExamQuestionAcceptedAnswerCreateWithoutQuestionInput = {
   id?: string
   text: string
   normalizedText?: string | null
+  contentFormat?: $Enums.ExamContentFormat
   isCaseSensitive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -417,6 +440,7 @@ export type ExamQuestionAcceptedAnswerUncheckedCreateWithoutQuestionInput = {
   id?: string
   text: string
   normalizedText?: string | null
+  contentFormat?: $Enums.ExamContentFormat
   isCaseSensitive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -456,6 +480,7 @@ export type ExamQuestionAcceptedAnswerScalarWhereInput = {
   questionId?: Prisma.UuidFilter<"ExamQuestionAcceptedAnswer"> | string
   text?: Prisma.StringFilter<"ExamQuestionAcceptedAnswer"> | string
   normalizedText?: Prisma.StringNullableFilter<"ExamQuestionAcceptedAnswer"> | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionAcceptedAnswer"> | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFilter<"ExamQuestionAcceptedAnswer"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ExamQuestionAcceptedAnswer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamQuestionAcceptedAnswer"> | Date | string
@@ -465,6 +490,7 @@ export type ExamQuestionAcceptedAnswerCreateManyQuestionInput = {
   id?: string
   text: string
   normalizedText?: string | null
+  contentFormat?: $Enums.ExamContentFormat
   isCaseSensitive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -474,6 +500,7 @@ export type ExamQuestionAcceptedAnswerUpdateWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -483,6 +510,7 @@ export type ExamQuestionAcceptedAnswerUncheckedUpdateWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -492,6 +520,7 @@ export type ExamQuestionAcceptedAnswerUncheckedUpdateManyWithoutQuestionInput = 
   id?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
   isCaseSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -504,6 +533,7 @@ export type ExamQuestionAcceptedAnswerSelect<ExtArgs extends runtime.Types.Exten
   questionId?: boolean
   text?: boolean
   normalizedText?: boolean
+  contentFormat?: boolean
   isCaseSensitive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -515,6 +545,7 @@ export type ExamQuestionAcceptedAnswerSelectCreateManyAndReturn<ExtArgs extends 
   questionId?: boolean
   text?: boolean
   normalizedText?: boolean
+  contentFormat?: boolean
   isCaseSensitive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -526,6 +557,7 @@ export type ExamQuestionAcceptedAnswerSelectUpdateManyAndReturn<ExtArgs extends 
   questionId?: boolean
   text?: boolean
   normalizedText?: boolean
+  contentFormat?: boolean
   isCaseSensitive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -537,12 +569,13 @@ export type ExamQuestionAcceptedAnswerSelectScalar = {
   questionId?: boolean
   text?: boolean
   normalizedText?: boolean
+  contentFormat?: boolean
   isCaseSensitive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ExamQuestionAcceptedAnswerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "questionId" | "text" | "normalizedText" | "isCaseSensitive" | "createdAt" | "updatedAt", ExtArgs["result"]["examQuestionAcceptedAnswer"]>
+export type ExamQuestionAcceptedAnswerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "questionId" | "text" | "normalizedText" | "contentFormat" | "isCaseSensitive" | "createdAt" | "updatedAt", ExtArgs["result"]["examQuestionAcceptedAnswer"]>
 export type ExamQuestionAcceptedAnswerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
 }
@@ -563,6 +596,7 @@ export type $ExamQuestionAcceptedAnswerPayload<ExtArgs extends runtime.Types.Ext
     questionId: string
     text: string
     normalizedText: string | null
+    contentFormat: $Enums.ExamContentFormat
     isCaseSensitive: boolean
     createdAt: Date
     updatedAt: Date
@@ -994,6 +1028,7 @@ export interface ExamQuestionAcceptedAnswerFieldRefs {
   readonly questionId: Prisma.FieldRef<"ExamQuestionAcceptedAnswer", 'String'>
   readonly text: Prisma.FieldRef<"ExamQuestionAcceptedAnswer", 'String'>
   readonly normalizedText: Prisma.FieldRef<"ExamQuestionAcceptedAnswer", 'String'>
+  readonly contentFormat: Prisma.FieldRef<"ExamQuestionAcceptedAnswer", 'ExamContentFormat'>
   readonly isCaseSensitive: Prisma.FieldRef<"ExamQuestionAcceptedAnswer", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"ExamQuestionAcceptedAnswer", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ExamQuestionAcceptedAnswer", 'DateTime'>

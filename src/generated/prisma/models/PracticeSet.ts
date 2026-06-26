@@ -313,6 +313,7 @@ export type PracticeSetWhereInput = {
   affiliations?: Prisma.PracticeSetAffiliationListRelationFilter
   items?: Prisma.PracticeSetQuestionListRelationFilter
   attempts?: Prisma.ExamAttemptListRelationFilter
+  sections?: Prisma.ExamSectionListRelationFilter
 }
 
 export type PracticeSetOrderByWithRelationInput = {
@@ -335,6 +336,7 @@ export type PracticeSetOrderByWithRelationInput = {
   affiliations?: Prisma.PracticeSetAffiliationOrderByRelationAggregateInput
   items?: Prisma.PracticeSetQuestionOrderByRelationAggregateInput
   attempts?: Prisma.ExamAttemptOrderByRelationAggregateInput
+  sections?: Prisma.ExamSectionOrderByRelationAggregateInput
 }
 
 export type PracticeSetWhereUniqueInput = Prisma.AtLeast<{
@@ -361,6 +363,7 @@ export type PracticeSetWhereUniqueInput = Prisma.AtLeast<{
   affiliations?: Prisma.PracticeSetAffiliationListRelationFilter
   items?: Prisma.PracticeSetQuestionListRelationFilter
   attempts?: Prisma.ExamAttemptListRelationFilter
+  sections?: Prisma.ExamSectionListRelationFilter
 }, "id" | "categoryId_slug">
 
 export type PracticeSetOrderByWithAggregationInput = {
@@ -426,6 +429,7 @@ export type PracticeSetCreateInput = {
   affiliations?: Prisma.PracticeSetAffiliationCreateNestedManyWithoutPracticeSetInput
   items?: Prisma.PracticeSetQuestionCreateNestedManyWithoutSetInput
   attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPracticeSetInput
+  sections?: Prisma.ExamSectionCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetUncheckedCreateInput = {
@@ -447,6 +451,7 @@ export type PracticeSetUncheckedCreateInput = {
   affiliations?: Prisma.PracticeSetAffiliationUncheckedCreateNestedManyWithoutPracticeSetInput
   items?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutSetInput
   attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPracticeSetInput
+  sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetUpdateInput = {
@@ -468,6 +473,7 @@ export type PracticeSetUpdateInput = {
   affiliations?: Prisma.PracticeSetAffiliationUpdateManyWithoutPracticeSetNestedInput
   items?: Prisma.PracticeSetQuestionUpdateManyWithoutSetNestedInput
   attempts?: Prisma.ExamAttemptUpdateManyWithoutPracticeSetNestedInput
+  sections?: Prisma.ExamSectionUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetUncheckedUpdateInput = {
@@ -489,6 +495,7 @@ export type PracticeSetUncheckedUpdateInput = {
   affiliations?: Prisma.PracticeSetAffiliationUncheckedUpdateManyWithoutPracticeSetNestedInput
   items?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutSetNestedInput
   attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPracticeSetNestedInput
+  sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetCreateManyInput = {
@@ -542,6 +549,11 @@ export type PracticeSetUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PracticeSetNullableScalarRelationFilter = {
+  is?: Prisma.PracticeSetWhereInput | null
+  isNot?: Prisma.PracticeSetWhereInput | null
 }
 
 export type PracticeSetListRelationFilter = {
@@ -632,9 +644,20 @@ export type PracticeSetScalarRelationFilter = {
   isNot?: Prisma.PracticeSetWhereInput
 }
 
-export type PracticeSetNullableScalarRelationFilter = {
-  is?: Prisma.PracticeSetWhereInput | null
-  isNot?: Prisma.PracticeSetWhereInput | null
+export type PracticeSetCreateNestedOneWithoutSectionsInput = {
+  create?: Prisma.XOR<Prisma.PracticeSetCreateWithoutSectionsInput, Prisma.PracticeSetUncheckedCreateWithoutSectionsInput>
+  connectOrCreate?: Prisma.PracticeSetCreateOrConnectWithoutSectionsInput
+  connect?: Prisma.PracticeSetWhereUniqueInput
+}
+
+export type PracticeSetUpdateOneWithoutSectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.PracticeSetCreateWithoutSectionsInput, Prisma.PracticeSetUncheckedCreateWithoutSectionsInput>
+  connectOrCreate?: Prisma.PracticeSetCreateOrConnectWithoutSectionsInput
+  upsert?: Prisma.PracticeSetUpsertWithoutSectionsInput
+  disconnect?: Prisma.PracticeSetWhereInput | boolean
+  delete?: Prisma.PracticeSetWhereInput | boolean
+  connect?: Prisma.PracticeSetWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PracticeSetUpdateToOneWithWhereWithoutSectionsInput, Prisma.PracticeSetUpdateWithoutSectionsInput>, Prisma.PracticeSetUncheckedUpdateWithoutSectionsInput>
 }
 
 export type PracticeSetCreateNestedManyWithoutCategoryInput = {
@@ -723,6 +746,106 @@ export type PracticeSetUpdateOneWithoutAttemptsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PracticeSetUpdateToOneWithWhereWithoutAttemptsInput, Prisma.PracticeSetUpdateWithoutAttemptsInput>, Prisma.PracticeSetUncheckedUpdateWithoutAttemptsInput>
 }
 
+export type PracticeSetCreateWithoutSectionsInput = {
+  id?: string
+  slug: string
+  title: string
+  scopeLabel?: string | null
+  yearLabel?: string | null
+  description?: string | null
+  durationMinutes?: number
+  totalQuestions?: number
+  totalScore?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  difficulty?: string | null
+  sortOrder?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PracticeCategoryCreateNestedOneWithoutSetsInput
+  affiliations?: Prisma.PracticeSetAffiliationCreateNestedManyWithoutPracticeSetInput
+  items?: Prisma.PracticeSetQuestionCreateNestedManyWithoutSetInput
+  attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPracticeSetInput
+}
+
+export type PracticeSetUncheckedCreateWithoutSectionsInput = {
+  id?: string
+  categoryId: string
+  slug: string
+  title: string
+  scopeLabel?: string | null
+  yearLabel?: string | null
+  description?: string | null
+  durationMinutes?: number
+  totalQuestions?: number
+  totalScore?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  difficulty?: string | null
+  sortOrder?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  affiliations?: Prisma.PracticeSetAffiliationUncheckedCreateNestedManyWithoutPracticeSetInput
+  items?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutSetInput
+  attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPracticeSetInput
+}
+
+export type PracticeSetCreateOrConnectWithoutSectionsInput = {
+  where: Prisma.PracticeSetWhereUniqueInput
+  create: Prisma.XOR<Prisma.PracticeSetCreateWithoutSectionsInput, Prisma.PracticeSetUncheckedCreateWithoutSectionsInput>
+}
+
+export type PracticeSetUpsertWithoutSectionsInput = {
+  update: Prisma.XOR<Prisma.PracticeSetUpdateWithoutSectionsInput, Prisma.PracticeSetUncheckedUpdateWithoutSectionsInput>
+  create: Prisma.XOR<Prisma.PracticeSetCreateWithoutSectionsInput, Prisma.PracticeSetUncheckedCreateWithoutSectionsInput>
+  where?: Prisma.PracticeSetWhereInput
+}
+
+export type PracticeSetUpdateToOneWithWhereWithoutSectionsInput = {
+  where?: Prisma.PracticeSetWhereInput
+  data: Prisma.XOR<Prisma.PracticeSetUpdateWithoutSectionsInput, Prisma.PracticeSetUncheckedUpdateWithoutSectionsInput>
+}
+
+export type PracticeSetUpdateWithoutSectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  totalQuestions?: Prisma.IntFieldUpdateOperationsInput | number
+  totalScore?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PracticeCategoryUpdateOneRequiredWithoutSetsNestedInput
+  affiliations?: Prisma.PracticeSetAffiliationUpdateManyWithoutPracticeSetNestedInput
+  items?: Prisma.PracticeSetQuestionUpdateManyWithoutSetNestedInput
+  attempts?: Prisma.ExamAttemptUpdateManyWithoutPracticeSetNestedInput
+}
+
+export type PracticeSetUncheckedUpdateWithoutSectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  totalQuestions?: Prisma.IntFieldUpdateOperationsInput | number
+  totalScore?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  affiliations?: Prisma.PracticeSetAffiliationUncheckedUpdateManyWithoutPracticeSetNestedInput
+  items?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutSetNestedInput
+  attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPracticeSetNestedInput
+}
+
 export type PracticeSetCreateWithoutCategoryInput = {
   id?: string
   slug: string
@@ -741,6 +864,7 @@ export type PracticeSetCreateWithoutCategoryInput = {
   affiliations?: Prisma.PracticeSetAffiliationCreateNestedManyWithoutPracticeSetInput
   items?: Prisma.PracticeSetQuestionCreateNestedManyWithoutSetInput
   attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPracticeSetInput
+  sections?: Prisma.ExamSectionCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetUncheckedCreateWithoutCategoryInput = {
@@ -761,6 +885,7 @@ export type PracticeSetUncheckedCreateWithoutCategoryInput = {
   affiliations?: Prisma.PracticeSetAffiliationUncheckedCreateNestedManyWithoutPracticeSetInput
   items?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutSetInput
   attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPracticeSetInput
+  sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetCreateOrConnectWithoutCategoryInput = {
@@ -828,6 +953,7 @@ export type PracticeSetCreateWithoutAffiliationsInput = {
   category: Prisma.PracticeCategoryCreateNestedOneWithoutSetsInput
   items?: Prisma.PracticeSetQuestionCreateNestedManyWithoutSetInput
   attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPracticeSetInput
+  sections?: Prisma.ExamSectionCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetUncheckedCreateWithoutAffiliationsInput = {
@@ -848,6 +974,7 @@ export type PracticeSetUncheckedCreateWithoutAffiliationsInput = {
   updatedAt?: Date | string
   items?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutSetInput
   attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPracticeSetInput
+  sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetCreateOrConnectWithoutAffiliationsInput = {
@@ -884,6 +1011,7 @@ export type PracticeSetUpdateWithoutAffiliationsInput = {
   category?: Prisma.PracticeCategoryUpdateOneRequiredWithoutSetsNestedInput
   items?: Prisma.PracticeSetQuestionUpdateManyWithoutSetNestedInput
   attempts?: Prisma.ExamAttemptUpdateManyWithoutPracticeSetNestedInput
+  sections?: Prisma.ExamSectionUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetUncheckedUpdateWithoutAffiliationsInput = {
@@ -904,6 +1032,7 @@ export type PracticeSetUncheckedUpdateWithoutAffiliationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutSetNestedInput
   attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPracticeSetNestedInput
+  sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetCreateWithoutItemsInput = {
@@ -924,6 +1053,7 @@ export type PracticeSetCreateWithoutItemsInput = {
   category: Prisma.PracticeCategoryCreateNestedOneWithoutSetsInput
   affiliations?: Prisma.PracticeSetAffiliationCreateNestedManyWithoutPracticeSetInput
   attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPracticeSetInput
+  sections?: Prisma.ExamSectionCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetUncheckedCreateWithoutItemsInput = {
@@ -944,6 +1074,7 @@ export type PracticeSetUncheckedCreateWithoutItemsInput = {
   updatedAt?: Date | string
   affiliations?: Prisma.PracticeSetAffiliationUncheckedCreateNestedManyWithoutPracticeSetInput
   attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPracticeSetInput
+  sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetCreateOrConnectWithoutItemsInput = {
@@ -980,6 +1111,7 @@ export type PracticeSetUpdateWithoutItemsInput = {
   category?: Prisma.PracticeCategoryUpdateOneRequiredWithoutSetsNestedInput
   affiliations?: Prisma.PracticeSetAffiliationUpdateManyWithoutPracticeSetNestedInput
   attempts?: Prisma.ExamAttemptUpdateManyWithoutPracticeSetNestedInput
+  sections?: Prisma.ExamSectionUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetUncheckedUpdateWithoutItemsInput = {
@@ -1000,6 +1132,7 @@ export type PracticeSetUncheckedUpdateWithoutItemsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   affiliations?: Prisma.PracticeSetAffiliationUncheckedUpdateManyWithoutPracticeSetNestedInput
   attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPracticeSetNestedInput
+  sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetCreateWithoutAttemptsInput = {
@@ -1020,6 +1153,7 @@ export type PracticeSetCreateWithoutAttemptsInput = {
   category: Prisma.PracticeCategoryCreateNestedOneWithoutSetsInput
   affiliations?: Prisma.PracticeSetAffiliationCreateNestedManyWithoutPracticeSetInput
   items?: Prisma.PracticeSetQuestionCreateNestedManyWithoutSetInput
+  sections?: Prisma.ExamSectionCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetUncheckedCreateWithoutAttemptsInput = {
@@ -1040,6 +1174,7 @@ export type PracticeSetUncheckedCreateWithoutAttemptsInput = {
   updatedAt?: Date | string
   affiliations?: Prisma.PracticeSetAffiliationUncheckedCreateNestedManyWithoutPracticeSetInput
   items?: Prisma.PracticeSetQuestionUncheckedCreateNestedManyWithoutSetInput
+  sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPracticeSetInput
 }
 
 export type PracticeSetCreateOrConnectWithoutAttemptsInput = {
@@ -1076,6 +1211,7 @@ export type PracticeSetUpdateWithoutAttemptsInput = {
   category?: Prisma.PracticeCategoryUpdateOneRequiredWithoutSetsNestedInput
   affiliations?: Prisma.PracticeSetAffiliationUpdateManyWithoutPracticeSetNestedInput
   items?: Prisma.PracticeSetQuestionUpdateManyWithoutSetNestedInput
+  sections?: Prisma.ExamSectionUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetUncheckedUpdateWithoutAttemptsInput = {
@@ -1096,6 +1232,7 @@ export type PracticeSetUncheckedUpdateWithoutAttemptsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   affiliations?: Prisma.PracticeSetAffiliationUncheckedUpdateManyWithoutPracticeSetNestedInput
   items?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutSetNestedInput
+  sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetCreateManyCategoryInput = {
@@ -1133,6 +1270,7 @@ export type PracticeSetUpdateWithoutCategoryInput = {
   affiliations?: Prisma.PracticeSetAffiliationUpdateManyWithoutPracticeSetNestedInput
   items?: Prisma.PracticeSetQuestionUpdateManyWithoutSetNestedInput
   attempts?: Prisma.ExamAttemptUpdateManyWithoutPracticeSetNestedInput
+  sections?: Prisma.ExamSectionUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetUncheckedUpdateWithoutCategoryInput = {
@@ -1153,6 +1291,7 @@ export type PracticeSetUncheckedUpdateWithoutCategoryInput = {
   affiliations?: Prisma.PracticeSetAffiliationUncheckedUpdateManyWithoutPracticeSetNestedInput
   items?: Prisma.PracticeSetQuestionUncheckedUpdateManyWithoutSetNestedInput
   attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPracticeSetNestedInput
+  sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPracticeSetNestedInput
 }
 
 export type PracticeSetUncheckedUpdateManyWithoutCategoryInput = {
@@ -1181,12 +1320,14 @@ export type PracticeSetCountOutputType = {
   affiliations: number
   items: number
   attempts: number
+  sections: number
 }
 
 export type PracticeSetCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   affiliations?: boolean | PracticeSetCountOutputTypeCountAffiliationsArgs
   items?: boolean | PracticeSetCountOutputTypeCountItemsArgs
   attempts?: boolean | PracticeSetCountOutputTypeCountAttemptsArgs
+  sections?: boolean | PracticeSetCountOutputTypeCountSectionsArgs
 }
 
 /**
@@ -1220,6 +1361,13 @@ export type PracticeSetCountOutputTypeCountAttemptsArgs<ExtArgs extends runtime.
   where?: Prisma.ExamAttemptWhereInput
 }
 
+/**
+ * PracticeSetCountOutputType without action
+ */
+export type PracticeSetCountOutputTypeCountSectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExamSectionWhereInput
+}
+
 
 export type PracticeSetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1241,6 +1389,7 @@ export type PracticeSetSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   affiliations?: boolean | Prisma.PracticeSet$affiliationsArgs<ExtArgs>
   items?: boolean | Prisma.PracticeSet$itemsArgs<ExtArgs>
   attempts?: boolean | Prisma.PracticeSet$attemptsArgs<ExtArgs>
+  sections?: boolean | Prisma.PracticeSet$sectionsArgs<ExtArgs>
   _count?: boolean | Prisma.PracticeSetCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["practiceSet"]>
 
@@ -1306,6 +1455,7 @@ export type PracticeSetInclude<ExtArgs extends runtime.Types.Extensions.Internal
   affiliations?: boolean | Prisma.PracticeSet$affiliationsArgs<ExtArgs>
   items?: boolean | Prisma.PracticeSet$itemsArgs<ExtArgs>
   attempts?: boolean | Prisma.PracticeSet$attemptsArgs<ExtArgs>
+  sections?: boolean | Prisma.PracticeSet$sectionsArgs<ExtArgs>
   _count?: boolean | Prisma.PracticeSetCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PracticeSetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1322,6 +1472,7 @@ export type $PracticeSetPayload<ExtArgs extends runtime.Types.Extensions.Interna
     affiliations: Prisma.$PracticeSetAffiliationPayload<ExtArgs>[]
     items: Prisma.$PracticeSetQuestionPayload<ExtArgs>[]
     attempts: Prisma.$ExamAttemptPayload<ExtArgs>[]
+    sections: Prisma.$ExamSectionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1737,6 +1888,7 @@ export interface Prisma__PracticeSetClient<T, Null = never, ExtArgs extends runt
   affiliations<T extends Prisma.PracticeSet$affiliationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PracticeSet$affiliationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PracticeSetAffiliationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   items<T extends Prisma.PracticeSet$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PracticeSet$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PracticeSetQuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   attempts<T extends Prisma.PracticeSet$attemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PracticeSet$attemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sections<T extends Prisma.PracticeSet$sectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PracticeSet$sectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamSectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2251,6 +2403,30 @@ export type PracticeSet$attemptsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.ExamAttemptScalarFieldEnum | Prisma.ExamAttemptScalarFieldEnum[]
+}
+
+/**
+ * PracticeSet.sections
+ */
+export type PracticeSet$sectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExamSection
+   */
+  select?: Prisma.ExamSectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExamSection
+   */
+  omit?: Prisma.ExamSectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamSectionInclude<ExtArgs> | null
+  where?: Prisma.ExamSectionWhereInput
+  orderBy?: Prisma.ExamSectionOrderByWithRelationInput | Prisma.ExamSectionOrderByWithRelationInput[]
+  cursor?: Prisma.ExamSectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExamSectionScalarFieldEnum | Prisma.ExamSectionScalarFieldEnum[]
 }
 
 /**

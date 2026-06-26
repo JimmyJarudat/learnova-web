@@ -40,8 +40,12 @@ export type ExamQuestionChoiceMinAggregateOutputType = {
   questionId: string | null
   label: string | null
   text: string | null
+  contentFormat: $Enums.ExamContentFormat | null
+  imageUrl: string | null
   isCorrect: boolean | null
   explanation: string | null
+  explanationFormat: $Enums.ExamContentFormat | null
+  explanationImageUrl: string | null
   sortOrder: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,8 +56,12 @@ export type ExamQuestionChoiceMaxAggregateOutputType = {
   questionId: string | null
   label: string | null
   text: string | null
+  contentFormat: $Enums.ExamContentFormat | null
+  imageUrl: string | null
   isCorrect: boolean | null
   explanation: string | null
+  explanationFormat: $Enums.ExamContentFormat | null
+  explanationImageUrl: string | null
   sortOrder: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -64,8 +72,12 @@ export type ExamQuestionChoiceCountAggregateOutputType = {
   questionId: number
   label: number
   text: number
+  contentFormat: number
+  imageUrl: number
   isCorrect: number
   explanation: number
+  explanationFormat: number
+  explanationImageUrl: number
   sortOrder: number
   createdAt: number
   updatedAt: number
@@ -86,8 +98,12 @@ export type ExamQuestionChoiceMinAggregateInputType = {
   questionId?: true
   label?: true
   text?: true
+  contentFormat?: true
+  imageUrl?: true
   isCorrect?: true
   explanation?: true
+  explanationFormat?: true
+  explanationImageUrl?: true
   sortOrder?: true
   createdAt?: true
   updatedAt?: true
@@ -98,8 +114,12 @@ export type ExamQuestionChoiceMaxAggregateInputType = {
   questionId?: true
   label?: true
   text?: true
+  contentFormat?: true
+  imageUrl?: true
   isCorrect?: true
   explanation?: true
+  explanationFormat?: true
+  explanationImageUrl?: true
   sortOrder?: true
   createdAt?: true
   updatedAt?: true
@@ -110,8 +130,12 @@ export type ExamQuestionChoiceCountAggregateInputType = {
   questionId?: true
   label?: true
   text?: true
+  contentFormat?: true
+  imageUrl?: true
   isCorrect?: true
   explanation?: true
+  explanationFormat?: true
+  explanationImageUrl?: true
   sortOrder?: true
   createdAt?: true
   updatedAt?: true
@@ -209,8 +233,12 @@ export type ExamQuestionChoiceGroupByOutputType = {
   questionId: string
   label: string
   text: string
+  contentFormat: $Enums.ExamContentFormat
+  imageUrl: string | null
   isCorrect: boolean
   explanation: string | null
+  explanationFormat: $Enums.ExamContentFormat
+  explanationImageUrl: string | null
   sortOrder: number
   createdAt: Date
   updatedAt: Date
@@ -244,8 +272,12 @@ export type ExamQuestionChoiceWhereInput = {
   questionId?: Prisma.UuidFilter<"ExamQuestionChoice"> | string
   label?: Prisma.StringFilter<"ExamQuestionChoice"> | string
   text?: Prisma.StringFilter<"ExamQuestionChoice"> | string
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionChoice"> | $Enums.ExamContentFormat
+  imageUrl?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
   isCorrect?: Prisma.BoolFilter<"ExamQuestionChoice"> | boolean
   explanation?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionChoice"> | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
   sortOrder?: Prisma.IntFilter<"ExamQuestionChoice"> | number
   createdAt?: Prisma.DateTimeFilter<"ExamQuestionChoice"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamQuestionChoice"> | Date | string
@@ -258,8 +290,12 @@ export type ExamQuestionChoiceOrderByWithRelationInput = {
   questionId?: Prisma.SortOrder
   label?: Prisma.SortOrder
   text?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   isCorrect?: Prisma.SortOrder
   explanation?: Prisma.SortOrderInput | Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -276,8 +312,12 @@ export type ExamQuestionChoiceWhereUniqueInput = Prisma.AtLeast<{
   questionId?: Prisma.UuidFilter<"ExamQuestionChoice"> | string
   label?: Prisma.StringFilter<"ExamQuestionChoice"> | string
   text?: Prisma.StringFilter<"ExamQuestionChoice"> | string
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionChoice"> | $Enums.ExamContentFormat
+  imageUrl?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
   isCorrect?: Prisma.BoolFilter<"ExamQuestionChoice"> | boolean
   explanation?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionChoice"> | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
   sortOrder?: Prisma.IntFilter<"ExamQuestionChoice"> | number
   createdAt?: Prisma.DateTimeFilter<"ExamQuestionChoice"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamQuestionChoice"> | Date | string
@@ -290,8 +330,12 @@ export type ExamQuestionChoiceOrderByWithAggregationInput = {
   questionId?: Prisma.SortOrder
   label?: Prisma.SortOrder
   text?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   isCorrect?: Prisma.SortOrder
   explanation?: Prisma.SortOrderInput | Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -310,8 +354,12 @@ export type ExamQuestionChoiceScalarWhereWithAggregatesInput = {
   questionId?: Prisma.UuidWithAggregatesFilter<"ExamQuestionChoice"> | string
   label?: Prisma.StringWithAggregatesFilter<"ExamQuestionChoice"> | string
   text?: Prisma.StringWithAggregatesFilter<"ExamQuestionChoice"> | string
+  contentFormat?: Prisma.EnumExamContentFormatWithAggregatesFilter<"ExamQuestionChoice"> | $Enums.ExamContentFormat
+  imageUrl?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestionChoice"> | string | null
   isCorrect?: Prisma.BoolWithAggregatesFilter<"ExamQuestionChoice"> | boolean
   explanation?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestionChoice"> | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatWithAggregatesFilter<"ExamQuestionChoice"> | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.StringNullableWithAggregatesFilter<"ExamQuestionChoice"> | string | null
   sortOrder?: Prisma.IntWithAggregatesFilter<"ExamQuestionChoice"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ExamQuestionChoice"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ExamQuestionChoice"> | Date | string
@@ -321,8 +369,12 @@ export type ExamQuestionChoiceCreateInput = {
   id?: string
   label: string
   text: string
+  contentFormat?: $Enums.ExamContentFormat
+  imageUrl?: string | null
   isCorrect?: boolean
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -335,8 +387,12 @@ export type ExamQuestionChoiceUncheckedCreateInput = {
   questionId: string
   label: string
   text: string
+  contentFormat?: $Enums.ExamContentFormat
+  imageUrl?: string | null
   isCorrect?: boolean
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -347,8 +403,12 @@ export type ExamQuestionChoiceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -361,8 +421,12 @@ export type ExamQuestionChoiceUncheckedUpdateInput = {
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -374,8 +438,12 @@ export type ExamQuestionChoiceCreateManyInput = {
   questionId: string
   label: string
   text: string
+  contentFormat?: $Enums.ExamContentFormat
+  imageUrl?: string | null
   isCorrect?: boolean
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -385,8 +453,12 @@ export type ExamQuestionChoiceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -397,8 +469,12 @@ export type ExamQuestionChoiceUncheckedUpdateManyInput = {
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -424,8 +500,12 @@ export type ExamQuestionChoiceCountOrderByAggregateInput = {
   questionId?: Prisma.SortOrder
   label?: Prisma.SortOrder
   text?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   isCorrect?: Prisma.SortOrder
   explanation?: Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -440,8 +520,12 @@ export type ExamQuestionChoiceMaxOrderByAggregateInput = {
   questionId?: Prisma.SortOrder
   label?: Prisma.SortOrder
   text?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   isCorrect?: Prisma.SortOrder
   explanation?: Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -452,8 +536,12 @@ export type ExamQuestionChoiceMinOrderByAggregateInput = {
   questionId?: Prisma.SortOrder
   label?: Prisma.SortOrder
   text?: Prisma.SortOrder
+  contentFormat?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   isCorrect?: Prisma.SortOrder
   explanation?: Prisma.SortOrder
+  explanationFormat?: Prisma.SortOrder
+  explanationImageUrl?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -528,8 +616,12 @@ export type ExamQuestionChoiceCreateWithoutQuestionInput = {
   id?: string
   label: string
   text: string
+  contentFormat?: $Enums.ExamContentFormat
+  imageUrl?: string | null
   isCorrect?: boolean
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -540,8 +632,12 @@ export type ExamQuestionChoiceUncheckedCreateWithoutQuestionInput = {
   id?: string
   label: string
   text: string
+  contentFormat?: $Enums.ExamContentFormat
+  imageUrl?: string | null
   isCorrect?: boolean
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -582,8 +678,12 @@ export type ExamQuestionChoiceScalarWhereInput = {
   questionId?: Prisma.UuidFilter<"ExamQuestionChoice"> | string
   label?: Prisma.StringFilter<"ExamQuestionChoice"> | string
   text?: Prisma.StringFilter<"ExamQuestionChoice"> | string
+  contentFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionChoice"> | $Enums.ExamContentFormat
+  imageUrl?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
   isCorrect?: Prisma.BoolFilter<"ExamQuestionChoice"> | boolean
   explanation?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFilter<"ExamQuestionChoice"> | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.StringNullableFilter<"ExamQuestionChoice"> | string | null
   sortOrder?: Prisma.IntFilter<"ExamQuestionChoice"> | number
   createdAt?: Prisma.DateTimeFilter<"ExamQuestionChoice"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamQuestionChoice"> | Date | string
@@ -593,8 +693,12 @@ export type ExamQuestionChoiceCreateWithoutAnswerChoicesInput = {
   id?: string
   label: string
   text: string
+  contentFormat?: $Enums.ExamContentFormat
+  imageUrl?: string | null
   isCorrect?: boolean
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -606,8 +710,12 @@ export type ExamQuestionChoiceUncheckedCreateWithoutAnswerChoicesInput = {
   questionId: string
   label: string
   text: string
+  contentFormat?: $Enums.ExamContentFormat
+  imageUrl?: string | null
   isCorrect?: boolean
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -633,8 +741,12 @@ export type ExamQuestionChoiceUpdateWithoutAnswerChoicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -646,8 +758,12 @@ export type ExamQuestionChoiceUncheckedUpdateWithoutAnswerChoicesInput = {
   questionId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -657,8 +773,12 @@ export type ExamQuestionChoiceCreateManyQuestionInput = {
   id?: string
   label: string
   text: string
+  contentFormat?: $Enums.ExamContentFormat
+  imageUrl?: string | null
   isCorrect?: boolean
   explanation?: string | null
+  explanationFormat?: $Enums.ExamContentFormat
+  explanationImageUrl?: string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -668,8 +788,12 @@ export type ExamQuestionChoiceUpdateWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -680,8 +804,12 @@ export type ExamQuestionChoiceUncheckedUpdateWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -692,8 +820,12 @@ export type ExamQuestionChoiceUncheckedUpdateManyWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   text?: Prisma.StringFieldUpdateOperationsInput | string
+  contentFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCorrect?: Prisma.BoolFieldUpdateOperationsInput | boolean
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationFormat?: Prisma.EnumExamContentFormatFieldUpdateOperationsInput | $Enums.ExamContentFormat
+  explanationImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -735,8 +867,12 @@ export type ExamQuestionChoiceSelect<ExtArgs extends runtime.Types.Extensions.In
   questionId?: boolean
   label?: boolean
   text?: boolean
+  contentFormat?: boolean
+  imageUrl?: boolean
   isCorrect?: boolean
   explanation?: boolean
+  explanationFormat?: boolean
+  explanationImageUrl?: boolean
   sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -750,8 +886,12 @@ export type ExamQuestionChoiceSelectCreateManyAndReturn<ExtArgs extends runtime.
   questionId?: boolean
   label?: boolean
   text?: boolean
+  contentFormat?: boolean
+  imageUrl?: boolean
   isCorrect?: boolean
   explanation?: boolean
+  explanationFormat?: boolean
+  explanationImageUrl?: boolean
   sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -763,8 +903,12 @@ export type ExamQuestionChoiceSelectUpdateManyAndReturn<ExtArgs extends runtime.
   questionId?: boolean
   label?: boolean
   text?: boolean
+  contentFormat?: boolean
+  imageUrl?: boolean
   isCorrect?: boolean
   explanation?: boolean
+  explanationFormat?: boolean
+  explanationImageUrl?: boolean
   sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -776,14 +920,18 @@ export type ExamQuestionChoiceSelectScalar = {
   questionId?: boolean
   label?: boolean
   text?: boolean
+  contentFormat?: boolean
+  imageUrl?: boolean
   isCorrect?: boolean
   explanation?: boolean
+  explanationFormat?: boolean
+  explanationImageUrl?: boolean
   sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ExamQuestionChoiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "questionId" | "label" | "text" | "isCorrect" | "explanation" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["examQuestionChoice"]>
+export type ExamQuestionChoiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "questionId" | "label" | "text" | "contentFormat" | "imageUrl" | "isCorrect" | "explanation" | "explanationFormat" | "explanationImageUrl" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["examQuestionChoice"]>
 export type ExamQuestionChoiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   question?: boolean | Prisma.ExamQuestionDefaultArgs<ExtArgs>
   answerChoices?: boolean | Prisma.ExamQuestionChoice$answerChoicesArgs<ExtArgs>
@@ -807,8 +955,12 @@ export type $ExamQuestionChoicePayload<ExtArgs extends runtime.Types.Extensions.
     questionId: string
     label: string
     text: string
+    contentFormat: $Enums.ExamContentFormat
+    imageUrl: string | null
     isCorrect: boolean
     explanation: string | null
+    explanationFormat: $Enums.ExamContentFormat
+    explanationImageUrl: string | null
     sortOrder: number
     createdAt: Date
     updatedAt: Date
@@ -1241,8 +1393,12 @@ export interface ExamQuestionChoiceFieldRefs {
   readonly questionId: Prisma.FieldRef<"ExamQuestionChoice", 'String'>
   readonly label: Prisma.FieldRef<"ExamQuestionChoice", 'String'>
   readonly text: Prisma.FieldRef<"ExamQuestionChoice", 'String'>
+  readonly contentFormat: Prisma.FieldRef<"ExamQuestionChoice", 'ExamContentFormat'>
+  readonly imageUrl: Prisma.FieldRef<"ExamQuestionChoice", 'String'>
   readonly isCorrect: Prisma.FieldRef<"ExamQuestionChoice", 'Boolean'>
   readonly explanation: Prisma.FieldRef<"ExamQuestionChoice", 'String'>
+  readonly explanationFormat: Prisma.FieldRef<"ExamQuestionChoice", 'ExamContentFormat'>
+  readonly explanationImageUrl: Prisma.FieldRef<"ExamQuestionChoice", 'String'>
   readonly sortOrder: Prisma.FieldRef<"ExamQuestionChoice", 'Int'>
   readonly createdAt: Prisma.FieldRef<"ExamQuestionChoice", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ExamQuestionChoice", 'DateTime'>

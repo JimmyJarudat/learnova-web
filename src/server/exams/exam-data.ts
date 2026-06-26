@@ -346,8 +346,11 @@ export async function getExamPackagePart(
       items: {
         orderBy: { position: "asc" },
         include: {
+          section: true,
           question: {
             include: {
+              sharedPassage: true,
+              assets: { orderBy: { sortOrder: "asc" } },
               choices: { orderBy: { sortOrder: "asc" } },
             },
           },
@@ -387,11 +390,42 @@ export async function getExamPackagePart(
       id: item.question.id,
       no: item.position,
       score: toNumber(item.score),
+      contentFormat: item.question.contentFormat,
       stem: item.question.stem,
+      inlinePassage: item.question.inlinePassage,
+      imageUrl: item.question.imageUrl,
+      explanation: item.question.explanation,
+      explanationFormat: item.question.explanationFormat,
+      explanationImageUrl: item.question.explanationImageUrl,
+      section: item.section
+        ? {
+            id: item.section.id,
+            title: item.section.title,
+            description: item.section.description,
+            contentFormat: item.section.contentFormat,
+          }
+        : null,
+      passage: item.question.sharedPassage
+        ? {
+            id: item.question.sharedPassage.id,
+            title: item.question.sharedPassage.title,
+            content: item.question.sharedPassage.content,
+            contentFormat: item.question.sharedPassage.contentFormat,
+            imageUrl: item.question.sharedPassage.imageUrl,
+          }
+        : null,
+      assets: item.question.assets.map((asset) => ({
+        id: asset.id,
+        url: asset.url,
+        altText: asset.altText,
+        caption: asset.caption,
+      })),
       choices: item.question.choices.map((choice) => ({
         id: choice.id,
         label: choice.label,
         text: choice.text,
+        contentFormat: choice.contentFormat,
+        imageUrl: choice.imageUrl,
       })),
     })),
   };
@@ -451,8 +485,11 @@ export async function getPracticeSet(categorySlug: string, setSlug: string) {
       items: {
         orderBy: { position: "asc" },
         include: {
+          section: true,
           question: {
             include: {
+              sharedPassage: true,
+              assets: { orderBy: { sortOrder: "asc" } },
               choices: { orderBy: { sortOrder: "asc" } },
             },
           },
@@ -483,11 +520,42 @@ export async function getPracticeSet(categorySlug: string, setSlug: string) {
       id: item.question.id,
       no: item.position,
       score: toNumber(item.score),
+      contentFormat: item.question.contentFormat,
       stem: item.question.stem,
+      inlinePassage: item.question.inlinePassage,
+      imageUrl: item.question.imageUrl,
+      explanation: item.question.explanation,
+      explanationFormat: item.question.explanationFormat,
+      explanationImageUrl: item.question.explanationImageUrl,
+      section: item.section
+        ? {
+            id: item.section.id,
+            title: item.section.title,
+            description: item.section.description,
+            contentFormat: item.section.contentFormat,
+          }
+        : null,
+      passage: item.question.sharedPassage
+        ? {
+            id: item.question.sharedPassage.id,
+            title: item.question.sharedPassage.title,
+            content: item.question.sharedPassage.content,
+            contentFormat: item.question.sharedPassage.contentFormat,
+            imageUrl: item.question.sharedPassage.imageUrl,
+          }
+        : null,
+      assets: item.question.assets.map((asset) => ({
+        id: asset.id,
+        url: asset.url,
+        altText: asset.altText,
+        caption: asset.caption,
+      })),
       choices: item.question.choices.map((choice) => ({
         id: choice.id,
         label: choice.label,
         text: choice.text,
+        contentFormat: choice.contentFormat,
+        imageUrl: choice.imageUrl,
       })),
     })),
   };

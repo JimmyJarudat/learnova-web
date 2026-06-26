@@ -57,10 +57,13 @@ export const ModelName = {
   ExamTrack: 'ExamTrack',
   ExamPackage: 'ExamPackage',
   ExamPackagePart: 'ExamPackagePart',
+  ExamSection: 'ExamSection',
   PracticeCategory: 'PracticeCategory',
   PracticeSet: 'PracticeSet',
   PracticeSetAffiliation: 'PracticeSetAffiliation',
   ExamQuestion: 'ExamQuestion',
+  ExamPassage: 'ExamPassage',
+  ExamQuestionAsset: 'ExamQuestionAsset',
   ExamQuestionChoice: 'ExamQuestionChoice',
   ExamQuestionAcceptedAnswer: 'ExamQuestionAcceptedAnswer',
   ExamPackagePartQuestion: 'ExamPackagePartQuestion',
@@ -197,6 +200,21 @@ export const ExamPackagePartScalarFieldEnum = {
 export type ExamPackagePartScalarFieldEnum = (typeof ExamPackagePartScalarFieldEnum)[keyof typeof ExamPackagePartScalarFieldEnum]
 
 
+export const ExamSectionScalarFieldEnum = {
+  id: 'id',
+  partId: 'partId',
+  practiceSetId: 'practiceSetId',
+  title: 'title',
+  description: 'description',
+  contentFormat: 'contentFormat',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamSectionScalarFieldEnum = (typeof ExamSectionScalarFieldEnum)[keyof typeof ExamSectionScalarFieldEnum]
+
+
 export const PracticeCategoryScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
@@ -246,11 +264,15 @@ export type PracticeSetAffiliationScalarFieldEnum = (typeof PracticeSetAffiliati
 
 export const ExamQuestionScalarFieldEnum = {
   id: 'id',
+  passageId: 'passageId',
   type: 'type',
+  contentFormat: 'contentFormat',
   stem: 'stem',
-  passage: 'passage',
+  inlinePassage: 'inlinePassage',
   imageUrl: 'imageUrl',
   explanation: 'explanation',
+  explanationFormat: 'explanationFormat',
+  explanationImageUrl: 'explanationImageUrl',
   difficulty: 'difficulty',
   tags: 'tags',
   sourceLabel: 'sourceLabel',
@@ -262,13 +284,46 @@ export const ExamQuestionScalarFieldEnum = {
 export type ExamQuestionScalarFieldEnum = (typeof ExamQuestionScalarFieldEnum)[keyof typeof ExamQuestionScalarFieldEnum]
 
 
+export const ExamPassageScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  contentFormat: 'contentFormat',
+  imageUrl: 'imageUrl',
+  sourceLabel: 'sourceLabel',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamPassageScalarFieldEnum = (typeof ExamPassageScalarFieldEnum)[keyof typeof ExamPassageScalarFieldEnum]
+
+
+export const ExamQuestionAssetScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  url: 'url',
+  altText: 'altText',
+  caption: 'caption',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamQuestionAssetScalarFieldEnum = (typeof ExamQuestionAssetScalarFieldEnum)[keyof typeof ExamQuestionAssetScalarFieldEnum]
+
+
 export const ExamQuestionChoiceScalarFieldEnum = {
   id: 'id',
   questionId: 'questionId',
   label: 'label',
   text: 'text',
+  contentFormat: 'contentFormat',
+  imageUrl: 'imageUrl',
   isCorrect: 'isCorrect',
   explanation: 'explanation',
+  explanationFormat: 'explanationFormat',
+  explanationImageUrl: 'explanationImageUrl',
   sortOrder: 'sortOrder',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -282,6 +337,7 @@ export const ExamQuestionAcceptedAnswerScalarFieldEnum = {
   questionId: 'questionId',
   text: 'text',
   normalizedText: 'normalizedText',
+  contentFormat: 'contentFormat',
   isCaseSensitive: 'isCaseSensitive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -293,6 +349,7 @@ export type ExamQuestionAcceptedAnswerScalarFieldEnum = (typeof ExamQuestionAcce
 export const ExamPackagePartQuestionScalarFieldEnum = {
   id: 'id',
   partId: 'partId',
+  sectionId: 'sectionId',
   questionId: 'questionId',
   position: 'position',
   score: 'score',
@@ -305,6 +362,7 @@ export type ExamPackagePartQuestionScalarFieldEnum = (typeof ExamPackagePartQues
 export const PracticeSetQuestionScalarFieldEnum = {
   id: 'id',
   setId: 'setId',
+  sectionId: 'sectionId',
   questionId: 'questionId',
   position: 'position',
   score: 'score',
