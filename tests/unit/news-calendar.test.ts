@@ -22,6 +22,7 @@ describe("news calendar helpers", () => {
     expect(getCalendarMonthLabel(month)).toContain("มิถุนายน");
     expect(getCalendarMonthLabel(month)).toContain("2569");
     expect(addCalendarMonths(month, 1).toISOString()).toBe("2026-07-01T00:00:00.000Z");
+    expect(addCalendarMonths(month, -1).toISOString()).toBe("2026-05-01T00:00:00.000Z");
   });
 
   test("marks only the start and end dates of an application window", () => {

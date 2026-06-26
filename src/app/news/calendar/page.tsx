@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -20,7 +21,6 @@ import { NewsCalendarMonth } from "./calendar-month";
 const calendarTitle = "ปฏิทินรับสมัครสอบครูและสนามสอบ";
 const calendarDescription =
   "รวมกำหนดการรับสมัครสอบครู ข่าวเปิดรับสมัคร และประกาศใกล้หมดเขตจากแหล่งข่าวต้นทาง เพื่อช่วยวางแผนติดตามสนามสอบได้ทันเวลา";
-const weekdayLabels = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
 export const dynamic = "force-dynamic";
 
@@ -93,24 +93,28 @@ export default async function NewsCalendarPage() {
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
       <SiteHeader />
 
-      <section className="bg-[#071f4a] text-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
-          <Link href="/news" className="text-sm font-black text-[#ffd35a] transition hover:text-white">
-            กลับไปข่าวสาร
-          </Link>
-          <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">
-            ปฏิทินรับสมัครสอบครู
-          </h1>
-          <p className="mt-4 max-w-3xl text-base font-semibold leading-7 text-white/85">
-            ดูวันเปิดรับสมัครและวันสุดท้ายของแต่ละสนามได้ในปฏิทิน แล้วเลือกอ่านประกาศฉบับเต็มจากแหล่งข่าวต้นทางได้ทันที
-          </p>
-          <div className="mt-7 grid gap-3 sm:grid-cols-3">
-            {statusCounts.map((item) => (
-              <div key={item.status} className="rounded-lg border border-white/15 bg-white/10 p-4">
-                <p className="text-sm font-bold text-white/70">{getNewsStatusLabel(item.status)}</p>
-                <p className="mt-1 text-3xl font-black text-[#ffd35a]">{item.count}</p>
-              </div>
-            ))}
+      <section className="relative overflow-hidden bg-[#071f4a] bg-[url('/images/news-calendar-hero.png')] bg-cover bg-center bg-no-repeat text-white">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,31,74,0.92)_0%,rgba(7,31,74,0.74)_44%,rgba(7,31,74,0.34)_100%)] max-lg:bg-[linear-gradient(180deg,rgba(7,31,74,0.92)_0%,rgba(7,31,74,0.72)_56%,rgba(7,31,74,0.38)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,211,90,0.24),transparent_28%)]" />
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+          <div className="max-w-3xl">
+            <Link href="/news" className="text-sm font-black text-[#ffd35a] transition hover:text-white">
+              กลับไปข่าวสาร
+            </Link>
+            <h1 className="mt-5 text-4xl font-black leading-tight sm:text-5xl">
+              ปฏิทินรับสมัครสอบครู
+            </h1>
+            <p className="mt-4 max-w-2xl text-base font-semibold leading-7 text-white/85">
+              ดูวันเปิดรับสมัครและวันสุดท้ายของแต่ละสนามได้ในปฏิทิน แล้วเลือกอ่านประกาศฉบับเต็มจากแหล่งข่าวต้นทางได้ทันที
+            </p>
+            <div className="mt-7 grid gap-3 sm:grid-cols-3 lg:max-w-2xl">
+              {statusCounts.map((item) => (
+                <div key={item.status} className="rounded-lg border border-white/15 bg-white/10 p-4 shadow-sm backdrop-blur">
+                  <p className="text-sm font-bold text-white/70">{getNewsStatusLabel(item.status)}</p>
+                  <p className="mt-1 text-3xl font-black text-[#ffd35a]">{item.count}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -204,3 +208,4 @@ export default async function NewsCalendarPage() {
     </main>
   );
 }
+
