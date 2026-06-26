@@ -3,13 +3,11 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/config/site";
-import { examAffiliations, examTrackPackages, getExamMajor, getExamTotals } from "@/lib/exam-mock";
+import { getAllExamPackages } from "@/server/exams/exam-data";
 
 const pageTitle = "ข้อสอบทั้งหมด ครูผู้ช่วยทุกสังกัด";
 const pageDescription =
   "รวมข้อสอบครูผู้ช่วยทุกภาค ทุกวิชา และทุกหน่วยงาน ทั้ง สพฐ. สอศ. สกร. อปท. กทม. พร้อมชุดย้อนหลังและชุดจำลองสนาม";
-
-const totals = getExamTotals();
 
 export const metadata: Metadata = {
   title: pageTitle,
@@ -27,7 +25,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AllExamsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AllExamsPage() {
+  const { affiliations, packages, totals } = await getAllExamPackages();
+
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
       <SiteHeader />
@@ -72,7 +74,7 @@ export default function AllExamsPage() {
             <h2 className="mt-1 text-2xl font-black text-[#071f4a]">กรองตามสังกัดและวิชา</h2>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">
-            {["ทั้งหมด", ...examAffiliations.map((item) => item.label), "ภาค ก", "วิชาชีพครู", "กฎหมาย"].map((item) => (
+            {["ทั้งหมด", ...affiliations.map((item) => item.label), "ภาค ก", "วิชาชีพครู", "กฎหมาย"].map((item) => (
               <button
                 key={item}
                 className="shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-600 shadow-sm transition hover:border-[#0b66c3] hover:text-[#0b66c3]"
@@ -84,32 +86,27 @@ export default function AllExamsPage() {
         </div>
 
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          {examTrackPackages.map((track) => {
-            const affiliation = examAffiliations.find((item) => item.slug === track.affiliationSlug);
-            const major = getExamMajor(track.affiliationSlug, track.majorSlug);
-
-            return (
+          {packages.map((pack) => (
               <Link
-                key={`${track.affiliationSlug}-${track.majorSlug}-${track.slug}`}
-                href={`/exams/${track.affiliationSlug}/track/${track.majorSlug}/${track.slug}`}
+                key={`${pack.affiliationSlug}-${pack.majorSlug}-${pack.slug}`}
+                href={`/exams/${pack.affiliationSlug}/track/${pack.majorSlug}/${pack.slug}`}
                 className="grid gap-4 border-b border-slate-100 p-5 transition last:border-b-0 hover:bg-slate-50 lg:grid-cols-[1fr_90px_120px_100px_110px] lg:items-center"
               >
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{affiliation?.label}</span>
-                    <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{major?.audience}</span>
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{track.year}</span>
+                    <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{pack.affiliationLabel}</span>
+                    <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{pack.majorShortName}</span>
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{pack.year}</span>
                   </div>
-                  <h3 className="mt-3 text-lg font-black leading-7 text-[#071f4a]">{track.title}</h3>
-                  <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">{track.description}</p>
+                  <h3 className="mt-3 text-lg font-black leading-7 text-[#071f4a]">{pack.title}</h3>
+                  <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">{pack.description}</p>
                 </div>
-                <span className="text-sm font-black text-[#0b66c3]">4 ภาค</span>
-                <span className="text-sm font-semibold text-slate-600">{track.label}</span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">{track.status}</span>
+                <span className="text-sm font-black text-[#0b66c3]">{pack.partCount} ภาค</span>
+                <span className="text-sm font-semibold text-slate-600">{pack.label}</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">พร้อมเลือก</span>
                 <span className="text-sm font-black text-[#0b66c3] lg:text-right">เลือกภาค →</span>
               </Link>
-            );
-          })}
+            ))}
         </div>
       </section>
 

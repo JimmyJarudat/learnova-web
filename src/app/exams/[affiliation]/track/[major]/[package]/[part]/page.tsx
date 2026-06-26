@@ -3,65 +3,36 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import {
-  examTrackPackages,
-  getExamAffiliation,
-  getExamMajor,
-  getExamTrackPackage,
-  getExamTrackPart,
-  getExamTrackParts,
-  mockQuestions,
-} from "@/lib/exam-mock";
+import { getExamPackagePart } from "@/server/exams/exam-data";
 
 type TrackPartPageProps = {
   params: Promise<{ affiliation: string; major: string; package: string; part: string }>;
 };
 
-export function generateStaticParams() {
-  return examTrackPackages.flatMap((pack) => {
-    const major = getExamMajor(pack.affiliationSlug, pack.majorSlug);
-
-    if (!major) {
-      return [];
-    }
-
-    return getExamTrackParts(major).map((part) => ({
-      affiliation: pack.affiliationSlug,
-      major: pack.majorSlug,
-      package: pack.slug,
-      part: part.slug,
-    }));
-  });
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: TrackPartPageProps): Promise<Metadata> {
   const { affiliation: affiliationSlug, major: majorSlug, package: packageSlug, part: partSlug } = await params;
-  const affiliation = getExamAffiliation(affiliationSlug);
-  const major = getExamMajor(affiliationSlug, majorSlug);
-  const pack = getExamTrackPackage(affiliationSlug, majorSlug, packageSlug);
-  const part = major ? getExamTrackPart(major, partSlug) : undefined;
+  const part = await getExamPackagePart(affiliationSlug, majorSlug, packageSlug, partSlug);
 
-  if (!affiliation || !major || !pack || !part) {
+  if (!part) {
     return {};
   }
 
   return {
-    title: `${part.title} ${pack.title}`,
-    description: `ทำข้อสอบ ${part.title} สำหรับ ${pack.title} จำนวน ${part.questions} ข้อ ใช้เวลา ${part.durationMinutes} นาที`,
+    title: `${part.title} ${part.package.title}`,
+    description: `ทำข้อสอบ ${part.title} สำหรับ ${part.package.title} จำนวน ${part.totalQuestions} ข้อ ใช้เวลา ${part.durationMinutes} นาที`,
     alternates: {
-      canonical: `/exams/${affiliation.slug}/track/${major.slug}/${pack.slug}/${part.slug}`,
+      canonical: `/exams/${part.affiliation.slug}/track/${part.major.slug}/${part.package.slug}/${part.slug}`,
     },
   };
 }
 
 export default async function TrackPartPage({ params }: TrackPartPageProps) {
   const { affiliation: affiliationSlug, major: majorSlug, package: packageSlug, part: partSlug } = await params;
-  const affiliation = getExamAffiliation(affiliationSlug);
-  const major = getExamMajor(affiliationSlug, majorSlug);
-  const pack = getExamTrackPackage(affiliationSlug, majorSlug, packageSlug);
-  const part = major ? getExamTrackPart(major, partSlug) : undefined;
+  const part = await getExamPackagePart(affiliationSlug, majorSlug, packageSlug, partSlug);
 
-  if (!affiliation || !major || !pack || !part) {
+  if (!part) {
     notFound();
   }
 
@@ -72,12 +43,12 @@ export default async function TrackPartPage({ params }: TrackPartPageProps) {
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div>
-            <Link href={`/exams/${affiliation.slug}/track/${major.slug}/${pack.slug}`} className="text-sm font-black text-[#0b66c3] hover:text-[#071f4a]">
+            <Link href={`/exams/${part.affiliation.slug}/track/${part.major.slug}/${part.package.slug}`} className="text-sm font-black text-[#0b66c3] hover:text-[#071f4a]">
               กลับไปเลือกภาคข้อสอบ
             </Link>
             <h1 className="mt-2 text-2xl font-black text-[#071f4a]">{part.title}</h1>
             <p className="mt-1 text-sm font-semibold text-slate-500">
-              {affiliation.label} | {major.audience} | {pack.year} {pack.label} | {part.questions} ข้อ | {part.durationMinutes} นาที
+              {part.affiliation.label} | {part.major.shortName} | {part.package.year} {part.package.label} | {part.totalQuestions} ข้อ | {part.durationMinutes} นาที
             </p>
           </div>
           <div className="grid grid-cols-3 gap-2 text-center">
@@ -87,7 +58,7 @@ export default async function TrackPartPage({ params }: TrackPartPageProps) {
             </div>
             <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-slate-200">
               <p className="text-xs font-bold text-slate-500">ทำแล้ว</p>
-              <p className="text-xl font-black text-[#071f4a]">3/{part.questions}</p>
+              <p className="text-xl font-black text-[#071f4a]">0/{part.totalQuestions}</p>
             </div>
             <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-slate-200">
               <p className="text-xs font-bold text-slate-500">ระดับ</p>
@@ -99,39 +70,49 @@ export default async function TrackPartPage({ params }: TrackPartPageProps) {
 
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_320px] lg:px-8">
         <div className="space-y-5">
-          {mockQuestions.map((question) => (
-            <article key={question.no} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          {part.questions.length > 0 ? (
+            part.questions.map((question) => (
+              <article key={question.id} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-black text-[#0b66c3]">ข้อ {question.no}</p>
-                  <h2 className="mt-2 text-xl font-black leading-8 text-[#071f4a]">{question.question}</h2>
+                  <h2 className="mt-2 text-xl font-black leading-8 text-[#071f4a]">{question.stem}</h2>
                 </div>
                 <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">
-                  1 คะแนน
+                  {question.score} คะแนน
                 </span>
               </div>
 
               <div className="mt-5 grid gap-3">
-                {question.choices.map((choice, index) => (
-                  <label key={choice} className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-[#0b66c3] hover:bg-white">
-                    <input type="radio" name={`question-${question.no}`} className="mt-1 h-4 w-4 accent-[#0b66c3]" defaultChecked={question.no === 1 && index === 1} />
-                    <span className="text-sm font-semibold leading-6 text-slate-700">{choice}</span>
+                {question.choices.map((choice) => (
+                  <label key={choice.id} className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-[#0b66c3] hover:bg-white">
+                    <input type="radio" name={`question-${question.id}`} className="mt-1 h-4 w-4 accent-[#0b66c3]" />
+                    <span className="text-sm font-semibold leading-6 text-slate-700">{choice.label}. {choice.text}</span>
                   </label>
                 ))}
               </div>
             </article>
-          ))}
+            ))
+          ) : (
+            <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
+              <p className="text-sm font-black text-[#0b66c3]">ยังไม่มีคำถามในชุดนี้</p>
+              <h2 className="mt-2 text-2xl font-black text-[#071f4a]">เพิ่มข้อสอบลงฐานข้อมูลแล้วหน้านี้จะแสดงอัตโนมัติ</h2>
+              <p className="mx-auto mt-3 max-w-xl text-sm font-semibold leading-6 text-slate-500">
+                ตอนนี้ข้อมูลชุด/ภาคถูกดึงจากฐานข้อมูลจริงแล้ว เหลือเพียงเพิ่มคำถามและตัวเลือกเข้า `exam_questions` พร้อมผูกเข้ากับภาคนี้
+              </p>
+            </div>
+          )}
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
             <h2 className="text-xl font-black text-[#071f4a]">สารบัญข้อสอบ</h2>
             <div className="mt-4 grid grid-cols-5 gap-2">
-              {Array.from({ length: 20 }).map((_, index) => (
+              {Array.from({ length: Math.max(part.totalQuestions, part.questions.length, 1) }).map((_, index) => (
                 <button
                   key={index + 1}
                   className={`h-10 rounded-lg text-sm font-black ${
-                    index < 3 ? "bg-[#0b66c3] text-white" : "bg-slate-100 text-slate-500"
+                    index < part.questions.length ? "bg-[#0b66c3] text-white" : "bg-slate-100 text-slate-500"
                   }`}
                 >
                   {index + 1}

@@ -3,19 +3,17 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { getPracticeCategory, getPracticeSets, practiceCategories } from "@/lib/exam-mock";
+import { getPracticeCategory } from "@/server/exams/exam-data";
 
 type PracticeCategoryPageProps = {
   params: Promise<{ category: string }>;
 };
 
-export function generateStaticParams() {
-  return practiceCategories.map((category) => ({ category: category.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PracticeCategoryPageProps): Promise<Metadata> {
   const { category: categorySlug } = await params;
-  const category = getPracticeCategory(categorySlug);
+  const category = await getPracticeCategory(categorySlug);
 
   if (!category) {
     return {};
@@ -32,14 +30,11 @@ export async function generateMetadata({ params }: PracticeCategoryPageProps): P
 
 export default async function PracticeCategoryPage({ params }: PracticeCategoryPageProps) {
   const { category: categorySlug } = await params;
-  const category = getPracticeCategory(categorySlug);
+  const category = await getPracticeCategory(categorySlug);
 
   if (!category) {
     notFound();
   }
-
-  const sets = getPracticeSets(category.slug);
-
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
       <SiteHeader />
@@ -75,7 +70,7 @@ export default async function PracticeCategoryPage({ params }: PracticeCategoryP
         </div>
 
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          {sets.map((set) => (
+          {category.sets.map((set) => (
             <Link
               key={set.slug}
               href={`/exams/practice/${category.slug}/${set.slug}`}
@@ -84,13 +79,13 @@ export default async function PracticeCategoryPage({ params }: PracticeCategoryP
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{category.shortTitle}</span>
-                  <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{set.scope}</span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{set.year}</span>
+                  <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{set.scopeLabel}</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{set.yearLabel}</span>
                 </div>
                 <h3 className="mt-3 text-lg font-black leading-7 text-[#071f4a]">{set.title}</h3>
                 <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">{set.description}</p>
               </div>
-              <span className="text-sm font-black text-[#0b66c3]">{set.questions} ข้อ</span>
+              <span className="text-sm font-black text-[#0b66c3]">{set.totalQuestions} ข้อ</span>
               <span className="text-sm font-semibold text-slate-600">{set.durationMinutes} นาที</span>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">{set.difficulty}</span>
               <span className="text-sm font-black text-[#0b66c3] lg:text-right">เริ่มทำ →</span>

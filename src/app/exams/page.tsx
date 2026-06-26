@@ -4,21 +4,11 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/config/site";
-import {
-  examAffiliations,
-  examTrackPackages,
-  getExamMajor,
-  getExamTotals,
-  practiceCategories,
-  practiceSets,
-} from "@/lib/exam-mock";
+import { getExamOverview } from "@/server/exams/exam-data";
 
 const pageTitle = "คลังข้อสอบครูผู้ช่วย แยกตามสังกัดและวิชา";
 const pageDescription =
   "เลือกข้อสอบครูผู้ช่วยตามสังกัด เช่น สพฐ. สอศ. สกร. อปท. กทม. แล้วเจาะต่อเป็น ภาค ก วิชาชีพครู กฎหมายการศึกษา และชุดข้อสอบหลายปี";
-
-const totals = getExamTotals();
-const popularTracks = examTrackPackages.filter((pack) => pack.slug === "full-mock-1").slice(0, 4);
 
 export const metadata: Metadata = {
   title: pageTitle,
@@ -52,7 +42,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ExamsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ExamsPage() {
+  const { affiliations, practiceCategories, popularPackages, totals } = await getExamOverview();
+
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
       <SiteHeader />
@@ -120,25 +114,21 @@ export default function ExamsPage() {
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {practiceCategories.map((category) => {
-            const sets = practiceSets.filter((set) => set.categorySlug === category.slug);
-
-            return (
+          {practiceCategories.map((category) => (
               <Link
                 key={category.slug}
                 href={`/exams/practice/${category.slug}`}
                 className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
               >
-                <span className={`block h-1.5 w-16 rounded-full ${category.color}`} />
+                <span className={`block h-1.5 w-16 rounded-full ${category.colorClass}`} />
                 <h3 className="mt-4 text-xl font-black leading-7 text-[#071f4a] group-hover:text-[#0b66c3]">{category.title}</h3>
                 <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{category.description}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
-                  <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{sets.length} ชุด</span>
+                  <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{category.setCount} ชุด</span>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">ทุกสังกัด</span>
                 </div>
               </Link>
-            );
-          })}
+            ))}
         </div>
       </section>
 
@@ -172,14 +162,16 @@ export default function ExamsPage() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-5">
-          {examAffiliations.map((affiliation) => (
+          {affiliations.map((affiliation) => (
             <Link
               key={affiliation.slug}
               href={`/exams/${affiliation.slug}`}
               className="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className={`${affiliation.color} relative h-40 overflow-hidden`}>
-                <Image src={affiliation.image} alt="" fill sizes="(min-width: 1024px) 20vw, 100vw" className="object-contain object-bottom transition group-hover:scale-105" />
+              <div className={`${affiliation.colorClass} relative h-40 overflow-hidden`}>
+                {affiliation.imageUrl ? (
+                  <Image src={affiliation.imageUrl} alt="" fill sizes="(min-width: 1024px) 20vw, 100vw" className="object-contain object-bottom transition group-hover:scale-105" />
+                ) : null}
                 <span className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-black text-[#071f4a]">
                   {affiliation.label}
                 </span>
@@ -187,7 +179,7 @@ export default function ExamsPage() {
               <div className="p-5">
                 <h3 className="text-lg font-black text-[#071f4a] group-hover:text-[#0b66c3]">{affiliation.label}</h3>
                 <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-slate-600">{affiliation.description}</p>
-                <p className="mt-4 text-sm font-black text-[#0b66c3]">ดูวิชาของสังกัดนี้ →</p>
+                <p className="mt-4 text-sm font-black text-[#0b66c3]">{affiliation.trackCount} เอก | {affiliation.packageCount} ชุด →</p>
               </div>
             </Link>
           ))}
@@ -204,28 +196,23 @@ export default function ExamsPage() {
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
-            {popularTracks.map((track) => {
-              const affiliation = examAffiliations.find((item) => item.slug === track.affiliationSlug);
-              const major = getExamMajor(track.affiliationSlug, track.majorSlug);
-
-              return (
+            {popularPackages.map((pack) => (
                 <Link
-                  key={`${track.affiliationSlug}-${track.majorSlug}-${track.slug}`}
-                  href={`/exams/${track.affiliationSlug}/track/${track.majorSlug}/${track.slug}`}
+                  key={`${pack.affiliationSlug}-${pack.majorSlug}-${pack.slug}`}
+                  href={`/exams/${pack.affiliationSlug}/track/${pack.majorSlug}/${pack.slug}`}
                   className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{affiliation?.label}</span>
-                    <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{major?.audience}</span>
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{track.year}</span>
+                    <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{pack.affiliationLabel}</span>
+                    <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{pack.majorShortName}</span>
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{pack.year}</span>
                   </div>
-                  <h3 className="mt-4 text-lg font-black leading-7 text-[#071f4a]">{track.title}</h3>
+                  <h3 className="mt-4 text-lg font-black leading-7 text-[#071f4a]">{pack.title}</h3>
                   <p className="mt-2 text-sm font-semibold text-slate-600">
-                    เลือกทำ ภาค ก, วิชาชีพครู, ภาค ข {major?.audience} หรือ ภาค ค
+                    เลือกทำ ภาค ก, วิชาชีพครู, ภาค ข {pack.majorShortName} หรือ ภาค ค
                   </p>
                 </Link>
-              );
-            })}
+              ))}
           </div>
         </div>
 

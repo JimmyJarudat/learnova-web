@@ -4,19 +4,17 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { examAffiliations, getExamAffiliation, getExamMajors, getExamTrackPackages } from "@/lib/exam-mock";
+import { getAffiliationWithTracks } from "@/server/exams/exam-data";
 
 type AffiliationPageProps = {
   params: Promise<{ affiliation: string }>;
 };
 
-export function generateStaticParams() {
-  return examAffiliations.map((affiliation) => ({ affiliation: affiliation.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: AffiliationPageProps): Promise<Metadata> {
   const { affiliation: slug } = await params;
-  const affiliation = getExamAffiliation(slug);
+  const affiliation = await getAffiliationWithTracks(slug);
 
   if (!affiliation) {
     return {};
@@ -33,19 +31,16 @@ export async function generateMetadata({ params }: AffiliationPageProps): Promis
 
 export default async function ExamAffiliationPage({ params }: AffiliationPageProps) {
   const { affiliation: slug } = await params;
-  const affiliation = getExamAffiliation(slug);
+  const affiliation = await getAffiliationWithTracks(slug);
 
   if (!affiliation) {
     notFound();
   }
-
-  const majors = getExamMajors(affiliation.slug);
-
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
       <SiteHeader />
 
-      <section className={`${affiliation.color} relative overflow-hidden text-white`}>
+      <section className={`${affiliation.colorClass} relative overflow-hidden text-white`}>
         <div className="absolute inset-0 bg-gradient-to-r from-[#071f4a]/94 via-[#071f4a]/72 to-transparent" />
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_360px] lg:px-8 lg:py-16">
           <div className="relative z-10">
@@ -61,7 +56,9 @@ export default async function ExamAffiliationPage({ params }: AffiliationPagePro
           </div>
 
           <div className="relative z-10 hidden min-h-72 lg:block">
-            <Image src={affiliation.image} alt="" fill priority sizes="360px" className="object-contain object-bottom" />
+            {affiliation.imageUrl ? (
+              <Image src={affiliation.imageUrl} alt="" fill priority sizes="360px" className="object-contain object-bottom" />
+            ) : null}
           </div>
         </div>
       </section>
@@ -76,25 +73,21 @@ export default async function ExamAffiliationPage({ params }: AffiliationPagePro
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {majors.map((major) => {
-            const packages = getExamTrackPackages(affiliation.slug, major.slug);
-
-            return (
+          {affiliation.tracks.map((track) => (
               <Link
-                key={major.slug}
-                href={`/exams/${affiliation.slug}/track/${major.slug}`}
+                key={track.major.slug}
+                href={`/exams/${affiliation.slug}/track/${track.major.slug}`}
                 className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{affiliation.label}</span>
-                  <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{packages.length} ชุดปี</span>
+                  <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{track.packageCount} ชุดปี</span>
                 </div>
-                <h3 className="mt-4 text-2xl font-black text-[#071f4a] group-hover:text-[#0b66c3]">{major.audience}</h3>
-                <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{major.focus}</p>
+                <h3 className="mt-4 text-2xl font-black text-[#071f4a] group-hover:text-[#0b66c3]">{track.major.shortName}</h3>
+                <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{track.major.description}</p>
                 <p className="mt-5 text-sm font-black text-[#0b66c3]">เลือกปีและชุดของเอกนี้ →</p>
               </Link>
-            );
-          })}
+            ))}
         </div>
       </section>
 

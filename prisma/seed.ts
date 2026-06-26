@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { ExamPartKind, PrismaClient } from "../src/generated/prisma/client";
 import { hashPassword } from "../src/server/auth/password";
 import { encryptText } from "../src/utils/encryption";
 
@@ -310,6 +310,72 @@ const practiceCategorySeeds = [
   },
 ];
 
+const examPackageSeeds = [
+  {
+    slug: "2568-set-1",
+    title: "ปี 2568 ชุดที่ 1",
+    year: "2568",
+    label: "ชุดที่ 1",
+    description: "ชุดล่าสุดสำหรับลองทำตามเส้นทางสังกัดและเอกที่เลือก",
+    sortOrder: 10,
+  },
+  {
+    slug: "2567-set-1",
+    title: "ปี 2567 ชุดที่ 1",
+    year: "2567",
+    label: "ชุดย้อนหลัง",
+    description: "ทบทวนแนวข้อสอบย้อนหลังและจุดที่ออกซ้ำบ่อย",
+    sortOrder: 20,
+  },
+  {
+    slug: "full-mock-1",
+    title: "ชุดจำลองสนามเต็มรูปแบบ 1",
+    year: "จำลอง",
+    label: "Full Mock",
+    description: "จำลองสนามแบบแยกภาค เพื่อเลือกฝึกตามจุดที่ต้องการก่อนสอบจริง",
+    sortOrder: 30,
+  },
+];
+
+const practiceSetSeeds = [
+  {
+    suffix: "foundation-1",
+    titlePrefix: "ชุดพื้นฐาน 1",
+    scopeLabel: "ทุกสังกัด",
+    yearLabel: "พื้นฐาน",
+    description: "เริ่มจากข้อพื้นฐานและแนวที่ควรรู้ก่อนขยับไปชุดจับเวลา",
+    durationMinutes: 30,
+    totalQuestions: 30,
+    totalScore: 30,
+    difficulty: "ง่าย-กลาง",
+    sortOrder: 10,
+  },
+  {
+    suffix: "mixed-2568",
+    titlePrefix: "รวมแนว 2568",
+    scopeLabel: "ทุกสังกัด",
+    yearLabel: "2568",
+    description: "รวมโจทย์หลายแนวในชุดเดียว เหมาะกับการวัดภาพรวมก่อนสอบ",
+    durationMinutes: 45,
+    totalQuestions: 50,
+    totalScore: 50,
+    difficulty: "กลาง",
+    sortOrder: 20,
+  },
+  {
+    suffix: "speed-30",
+    titlePrefix: "จับเวลา 30 ข้อ",
+    scopeLabel: "ทุกสังกัด",
+    yearLabel: "จับเวลา",
+    description: "ฝึกทำเร็ว คุมเวลา และจับจังหวะการตัดตัวเลือก",
+    durationMinutes: 25,
+    totalQuestions: 30,
+    totalScore: 30,
+    difficulty: "กลาง",
+    sortOrder: 30,
+  },
+];
+
 function encryptConfigValue(value: string) {
   if (!value) {
     return "";
@@ -387,6 +453,10 @@ async function seedExamMasterData() {
   let majorCount = 0;
   let trackCount = 0;
   let practiceCategoryCount = 0;
+  let packageCount = 0;
+  let packagePartCount = 0;
+  let practiceSetCount = 0;
+  let practiceSetAffiliationCount = 0;
 
   for (const affiliation of examAffiliationSeeds) {
     await prisma.examAffiliation.upsert({
@@ -475,8 +545,187 @@ async function seedExamMasterData() {
     practiceCategoryCount += 1;
   }
 
+  const affiliations = await prisma.examAffiliation.findMany({
+    where: { isActive: true },
+    select: { id: true, label: true, slug: true },
+  });
+  const tracks = await prisma.examTrack.findMany({
+    where: { isActive: true },
+    include: {
+      affiliation: { select: { label: true } },
+      major: { select: { name: true, shortName: true } },
+    },
+  });
+
+  for (const track of tracks) {
+    for (const packageSeed of examPackageSeeds) {
+      const examPackage = await prisma.examPackage.upsert({
+        where: {
+          trackId_slug: {
+            trackId: track.id,
+            slug: packageSeed.slug,
+          },
+        },
+        create: {
+          trackId: track.id,
+          slug: packageSeed.slug,
+          title: `${track.affiliation.label} ${track.major.name} ${packageSeed.title}`,
+          year: packageSeed.year,
+          label: packageSeed.label,
+          description: packageSeed.description,
+          sortOrder: packageSeed.sortOrder,
+        },
+        update: {
+          title: `${track.affiliation.label} ${track.major.name} ${packageSeed.title}`,
+          year: packageSeed.year,
+          label: packageSeed.label,
+          description: packageSeed.description,
+          sortOrder: packageSeed.sortOrder,
+          isActive: true,
+        },
+      });
+      packageCount += 1;
+
+      const packagePartSeeds = [
+        {
+          slug: "part-a-general",
+          kind: ExamPartKind.PART_A_GENERAL,
+          title: "ภาค ก ความรู้ความสามารถทั่วไป",
+          shortTitle: "ภาค ก",
+          audienceLabel: "ทุกเอก",
+          description: "ความสามารถทั่วไป ภาษาไทย คณิต เหตุผล และความรู้รอบตัว",
+          durationMinutes: 60,
+          totalQuestions: 60,
+          totalScore: 60,
+          difficulty: "กลาง",
+          sortOrder: 10,
+        },
+        {
+          slug: "part-b-profession",
+          kind: ExamPartKind.PART_B_PROFESSION,
+          title: "ภาค ข วิชาชีพครู",
+          shortTitle: "วิชาชีพครู",
+          audienceLabel: "ทุกเอก",
+          description: "หลักสูตร การสอน จิตวิทยา การวัดผล และจรรยาบรรณครู",
+          durationMinutes: 60,
+          totalQuestions: 50,
+          totalScore: 50,
+          difficulty: "กลาง",
+          sortOrder: 20,
+        },
+        {
+          slug: "part-b-major",
+          kind: ExamPartKind.PART_B_MAJOR,
+          title: `ภาค ข ${track.major.name}`,
+          shortTitle: track.major.shortName ?? track.major.name,
+          audienceLabel: track.major.name,
+          description: `ข้อสอบเฉพาะเอกสำหรับ ${track.major.name} ตามสนามที่เลือก`,
+          durationMinutes: 60,
+          totalQuestions: 50,
+          totalScore: 50,
+          difficulty: "กลาง-ยาก",
+          sortOrder: 30,
+        },
+        {
+          slug: "part-c-interview",
+          kind: ExamPartKind.PART_C_INTERVIEW,
+          title: "ภาค ค ความเหมาะสมกับตำแหน่ง",
+          shortTitle: "ภาค ค",
+          audienceLabel: "สัมภาษณ์",
+          description: "แนวคำถามสัมภาษณ์ แฟ้มสะสมงาน และสถานการณ์ในห้องเรียน",
+          durationMinutes: 30,
+          totalQuestions: 20,
+          totalScore: 20,
+          difficulty: "ประเมินตัวตน",
+          sortOrder: 40,
+        },
+      ];
+
+      for (const partSeed of packagePartSeeds) {
+        await prisma.examPackagePart.upsert({
+          where: {
+            packageId_slug: {
+              packageId: examPackage.id,
+              slug: partSeed.slug,
+            },
+          },
+          create: {
+            packageId: examPackage.id,
+            ...partSeed,
+          },
+          update: {
+            ...partSeed,
+            isActive: true,
+          },
+        });
+        packagePartCount += 1;
+      }
+    }
+  }
+
+  const categories = await prisma.practiceCategory.findMany({
+    where: { isActive: true },
+    select: { id: true, slug: true, title: true, shortTitle: true },
+  });
+
+  for (const category of categories) {
+    for (const setSeed of practiceSetSeeds) {
+      const practiceSet = await prisma.practiceSet.upsert({
+        where: {
+          categoryId_slug: {
+            categoryId: category.id,
+            slug: `${category.slug}-${setSeed.suffix}`,
+          },
+        },
+        create: {
+          categoryId: category.id,
+          slug: `${category.slug}-${setSeed.suffix}`,
+          title: `${category.shortTitle ?? category.title} ${setSeed.titlePrefix}`,
+          scopeLabel: setSeed.scopeLabel,
+          yearLabel: setSeed.yearLabel,
+          description: setSeed.description,
+          durationMinutes: setSeed.durationMinutes,
+          totalQuestions: setSeed.totalQuestions,
+          totalScore: setSeed.totalScore,
+          difficulty: setSeed.difficulty,
+          sortOrder: setSeed.sortOrder,
+        },
+        update: {
+          title: `${category.shortTitle ?? category.title} ${setSeed.titlePrefix}`,
+          scopeLabel: setSeed.scopeLabel,
+          yearLabel: setSeed.yearLabel,
+          description: setSeed.description,
+          durationMinutes: setSeed.durationMinutes,
+          totalQuestions: setSeed.totalQuestions,
+          totalScore: setSeed.totalScore,
+          difficulty: setSeed.difficulty,
+          sortOrder: setSeed.sortOrder,
+          isActive: true,
+        },
+      });
+      practiceSetCount += 1;
+
+      for (const affiliation of affiliations) {
+        await prisma.practiceSetAffiliation.upsert({
+          where: {
+            practiceSetId_affiliationId: {
+              practiceSetId: practiceSet.id,
+              affiliationId: affiliation.id,
+            },
+          },
+          create: {
+            practiceSetId: practiceSet.id,
+            affiliationId: affiliation.id,
+          },
+          update: {},
+        });
+        practiceSetAffiliationCount += 1;
+      }
+    }
+  }
+
   console.log(
-    `Seeded exam master data: ${affiliationCount} affiliations, ${majorCount} majors, ${trackCount} tracks, ${practiceCategoryCount} practice categories`,
+    `Seeded exam master data: ${affiliationCount} affiliations, ${majorCount} majors, ${trackCount} tracks, ${practiceCategoryCount} practice categories, ${packageCount} packages, ${packagePartCount} parts, ${practiceSetCount} practice sets, ${practiceSetAffiliationCount} practice links`,
   );
 }
 
