@@ -102,9 +102,28 @@ async function getNewsData(query: string, categorySlug: string, requestedPage: s
   const articleWhere = { ...where, status: { in: visibleStatuses } } satisfies ArticleWhere;
   const [categories, totalCount] = await Promise.all([
     prisma.newsCategory.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        articles: {
+          some: {
+            status: { in: visibleStatuses },
+          },
+        },
+      },
       orderBy: [{ sortOrder: "asc" }, { nameTh: "asc" }],
-      select: { nameTh: true, slug: true },
+      select: {
+        nameTh: true,
+        slug: true,
+        _count: {
+          select: {
+            articles: {
+              where: {
+                status: { in: visibleStatuses },
+              },
+            },
+          },
+        },
+      },
     }),
     prisma.newsArticle.count({ where: articleWhere }),
   ]);
@@ -244,8 +263,8 @@ export default async function NewsPage({
 
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-            <form className="flex min-h-12 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div className="grid gap-4">
+            <form className="flex min-h-12 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
               <label htmlFor="news-search" className="sr-only">
                 ค้นหาข่าว
               </label>
@@ -266,10 +285,10 @@ export default async function NewsPage({
               </button>
             </form>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex max-w-full gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
               <Link
                 href={buildNewsHref({ query })}
-                className={`rounded-lg px-4 py-2 text-sm font-black transition ${
+                className={`shrink-0 rounded-lg px-4 py-2 text-sm font-black transition ${
                   selectedCategory === ""
                     ? "bg-[#071f4a] text-white"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -281,13 +300,14 @@ export default async function NewsPage({
                 <Link
                   key={category.slug}
                   href={buildNewsHref({ categorySlug: category.slug, query })}
-                  className={`rounded-lg px-4 py-2 text-sm font-black transition ${
+                  className={`shrink-0 rounded-lg px-4 py-2 text-sm font-black transition ${
                     selectedCategory === category.slug
                       ? "bg-[#071f4a] text-white"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
                   {category.nameTh}
+                  <span className="ml-1 text-xs opacity-70">({category._count.articles})</span>
                 </Link>
               ))}
             </div>

@@ -159,8 +159,30 @@ model NewsArticle {
 
   tags              String[]      @default([])
 
-  /// draft, published, archived, rejected
-  status            String        @default("draft") @db.VarChar(30)
+  /// draft, published, upcoming, open, closing_soon, closed, cancelled, archived
+  status            String        @default("published") @db.VarChar(30)
+
+  /// วันที่เริ่มรับสมัคร ใช้กับข่าวสมัครงาน/เปิดสอบ
+  applicationStart  DateTime?     @map("application_start") @db.Date
+
+  /// วันที่สิ้นสุดรับสมัคร ใช้คำนวณ open / closing_soon / closed
+  applicationEnd    DateTime?     @map("application_end") @db.Date
+
+  /// เวลาที่ระบบ mark ว่าปิดรับสมัครแล้ว
+  closedAt          DateTime?     @map("closed_at") @db.Timestamptz(6)
+
+  /// เวลาที่ mark ว่าประกาศถูกยกเลิก
+  cancelledAt       DateTime?     @map("cancelled_at") @db.Timestamptz(6)
+
+  /// เวลาที่เก็บถาวร
+  archivedAt        DateTime?     @map("archived_at") @db.Timestamptz(6)
+
+  /// id จากต้นทาง เช่น JOB OCSC: 10859
+  /// ใช้สำหรับ sync/upsert คู่กับ sourceId
+  externalId        String?       @map("external_id") @db.VarChar(100)
+
+  /// เวลาล่าสุดที่ workflow ยังเจอข่าวนี้จากต้นทาง
+  lastSeenAt        DateTime?     @map("last_seen_at") @db.Timestamptz(6)
 
   relevanceScore    Int           @default(0) @map("relevance_score")
   viewCount         Int           @default(0) @map("view_count")
@@ -184,6 +206,10 @@ model NewsArticle {
   @@index([sourceId])
   @@index([publishedAt])
   @@index([sourcePublishedAt])
+  @@index([applicationStart])
+  @@index([applicationEnd])
+  @@index([lastSeenAt])
+  @@index([sourceId, externalId])
   @@index([relevanceScore])
   @@index([viewCount])
   @@index([isFeatured])
