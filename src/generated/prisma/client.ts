@@ -47,6 +47,102 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model ExamAffiliation
+ * เก็บสังกัด/สนามสอบ เช่น สพฐ. สอศ. สกร. อปท. กทม.
+ * ใช้เป็นด่านแรกของ flow: ผู้ใช้เลือกสังกัดก่อน แล้วค่อยเลือกเอกและชุดข้อสอบ
+ */
+export type ExamAffiliation = Prisma.ExamAffiliationModel
+/**
+ * Model ExamMajor
+ * เก็บเอก/สาขาที่ผู้ใช้สมัครสอบ เช่น เอกคอมพิวเตอร์ เอกคณิตศาสตร์ เอกภาษาอังกฤษ
+ * แยกออกจากภาคสอบ เพราะเอกไม่ใช่ภาค ก/ข/ค แต่เป็นเป้าหมายของผู้สอบ
+ */
+export type ExamMajor = Prisma.ExamMajorModel
+/**
+ * Model ExamTrack
+ * ผูกสังกัดกับเอก เป็นเส้นทางสอบของผู้ใช้ เช่น สพฐ. + เอกคอมพิวเตอร์
+ * หน้า /exams/obec ให้เลือก record กลุ่มนี้ก่อน เพื่อไม่ให้ผู้ใช้ต้องไล่หา ภาค ข ของเอกเอง
+ */
+export type ExamTrack = Prisma.ExamTrackModel
+/**
+ * Model ExamPackage
+ * เก็บปี/ชุดข้อสอบของเส้นทางนั้น เช่น สพฐ. เอกคอม ปี 2567 ชุดที่ 1
+ * ผู้ใช้เลือกชุดนี้ก่อน แล้วหน้าถัดไปจะให้เลือกว่าจะทำ ภาค ก ภาค ข วิชาชีพ ภาค ข วิชาเอก หรือ ภาค ค
+ */
+export type ExamPackage = Prisma.ExamPackageModel
+/**
+ * Model ExamPackagePart
+ * เก็บภาคที่อยู่ในชุดข้อสอบหนึ่งชุด เช่น ภาค ก, ภาค ข วิชาชีพครู, ภาค ข เอกคอม, ภาค ค
+ * หน้านี้คือจุดที่ผู้ใช้เลือกว่าจะลองทำอันไหน หลังจากเลือกสังกัด เอก และปี/ชุดแล้ว
+ */
+export type ExamPackagePart = Prisma.ExamPackagePartModel
+/**
+ * Model PracticeCategory
+ * เก็บหมวดฝึกแบบไม่ต้องเลือกสังกัด/เอกก่อน เช่น ภาค ก รวมทุกสังกัด กฎหมาย วิชาชีพครู
+ * ใช้แก้ปัญหาผู้ใช้ที่อยากฝึก ภาค ก หลายชุดติดกันโดยไม่เข้า flow สังกัด-เอก
+ */
+export type PracticeCategory = Prisma.PracticeCategoryModel
+/**
+ * Model PracticeSet
+ * เก็บชุดฝึกตามหมวด เช่น ภาค ก ชุดพื้นฐาน 1, ภาค ก จับเวลา 30 ข้อ
+ * ชุดนี้อยู่นอกเส้นทางสังกัด-เอก และเหมาะกับการฝึกหัวข้อซ้ำหลายชุด
+ */
+export type PracticeSet = Prisma.PracticeSetModel
+/**
+ * Model PracticeSetAffiliation
+ * ผูกชุดฝึกตามหมวดกับหลายสังกัด เช่น ภาค ก ชุดเดียวใช้ได้ทั้ง สพฐ. สอศ. สกร.
+ * ใช้ filter ชุดฝึกตามสังกัดได้จริง แทนการพึ่งข้อความ scope_label อย่างเดียว
+ */
+export type PracticeSetAffiliation = Prisma.PracticeSetAffiliationModel
+/**
+ * Model ExamQuestion
+ * คลังคำถามกลาง ใช้ซ้ำได้ทั้งชุดตามสนามและชุดฝึกตามหมวด
+ * คำถามหนึ่งข้ออาจถูกนำไปอยู่หลายชุด ผ่านตาราง join ของ package part หรือ practice set
+ */
+export type ExamQuestion = Prisma.ExamQuestionModel
+/**
+ * Model ExamQuestionChoice
+ * เก็บตัวเลือกของคำถาม เช่น ก ข ค ง พร้อมบอกว่าข้อไหนถูก
+ * รองรับ single choice และ multiple choice โดยให้มี isCorrect ได้มากกว่าหนึ่งตัวเลือก
+ */
+export type ExamQuestionChoice = Prisma.ExamQuestionChoiceModel
+/**
+ * Model ExamQuestionAcceptedAnswer
+ * เก็บคำตอบที่ยอมรับได้สำหรับ SHORT_ANSWER
+ * ใช้กรณีข้อสอบแบบพิมพ์คำตอบสั้น เช่น ชื่อกฎหมาย คำสำคัญ หรือผลลัพธ์ตัวเลข
+ */
+export type ExamQuestionAcceptedAnswer = Prisma.ExamQuestionAcceptedAnswerModel
+/**
+ * Model ExamPackagePartQuestion
+ * ตาราง join ระหว่างภาคในชุดข้อสอบกับคำถาม
+ * ใช้กำหนดลำดับข้อ คะแนนต่อข้อ และ override คำอธิบายเฉพาะชุดได้ในอนาคต
+ */
+export type ExamPackagePartQuestion = Prisma.ExamPackagePartQuestionModel
+/**
+ * Model PracticeSetQuestion
+ * ตาราง join ระหว่างชุดฝึกตามหมวดกับคำถาม
+ * ทำให้ชุด ภาค ก หลายชุดดึงคำถามจากคลังกลางมาเรียงและให้คะแนนต่างกันได้
+ */
+export type PracticeSetQuestion = Prisma.PracticeSetQuestionModel
+/**
+ * Model ExamAttempt
+ * เก็บการเริ่มทำข้อสอบของผู้ใช้หนึ่งครั้ง
+ * attempt จะชี้ได้อย่างใดอย่างหนึ่ง: part ของชุดตามสนาม หรือ practice set ของหมวดฝึก
+ */
+export type ExamAttempt = Prisma.ExamAttemptModel
+/**
+ * Model ExamAttemptAnswer
+ * เก็บคำตอบรายข้อของผู้ใช้ใน attempt หนึ่งครั้ง
+ * รองรับทั้งเลือกตัวเลือกและคำตอบแบบข้อความสั้นในอนาคต
+ */
+export type ExamAttemptAnswer = Prisma.ExamAttemptAnswerModel
+/**
+ * Model ExamAttemptAnswerChoice
+ * เก็บตัวเลือกที่ผู้ใช้เลือกแบบหลายข้อ
+ * ใช้กับ MULTIPLE_CHOICE โดยหนึ่งคำตอบสามารถมี selected choices ได้หลายรายการ
+ */
+export type ExamAttemptAnswerChoice = Prisma.ExamAttemptAnswerChoiceModel
+/**
  * Model SocialAccount
  * 
  */

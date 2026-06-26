@@ -17,3 +17,34 @@ export const SocialProvider = {
 } as const
 
 export type SocialProvider = (typeof SocialProvider)[keyof typeof SocialProvider]
+
+
+export const ExamPartKind = {
+  PART_A_GENERAL: 'PART_A_GENERAL',
+  PART_B_PROFESSION: 'PART_B_PROFESSION',
+  PART_B_MAJOR: 'PART_B_MAJOR',
+  PART_C_INTERVIEW: 'PART_C_INTERVIEW',
+  PRACTICE: 'PRACTICE'
+} as const
+
+export type ExamPartKind = (typeof ExamPartKind)[keyof typeof ExamPartKind]
+
+
+export const ExamQuestionType = {
+  SINGLE_CHOICE: 'SINGLE_CHOICE',
+  MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
+  TRUE_FALSE: 'TRUE_FALSE',
+  SHORT_ANSWER: 'SHORT_ANSWER'
+} as const
+
+export type ExamQuestionType = (typeof ExamQuestionType)[keyof typeof ExamQuestionType]
+
+
+export const ExamAttemptStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUBMITTED: 'SUBMITTED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ExamAttemptStatus = (typeof ExamAttemptStatus)[keyof typeof ExamAttemptStatus]

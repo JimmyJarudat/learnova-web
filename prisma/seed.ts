@@ -196,6 +196,120 @@ const oauthConfigs: SystemConfigSeed[] = [
   },
 ];
 
+const examAffiliationSeeds = [
+  {
+    slug: "obec",
+    label: "สพฐ.",
+    name: "สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน",
+    description: "สนามครูผู้ช่วยสายสามัญ แยกเส้นทางตามเอกและชุดปีสอบ",
+    imageUrl: "/images/teacher-card-general.png",
+    colorClass: "bg-[#0b66c3]",
+    sortOrder: 10,
+  },
+  {
+    slug: "ovec",
+    label: "สอศ.",
+    name: "สำนักงานคณะกรรมการการอาชีวศึกษา",
+    description: "สนามครูอาชีวะ แยกเอกและบริบทงานอาชีวศึกษา",
+    imageUrl: "/images/teacher-card-ovec.png",
+    colorClass: "bg-[#e94b7b]",
+    sortOrder: 20,
+  },
+  {
+    slug: "dole",
+    label: "สกร.",
+    name: "กรมส่งเสริมการเรียนรู้",
+    description: "สนามงานส่งเสริมการเรียนรู้และการศึกษาตลอดชีวิต",
+    imageUrl: "/images/teacher-card-law.png",
+    colorClass: "bg-[#00a86b]",
+    sortOrder: 30,
+  },
+  {
+    slug: "dla",
+    label: "อปท.",
+    name: "องค์กรปกครองส่วนท้องถิ่น",
+    description: "สนามครูท้องถิ่นและงานการศึกษาในพื้นที่",
+    imageUrl: "/images/teacher-card-cutout.png",
+    colorClass: "bg-[#f6b21a]",
+    sortOrder: 40,
+  },
+  {
+    slug: "bma",
+    label: "กทม.",
+    name: "กรุงเทพมหานคร",
+    description: "สนามโรงเรียนสังกัดกรุงเทพมหานคร",
+    imageUrl: "/images/teacher-card-general.png",
+    colorClass: "bg-[#7c3aed]",
+    sortOrder: 50,
+  },
+];
+
+const examMajorSeeds = [
+  {
+    slug: "major-computer",
+    name: "เอกคอมพิวเตอร์",
+    shortName: "เอกคอม",
+    description: "ระบบคอมพิวเตอร์ เครือข่าย ฐานข้อมูล การเขียนโปรแกรม และเทคโนโลยีการศึกษา",
+    sortOrder: 10,
+  },
+  {
+    slug: "major-math",
+    name: "เอกคณิตศาสตร์",
+    shortName: "เอกคณิต",
+    description: "จำนวนและพีชคณิต เรขาคณิต สถิติ ความน่าจะเป็น และโจทย์ประยุกต์",
+    sortOrder: 20,
+  },
+  {
+    slug: "major-english",
+    name: "เอกภาษาอังกฤษ",
+    shortName: "เอกอังกฤษ",
+    description: "Grammar, vocabulary, reading, classroom English และการสอนภาษาอังกฤษ",
+    sortOrder: 30,
+  },
+  {
+    slug: "major-early-childhood",
+    name: "เอกปฐมวัย",
+    shortName: "เอกปฐมวัย",
+    description: "พัฒนาการเด็กปฐมวัย การจัดประสบการณ์ การประเมินเด็กเล็ก และสื่อการเรียนรู้",
+    sortOrder: 40,
+  },
+];
+
+const practiceCategorySeeds = [
+  {
+    slug: "part-a",
+    title: "ภาค ก รวมทุกสังกัด",
+    shortTitle: "ภาค ก",
+    description: "ฝึกความสามารถทั่วไป ภาษาไทย คณิต เหตุผล และความรู้รอบตัวจากหลายแนวสนาม",
+    colorClass: "bg-[#0b66c3]",
+    sortOrder: 10,
+  },
+  {
+    slug: "teaching-profession",
+    title: "วิชาชีพครู รวมทุกสังกัด",
+    shortTitle: "วิชาชีพครู",
+    description: "ฝึกหลักสูตร การสอน จิตวิทยา การวัดผล และจรรยาบรรณวิชาชีพครู",
+    colorClass: "bg-[#00a86b]",
+    sortOrder: 20,
+  },
+  {
+    slug: "education-law",
+    title: "กฎหมายการศึกษา",
+    shortTitle: "กฎหมาย",
+    description: "รวมข้อสอบกฎหมายและระเบียบที่ใช้ได้หลายสนาม พร้อมชุดสั้นและชุดจับเวลา",
+    colorClass: "bg-[#f6b21a]",
+    sortOrder: 30,
+  },
+  {
+    slug: "reasoning",
+    title: "คณิตและเหตุผล",
+    shortTitle: "เหตุผล",
+    description: "เน้นโจทย์คำนวณ อนุกรม ตาราง เงื่อนไข และการวิเคราะห์เชิงเหตุผล",
+    colorClass: "bg-[#e94b7b]",
+    sortOrder: 40,
+  },
+];
+
 function encryptConfigValue(value: string) {
   if (!value) {
     return "";
@@ -268,12 +382,111 @@ async function seedSystemConfigs(configs: SystemConfigSeed[], fallbackCategory: 
   console.log(`Seeded ${fallbackCategory} config: ${createdCount} created, ${skippedCount} skipped`);
 }
 
+async function seedExamMasterData() {
+  let affiliationCount = 0;
+  let majorCount = 0;
+  let trackCount = 0;
+  let practiceCategoryCount = 0;
+
+  for (const affiliation of examAffiliationSeeds) {
+    await prisma.examAffiliation.upsert({
+      where: { slug: affiliation.slug },
+      create: affiliation,
+      update: {
+        label: affiliation.label,
+        name: affiliation.name,
+        description: affiliation.description,
+        imageUrl: affiliation.imageUrl,
+        colorClass: affiliation.colorClass,
+        sortOrder: affiliation.sortOrder,
+        isActive: true,
+      },
+    });
+    affiliationCount += 1;
+  }
+
+  for (const major of examMajorSeeds) {
+    await prisma.examMajor.upsert({
+      where: { slug: major.slug },
+      create: major,
+      update: {
+        name: major.name,
+        shortName: major.shortName,
+        description: major.description,
+        sortOrder: major.sortOrder,
+        isActive: true,
+      },
+    });
+    majorCount += 1;
+  }
+
+  for (const affiliationSeed of examAffiliationSeeds) {
+    const affiliation = await prisma.examAffiliation.findUniqueOrThrow({
+      where: { slug: affiliationSeed.slug },
+      select: { id: true, label: true, slug: true },
+    });
+
+    for (const majorSeed of examMajorSeeds) {
+      const major = await prisma.examMajor.findUniqueOrThrow({
+        where: { slug: majorSeed.slug },
+        select: { id: true, name: true, slug: true },
+      });
+
+      await prisma.examTrack.upsert({
+        where: {
+          affiliationId_majorId: {
+            affiliationId: affiliation.id,
+            majorId: major.id,
+          },
+        },
+        create: {
+          affiliationId: affiliation.id,
+          majorId: major.id,
+          slug: major.slug,
+          title: `${affiliation.label} ${major.name}`,
+          description: `เส้นทางข้อสอบสำหรับผู้สมัครสอบ ${affiliation.label} ${major.name}`,
+          sortOrder: majorSeed.sortOrder,
+        },
+        update: {
+          slug: major.slug,
+          title: `${affiliation.label} ${major.name}`,
+          description: `เส้นทางข้อสอบสำหรับผู้สมัครสอบ ${affiliation.label} ${major.name}`,
+          sortOrder: majorSeed.sortOrder,
+          isActive: true,
+        },
+      });
+      trackCount += 1;
+    }
+  }
+
+  for (const category of practiceCategorySeeds) {
+    await prisma.practiceCategory.upsert({
+      where: { slug: category.slug },
+      create: category,
+      update: {
+        title: category.title,
+        shortTitle: category.shortTitle,
+        description: category.description,
+        colorClass: category.colorClass,
+        sortOrder: category.sortOrder,
+        isActive: true,
+      },
+    });
+    practiceCategoryCount += 1;
+  }
+
+  console.log(
+    `Seeded exam master data: ${affiliationCount} affiliations, ${majorCount} majors, ${trackCount} tracks, ${practiceCategoryCount} practice categories`,
+  );
+}
+
 async function main() {
   await seedTestUser();
   await seedSystemConfigs(regionalConfigs, "REGIONAL");
   await seedSystemConfigs(smtpConfigs, "SMTP");
   await seedSystemConfigs(authConfigs, "AUTH");
   await seedSystemConfigs(oauthConfigs, "OAUTH");
+  await seedExamMasterData();
 }
 
 main()
@@ -284,4 +497,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-

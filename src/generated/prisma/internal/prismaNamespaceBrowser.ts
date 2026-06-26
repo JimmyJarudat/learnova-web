@@ -52,6 +52,22 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  ExamAffiliation: 'ExamAffiliation',
+  ExamMajor: 'ExamMajor',
+  ExamTrack: 'ExamTrack',
+  ExamPackage: 'ExamPackage',
+  ExamPackagePart: 'ExamPackagePart',
+  PracticeCategory: 'PracticeCategory',
+  PracticeSet: 'PracticeSet',
+  PracticeSetAffiliation: 'PracticeSetAffiliation',
+  ExamQuestion: 'ExamQuestion',
+  ExamQuestionChoice: 'ExamQuestionChoice',
+  ExamQuestionAcceptedAnswer: 'ExamQuestionAcceptedAnswer',
+  ExamPackagePartQuestion: 'ExamPackagePartQuestion',
+  PracticeSetQuestion: 'PracticeSetQuestion',
+  ExamAttempt: 'ExamAttempt',
+  ExamAttemptAnswer: 'ExamAttemptAnswer',
+  ExamAttemptAnswerChoice: 'ExamAttemptAnswerChoice',
   SocialAccount: 'SocialAccount',
   PasswordResetToken: 'PasswordResetToken',
   system_config: 'system_config',
@@ -92,6 +108,254 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const ExamAffiliationScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  label: 'label',
+  name: 'name',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  colorClass: 'colorClass',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamAffiliationScalarFieldEnum = (typeof ExamAffiliationScalarFieldEnum)[keyof typeof ExamAffiliationScalarFieldEnum]
+
+
+export const ExamMajorScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  shortName: 'shortName',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamMajorScalarFieldEnum = (typeof ExamMajorScalarFieldEnum)[keyof typeof ExamMajorScalarFieldEnum]
+
+
+export const ExamTrackScalarFieldEnum = {
+  id: 'id',
+  affiliationId: 'affiliationId',
+  majorId: 'majorId',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamTrackScalarFieldEnum = (typeof ExamTrackScalarFieldEnum)[keyof typeof ExamTrackScalarFieldEnum]
+
+
+export const ExamPackageScalarFieldEnum = {
+  id: 'id',
+  trackId: 'trackId',
+  slug: 'slug',
+  title: 'title',
+  year: 'year',
+  label: 'label',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamPackageScalarFieldEnum = (typeof ExamPackageScalarFieldEnum)[keyof typeof ExamPackageScalarFieldEnum]
+
+
+export const ExamPackagePartScalarFieldEnum = {
+  id: 'id',
+  packageId: 'packageId',
+  slug: 'slug',
+  kind: 'kind',
+  title: 'title',
+  shortTitle: 'shortTitle',
+  audienceLabel: 'audienceLabel',
+  description: 'description',
+  durationMinutes: 'durationMinutes',
+  totalQuestions: 'totalQuestions',
+  totalScore: 'totalScore',
+  difficulty: 'difficulty',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamPackagePartScalarFieldEnum = (typeof ExamPackagePartScalarFieldEnum)[keyof typeof ExamPackagePartScalarFieldEnum]
+
+
+export const PracticeCategoryScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  shortTitle: 'shortTitle',
+  description: 'description',
+  colorClass: 'colorClass',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PracticeCategoryScalarFieldEnum = (typeof PracticeCategoryScalarFieldEnum)[keyof typeof PracticeCategoryScalarFieldEnum]
+
+
+export const PracticeSetScalarFieldEnum = {
+  id: 'id',
+  categoryId: 'categoryId',
+  slug: 'slug',
+  title: 'title',
+  scopeLabel: 'scopeLabel',
+  yearLabel: 'yearLabel',
+  description: 'description',
+  durationMinutes: 'durationMinutes',
+  totalQuestions: 'totalQuestions',
+  totalScore: 'totalScore',
+  difficulty: 'difficulty',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PracticeSetScalarFieldEnum = (typeof PracticeSetScalarFieldEnum)[keyof typeof PracticeSetScalarFieldEnum]
+
+
+export const PracticeSetAffiliationScalarFieldEnum = {
+  id: 'id',
+  practiceSetId: 'practiceSetId',
+  affiliationId: 'affiliationId',
+  createdAt: 'createdAt'
+} as const
+
+export type PracticeSetAffiliationScalarFieldEnum = (typeof PracticeSetAffiliationScalarFieldEnum)[keyof typeof PracticeSetAffiliationScalarFieldEnum]
+
+
+export const ExamQuestionScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  stem: 'stem',
+  passage: 'passage',
+  imageUrl: 'imageUrl',
+  explanation: 'explanation',
+  difficulty: 'difficulty',
+  tags: 'tags',
+  sourceLabel: 'sourceLabel',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamQuestionScalarFieldEnum = (typeof ExamQuestionScalarFieldEnum)[keyof typeof ExamQuestionScalarFieldEnum]
+
+
+export const ExamQuestionChoiceScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  label: 'label',
+  text: 'text',
+  isCorrect: 'isCorrect',
+  explanation: 'explanation',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamQuestionChoiceScalarFieldEnum = (typeof ExamQuestionChoiceScalarFieldEnum)[keyof typeof ExamQuestionChoiceScalarFieldEnum]
+
+
+export const ExamQuestionAcceptedAnswerScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  text: 'text',
+  normalizedText: 'normalizedText',
+  isCaseSensitive: 'isCaseSensitive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamQuestionAcceptedAnswerScalarFieldEnum = (typeof ExamQuestionAcceptedAnswerScalarFieldEnum)[keyof typeof ExamQuestionAcceptedAnswerScalarFieldEnum]
+
+
+export const ExamPackagePartQuestionScalarFieldEnum = {
+  id: 'id',
+  partId: 'partId',
+  questionId: 'questionId',
+  position: 'position',
+  score: 'score',
+  createdAt: 'createdAt'
+} as const
+
+export type ExamPackagePartQuestionScalarFieldEnum = (typeof ExamPackagePartQuestionScalarFieldEnum)[keyof typeof ExamPackagePartQuestionScalarFieldEnum]
+
+
+export const PracticeSetQuestionScalarFieldEnum = {
+  id: 'id',
+  setId: 'setId',
+  questionId: 'questionId',
+  position: 'position',
+  score: 'score',
+  createdAt: 'createdAt'
+} as const
+
+export type PracticeSetQuestionScalarFieldEnum = (typeof PracticeSetQuestionScalarFieldEnum)[keyof typeof PracticeSetQuestionScalarFieldEnum]
+
+
+export const ExamAttemptScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  packagePartId: 'packagePartId',
+  practiceSetId: 'practiceSetId',
+  status: 'status',
+  startedAt: 'startedAt',
+  submittedAt: 'submittedAt',
+  expiresAt: 'expiresAt',
+  totalQuestions: 'totalQuestions',
+  answeredCount: 'answeredCount',
+  score: 'score',
+  maxScore: 'maxScore',
+  durationSeconds: 'durationSeconds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamAttemptScalarFieldEnum = (typeof ExamAttemptScalarFieldEnum)[keyof typeof ExamAttemptScalarFieldEnum]
+
+
+export const ExamAttemptAnswerScalarFieldEnum = {
+  id: 'id',
+  attemptId: 'attemptId',
+  questionId: 'questionId',
+  textAnswer: 'textAnswer',
+  isCorrect: 'isCorrect',
+  score: 'score',
+  answeredAt: 'answeredAt'
+} as const
+
+export type ExamAttemptAnswerScalarFieldEnum = (typeof ExamAttemptAnswerScalarFieldEnum)[keyof typeof ExamAttemptAnswerScalarFieldEnum]
+
+
+export const ExamAttemptAnswerChoiceScalarFieldEnum = {
+  id: 'id',
+  answerId: 'answerId',
+  choiceId: 'choiceId',
+  createdAt: 'createdAt'
+} as const
+
+export type ExamAttemptAnswerChoiceScalarFieldEnum = (typeof ExamAttemptAnswerChoiceScalarFieldEnum)[keyof typeof ExamAttemptAnswerChoiceScalarFieldEnum]
 
 
 export const SocialAccountScalarFieldEnum = {
