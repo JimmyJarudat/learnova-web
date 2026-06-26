@@ -25,6 +25,7 @@ import { NewsSearchForm } from "./news-search-form";
 const heroImage = "/images/news-hero-teacher-officials.png";
 const pageSize = 10;
 const newsPath = "/news";
+const newsResultsId = "news-results";
 const newsTitle = "ข่าวรับสมัครครู สอบครูผู้ช่วย และประกาศการศึกษา";
 const newsDescription =
   "ศูนย์รวมข่าวรับสมัครครู สอบครูผู้ช่วย พนักงานราชการครู และประกาศสำคัญจากหน่วยงานการศึกษา พร้อมค้นหาตามหมวด หน่วยงาน แท็ก และสถานะรับสมัคร";
@@ -101,6 +102,18 @@ function buildNewsHref({
 
   const search = params.toString();
   return search ? `/news?${search}` : "/news";
+}
+
+function buildNewsResultsHref({
+  categorySlug,
+  query,
+  status,
+}: {
+  categorySlug?: string;
+  query: string;
+  status?: string;
+}) {
+  return `${buildNewsHref({ categorySlug, query, status })}#${newsResultsId}`;
 }
 
 function getNewsMetadataUrl({
@@ -610,8 +623,7 @@ export default async function NewsPage({
 
             <div className="flex max-w-full gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
               <Link
-                href={buildNewsHref({ query, status: selectedStatus })}
-                scroll={false}
+                href={buildNewsResultsHref({ query, status: selectedStatus })}
                 className={`shrink-0 rounded-lg px-4 py-2 text-sm font-black transition ${
                   selectedCategory === ""
                     ? "bg-[#071f4a] text-white"
@@ -624,8 +636,7 @@ export default async function NewsPage({
               {categories.map((category) => (
                 <Link
                   key={category.slug}
-                  href={buildNewsHref({ categorySlug: category.slug, query, status: selectedStatus })}
-                  scroll={false}
+                  href={buildNewsResultsHref({ categorySlug: category.slug, query, status: selectedStatus })}
                   className={`shrink-0 rounded-lg px-4 py-2 text-sm font-black transition ${
                     selectedCategory === category.slug
                       ? "bg-[#071f4a] text-white"
@@ -641,7 +652,7 @@ export default async function NewsPage({
         </div>
       </section>
 
-      <section className="bg-[#f7f8fc]">
+      <section id={newsResultsId} className="scroll-mt-4 bg-[#f7f8fc]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>

@@ -29,9 +29,11 @@ export function NewsSearchForm({
   const [query, setQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isFocused, setIsFocused] = useState(false);
+  const [isSuggesting, setIsSuggesting] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const formRef = useRef<HTMLFormElement>(null);
   const requestIdRef = useRef(0);
+  const showSuggestionPanel = isFocused && query.trim().length >= 2 && (isSuggesting || suggestions.length > 0);
   const showSuggestions = isFocused && query.trim().length >= 2 && suggestions.length > 0;
 
   useEffect(() => {
@@ -39,11 +41,14 @@ export function NewsSearchForm({
 
     if (trimmedQuery.length < 2) {
       setSuggestions([]);
+      setIsSuggesting(false);
       return;
     }
 
     const requestId = requestIdRef.current + 1;
     requestIdRef.current = requestId;
+    setSuggestions([]);
+    setIsSuggesting(true);
 
     const timer = window.setTimeout(async () => {
       const params = new URLSearchParams({ q: trimmedQuery });
@@ -69,6 +74,10 @@ export function NewsSearchForm({
       } catch {
         if (requestIdRef.current === requestId) {
           setSuggestions([]);
+        }
+      } finally {
+        if (requestIdRef.current === requestId) {
+          setIsSuggesting(false);
         }
       }
     }, 180);
@@ -156,12 +165,18 @@ export function NewsSearchForm({
         </button>
       </div>
 
-      {showSuggestions ? (
+      {showSuggestionPanel ? (
         <div
           id={listboxId}
           role="listbox"
           className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl"
         >
+          {isSuggesting ? (
+            <div className="flex items-center gap-3 px-4 py-3 text-sm font-black text-[#071f4a]">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#0b66c3]/25 border-t-[#0b66c3]" />
+              กำลังค้นหาข่าว...
+            </div>
+          ) : null}
           {suggestions.map((suggestion, index) => (
             <button
               key={`${suggestion.type}-${suggestion.label}-${index}`}
