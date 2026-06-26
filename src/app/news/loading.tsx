@@ -43,6 +43,27 @@ function SkeletonCard({ featured = false }: { featured?: boolean }) {
 export default function NewsLoading() {
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
+      <div className="fixed left-0 right-0 top-0 z-[100] h-1 overflow-hidden bg-red-100" aria-hidden="true">
+        <div className="news-route-progress-bar absolute top-0 h-full w-1/3 bg-red-600 shadow-[0_0_14px_rgba(220,38,38,0.8)]" />
+      </div>
+      <style>{`
+        @keyframes news-route-progress {
+          0% {
+            transform: translateX(-120%);
+          }
+          55% {
+            transform: translateX(150%);
+          }
+          100% {
+            transform: translateX(330%);
+          }
+        }
+
+        .news-route-progress-bar {
+          animation: news-route-progress 1s ease-in-out infinite;
+        }
+      `}</style>
+
       <div className="bg-[#071f4a] text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
           <SkeletonLine className="h-4 w-80 bg-white/20" />

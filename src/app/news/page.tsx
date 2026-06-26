@@ -20,6 +20,7 @@ import {
 } from "@/lib/news-display";
 import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news-search";
 import { getNewsCanonicalPath, getNewsSeoFilterLabel, shouldIndexNewsPage } from "@/lib/news-seo";
+import { NewsLinkProgress } from "./news-link-progress";
 import { NewsSearchForm } from "./news-search-form";
 
 const heroImage = "/images/news-hero-teacher-officials.png";
@@ -468,6 +469,7 @@ function Pagination({
     <nav className="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label="pagination">
       <Link
         href={buildNewsHref({ categorySlug, page: previousPage, query, status })}
+        prefetch={false}
         aria-disabled={currentPage === 1}
         className={`flex h-10 items-center justify-center rounded-xl border px-4 text-sm font-black transition ${
           currentPage === 1
@@ -475,6 +477,7 @@ function Pagination({
             : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
         }`}
       >
+        <NewsLinkProgress />
         ก่อนหน้า
       </Link>
 
@@ -485,6 +488,7 @@ function Pagination({
           ) : null}
           <Link
             href={buildNewsHref({ categorySlug, page, query, status })}
+            prefetch={false}
             aria-current={page === currentPage ? "page" : undefined}
             className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black transition ${
               page === currentPage
@@ -492,6 +496,7 @@ function Pagination({
                 : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
+            <NewsLinkProgress />
             {page}
           </Link>
         </div>
@@ -499,6 +504,7 @@ function Pagination({
 
       <Link
         href={buildNewsHref({ categorySlug, page: nextPage, query, status })}
+        prefetch={false}
         aria-disabled={currentPage === pageCount}
         className={`flex h-10 items-center justify-center rounded-xl border px-4 text-sm font-black transition ${
           currentPage === pageCount
@@ -506,6 +512,7 @@ function Pagination({
             : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
         }`}
       >
+        <NewsLinkProgress />
         ถัดไป
       </Link>
     </nav>
