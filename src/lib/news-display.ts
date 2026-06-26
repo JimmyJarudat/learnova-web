@@ -7,6 +7,7 @@ export const newsStatusOptions = [
   { slug: "published", label: "ข่าวทั่วไป", color: "bg-[#0b66c3]" },
   { slug: "draft", label: "ร่าง", color: "bg-slate-500" },
 ] as const;
+export const newsCalendarStatuses = ["upcoming", "open", "closing_soon"] as const;
 
 const categoryColors: Record<string, string> = {
   "teacher-assistant": "bg-[#e94b7b]",
@@ -40,6 +41,12 @@ export function getVisibleNewsStatuses(nodeEnv = process.env.NODE_ENV): string[]
     .filter((status) => status !== "draft");
 
   return nodeEnv === "production" ? publishedStatuses : [...publishedStatuses, "draft"];
+}
+
+export function getVisibleNewsCalendarStatuses(nodeEnv = process.env.NODE_ENV): string[] {
+  const visibleStatuses = getVisibleNewsStatuses(nodeEnv);
+
+  return newsCalendarStatuses.filter((status) => visibleStatuses.includes(status));
 }
 
 export function getNewsStatusLabel(status?: string | null): string {

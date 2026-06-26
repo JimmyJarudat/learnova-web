@@ -9,6 +9,7 @@ import {
   getSafeNewsStatus,
   getNewsSummary,
   getSafeNewsPage,
+  getVisibleNewsCalendarStatuses,
   getVisibleNewsStatuses,
 } from "@/lib/news-display";
 
@@ -70,6 +71,16 @@ describe("news display helpers", () => {
     expect(getVisibleNewsStatuses("development").includes("closed")).toBe(false);
     expect(getVisibleNewsStatuses("development").includes("cancelled")).toBe(false);
     expect(getVisibleNewsStatuses("development").includes("archived")).toBe(false);
+  });
+
+  test("uses active recruitment statuses for the calendar page", () => {
+    expect(getVisibleNewsCalendarStatuses("production")).toEqual([
+      "upcoming",
+      "open",
+      "closing_soon",
+    ]);
+    expect(getVisibleNewsCalendarStatuses("development").includes("draft")).toBe(false);
+    expect(getVisibleNewsCalendarStatuses("development").includes("closed")).toBe(false);
   });
 
   test("returns labels and validates selectable news statuses", () => {

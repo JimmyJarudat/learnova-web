@@ -596,6 +596,14 @@ export default async function NewsPage({
             รวมข่าวรับสมัครครู สอบครูผู้ช่วย พนักงานราชการครู และประกาศสำคัญจากหน่วยงานการศึกษาไว้ในที่เดียว
             ค้นหาได้จากชื่อข่าว หมวด หน่วยงาน แท็ก และสถานะรับสมัคร เพื่อให้ติดตามกำหนดการสำคัญได้ทันและวางแผนเตรียมตัวได้มั่นใจกว่าเดิม
           </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link
+              href="/news/calendar"
+              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#ffd35a] px-5 text-sm font-black text-[#071f4a] shadow-sm transition hover:bg-white"
+            >
+              ดูปฏิทินรับสมัครสอบ
+            </Link>
+          </div>
         </div>
       </section>
 
