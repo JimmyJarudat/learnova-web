@@ -16,6 +16,8 @@ import {
   getVisibleNewsStatuses,
   newsStatusOptions,
 } from "@/lib/news-display";
+import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news-search";
+import { NewsSearchForm } from "./news-search-form";
 
 const heroImage = "/images/news-hero-teacher-officials.png";
 const pageSize = 10;
@@ -87,13 +89,22 @@ function NewsImage({
 }
 
 async function getNewsData(query: string, categorySlug: string, status: string, requestedPage: string) {
+  const searchTerms = getNewsSearchTerms(query);
   const searchWhere = query
     ? {
         OR: [
-          { title: { contains: query, mode: "insensitive" as const } },
-          { excerpt: { contains: query, mode: "insensitive" as const } },
-          { summary: { contains: query, mode: "insensitive" as const } },
-          { sourceName: { contains: query, mode: "insensitive" as const } },
+          ...searchTerms.flatMap((term) => [
+            { title: { contains: term, mode: "insensitive" as const } },
+            { excerpt: { contains: term, mode: "insensitive" as const } },
+            { summary: { contains: term, mode: "insensitive" as const } },
+            { content: { contains: term, mode: "insensitive" as const } },
+            { sourceName: { contains: term, mode: "insensitive" as const } },
+            { tags: { has: term } },
+          ]),
+          { category: { nameTh: { contains: query, mode: "insensitive" as const } } },
+          { category: { slug: { contains: query, mode: "insensitive" as const } } },
+          { source: { name: { contains: query, mode: "insensitive" as const } } },
+          { source: { type: { contains: query, mode: "insensitive" as const } } },
         ],
       }
     : {};
@@ -260,7 +271,7 @@ export default async function NewsPage({
   searchParams?: Promise<NewsSearchParams>;
 }) {
   const params = (await searchParams) ?? {};
-  const query = getSingleParam(params.q).trim();
+  const query = normalizeNewsSearchQuery(getSingleParam(params.q));
   const selectedCategory = getSingleParam(params.category).trim();
   const requestedStatus = getSingleParam(params.status).trim();
   const requestedPage = getSingleParam(params.page).trim();
@@ -296,10 +307,11 @@ export default async function NewsPage({
             ข่าวสาร
           </span>
           <h1 className="mt-5 max-w-2xl text-4xl font-black leading-tight text-white sm:text-5xl">
-            ข่าวสารและประกาศ
+            ศูนย์รวมข่าวสารและประกาศสำหรับครู
           </h1>
-          <p className="mt-4 max-w-2xl text-base font-semibold leading-7 text-white/80">
-            ติดตามกำหนดการสอบ ประกาศจากหน่วยงานต้นสังกัด และอัปเดตคลังข้อสอบล่าสุด เพื่อให้วางแผนอ่านหนังสือได้ทันทุกสนาม
+          <p className="mt-4 max-w-3xl text-base font-semibold leading-7 text-white/85">
+            รวมข่าวรับสมัครครู สอบครูผู้ช่วย พนักงานราชการครู และประกาศสำคัญจากหน่วยงานการศึกษาไว้ในที่เดียว
+            ค้นหาได้จากชื่อข่าว หมวด หน่วยงาน แท็ก และสถานะรับสมัคร เพื่อให้ติดตามกำหนดการสำคัญได้ทันและวางแผนเตรียมตัวได้มั่นใจกว่าเดิม
           </p>
         </div>
       </section>
@@ -307,42 +319,12 @@ export default async function NewsPage({
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="grid gap-4">
-            <form className="flex min-h-12 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-              <label htmlFor="news-search" className="sr-only">
-                ค้นหาข่าว
-              </label>
-              <input
-                id="news-search"
-                name="q"
-                type="search"
-                defaultValue={query}
-                placeholder="ค้นหาข่าว ประกาศ หรือหน่วยงาน"
-                className="min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400"
-              />
-              {selectedCategory ? <input type="hidden" name="category" value={selectedCategory} /> : null}
-              <label htmlFor="news-status" className="sr-only">
-                สถานะข่าว
-              </label>
-              <select
-                id="news-status"
-                name="status"
-                defaultValue={selectedStatus}
-                className="hidden border-l border-slate-200 bg-white px-3 text-sm font-black text-slate-700 outline-none sm:block"
-              >
-                <option value="">ทุกสถานะ</option>
-                {statusCounts.map((status) => (
-                  <option key={status.slug} value={status.slug}>
-                    {status.label} ({status.count})
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="bg-[#0b66c3] px-5 text-sm font-black text-white transition hover:bg-[#0856a6]"
-              >
-                ค้นหา
-              </button>
-            </form>
+            <NewsSearchForm
+              categorySlug={selectedCategory}
+              initialQuery={query}
+              selectedStatus={selectedStatus}
+              statusCounts={statusCounts}
+            />
 
             <form className="flex gap-2 sm:hidden">
               {query ? <input type="hidden" name="q" value={query} /> : null}
@@ -381,6 +363,7 @@ export default async function NewsPage({
                 }`}
               >
                 ทั้งหมด
+                <span className="ml-1 text-xs opacity-70">({totalCount})</span>
               </Link>
               {categories.map((category) => (
                 <Link
