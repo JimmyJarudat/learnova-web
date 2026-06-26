@@ -8,9 +8,13 @@ import {
   formatNewsDate,
   getNewsCategoryColor,
   getNewsImageUrl,
+  getNewsStatusColor,
+  getNewsStatusLabel,
   getNewsSummary,
   getSafeNewsPage,
+  getSafeNewsStatus,
   getVisibleNewsStatuses,
+  newsStatusOptions,
 } from "@/lib/news-display";
 
 const heroImage = "/images/news-hero-teacher-officials.png";
@@ -21,6 +25,7 @@ export const dynamic = "force-dynamic";
 type NewsSearchParams = {
   q?: string | string[];
   category?: string | string[];
+  status?: string | string[];
   page?: string | string[];
 };
 
@@ -34,10 +39,12 @@ function buildNewsHref({
   categorySlug,
   page,
   query,
+  status,
 }: {
   categorySlug?: string;
   page?: number;
   query: string;
+  status?: string;
 }) {
   const params = new URLSearchParams();
 
@@ -47,6 +54,10 @@ function buildNewsHref({
 
   if (categorySlug) {
     params.set("category", categorySlug);
+  }
+
+  if (status) {
+    params.set("status", status);
   }
 
   if (page && page > 1) {
@@ -75,7 +86,7 @@ function NewsImage({
   return <img src={src} alt={alt} className={`h-full w-full ${className}`} loading="lazy" />;
 }
 
-async function getNewsData(query: string, categorySlug: string, requestedPage: string) {
+async function getNewsData(query: string, categorySlug: string, status: string, requestedPage: string) {
   const searchWhere = query
     ? {
         OR: [
@@ -99,15 +110,23 @@ async function getNewsData(query: string, categorySlug: string, requestedPage: s
   ];
 
   const visibleStatuses = getVisibleNewsStatuses();
-  const articleWhere = { ...where, status: { in: visibleStatuses } } satisfies ArticleWhere;
-  const [categories, totalCount] = await Promise.all([
+  const selectedStatus = getSafeNewsStatus(status, visibleStatuses);
+  const statusWhere = selectedStatus ? { status: selectedStatus } : { status: { in: visibleStatuses } };
+  const articleWhere = { ...where, ...statusWhere } satisfies ArticleWhere;
+  const baseVisibilityWhere = {
+    ...searchWhere,
+    status: { in: visibleStatuses },
+  } satisfies ArticleWhere;
+  const categoryCountWhere = {
+    ...baseVisibilityWhere,
+    ...(selectedStatus ? { status: selectedStatus } : {}),
+  } satisfies ArticleWhere;
+  const [categories, statusCounts, totalCount] = await Promise.all([
     prisma.newsCategory.findMany({
       where: {
         isActive: true,
         articles: {
-          some: {
-            status: { in: visibleStatuses },
-          },
+          some: categoryCountWhere,
         },
       },
       orderBy: [{ sortOrder: "asc" }, { nameTh: "asc" }],
@@ -117,14 +136,25 @@ async function getNewsData(query: string, categorySlug: string, requestedPage: s
         _count: {
           select: {
             articles: {
-              where: {
-                status: { in: visibleStatuses },
-              },
+              where: categoryCountWhere,
             },
           },
         },
       },
     }),
+    Promise.all(
+      newsStatusOptions
+        .filter((option) => visibleStatuses.includes(option.slug))
+        .map(async (option) => ({
+          ...option,
+          count: await prisma.newsArticle.count({
+            where: {
+              ...where,
+              status: option.slug,
+            },
+          }),
+        })),
+    ),
     prisma.newsArticle.count({ where: articleWhere }),
   ]);
   const { currentPage, pageCount } = getSafeNewsPage(requestedPage, totalCount, pageSize);
@@ -141,6 +171,8 @@ async function getNewsData(query: string, categorySlug: string, requestedPage: s
     categories,
     currentPage,
     pageCount,
+    selectedStatus,
+    statusCounts: statusCounts.filter((option) => option.count > 0),
     totalCount,
   };
 }
@@ -158,11 +190,13 @@ function Pagination({
   currentPage,
   pageCount,
   query,
+  status,
 }: {
   categorySlug: string;
   currentPage: number;
   pageCount: number;
   query: string;
+  status: string;
 }) {
   if (pageCount <= 1) {
     return null;
@@ -175,7 +209,7 @@ function Pagination({
   return (
     <nav className="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label="pagination">
       <Link
-        href={buildNewsHref({ categorySlug, page: previousPage, query })}
+        href={buildNewsHref({ categorySlug, page: previousPage, query, status })}
         aria-disabled={currentPage === 1}
         className={`flex h-10 items-center justify-center rounded-xl border px-4 text-sm font-black transition ${
           currentPage === 1
@@ -192,7 +226,7 @@ function Pagination({
             <span className="px-1 text-sm font-black text-slate-400">...</span>
           ) : null}
           <Link
-            href={buildNewsHref({ categorySlug, page, query })}
+            href={buildNewsHref({ categorySlug, page, query, status })}
             aria-current={page === currentPage ? "page" : undefined}
             className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black transition ${
               page === currentPage
@@ -206,7 +240,7 @@ function Pagination({
       ))}
 
       <Link
-        href={buildNewsHref({ categorySlug, page: nextPage, query })}
+        href={buildNewsHref({ categorySlug, page: nextPage, query, status })}
         aria-disabled={currentPage === pageCount}
         className={`flex h-10 items-center justify-center rounded-xl border px-4 text-sm font-black transition ${
           currentPage === pageCount
@@ -228,8 +262,17 @@ export default async function NewsPage({
   const params = (await searchParams) ?? {};
   const query = getSingleParam(params.q).trim();
   const selectedCategory = getSingleParam(params.category).trim();
+  const requestedStatus = getSingleParam(params.status).trim();
   const requestedPage = getSingleParam(params.page).trim();
-  const { articles, categories, currentPage, pageCount, totalCount } = await getNewsData(query, selectedCategory, requestedPage);
+  const {
+    articles,
+    categories,
+    currentPage,
+    pageCount,
+    selectedStatus,
+    statusCounts,
+    totalCount,
+  } = await getNewsData(query, selectedCategory, requestedStatus, requestedPage);
   const featuredNews = articles.find((article) => article.isFeatured) ?? articles[0];
   const newsItems = featuredNews ? articles.filter((article) => article.id !== featuredNews.id) : articles;
 
@@ -277,6 +320,22 @@ export default async function NewsPage({
                 className="min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400"
               />
               {selectedCategory ? <input type="hidden" name="category" value={selectedCategory} /> : null}
+              <label htmlFor="news-status" className="sr-only">
+                สถานะข่าว
+              </label>
+              <select
+                id="news-status"
+                name="status"
+                defaultValue={selectedStatus}
+                className="hidden border-l border-slate-200 bg-white px-3 text-sm font-black text-slate-700 outline-none sm:block"
+              >
+                <option value="">ทุกสถานะ</option>
+                {statusCounts.map((status) => (
+                  <option key={status.slug} value={status.slug}>
+                    {status.label} ({status.count})
+                  </option>
+                ))}
+              </select>
               <button
                 type="submit"
                 className="bg-[#0b66c3] px-5 text-sm font-black text-white transition hover:bg-[#0856a6]"
@@ -285,9 +344,36 @@ export default async function NewsPage({
               </button>
             </form>
 
+            <form className="flex gap-2 sm:hidden">
+              {query ? <input type="hidden" name="q" value={query} /> : null}
+              {selectedCategory ? <input type="hidden" name="category" value={selectedCategory} /> : null}
+              <label htmlFor="news-status-mobile" className="sr-only">
+                สถานะข่าว
+              </label>
+              <select
+                id="news-status-mobile"
+                name="status"
+                defaultValue={selectedStatus}
+                className="min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-black text-slate-700 shadow-sm outline-none"
+              >
+                <option value="">ทุกสถานะ</option>
+                {statusCounts.map((status) => (
+                  <option key={status.slug} value={status.slug}>
+                    {status.label} ({status.count})
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="min-h-11 shrink-0 rounded-lg bg-[#071f4a] px-4 text-sm font-black text-white shadow-sm"
+              >
+                ใช้
+              </button>
+            </form>
+
             <div className="flex max-w-full gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
               <Link
-                href={buildNewsHref({ query })}
+                href={buildNewsHref({ query, status: selectedStatus })}
                 className={`shrink-0 rounded-lg px-4 py-2 text-sm font-black transition ${
                   selectedCategory === ""
                     ? "bg-[#071f4a] text-white"
@@ -299,7 +385,7 @@ export default async function NewsPage({
               {categories.map((category) => (
                 <Link
                   key={category.slug}
-                  href={buildNewsHref({ categorySlug: category.slug, query })}
+                  href={buildNewsHref({ categorySlug: category.slug, query, status: selectedStatus })}
                   className={`shrink-0 rounded-lg px-4 py-2 text-sm font-black transition ${
                     selectedCategory === category.slug
                       ? "bg-[#071f4a] text-white"
@@ -340,6 +426,9 @@ export default async function NewsPage({
                     className={`rounded-md ${getNewsCategoryColor(featuredNews.category?.slug)} px-3 py-1 text-xs font-black text-white`}
                   >
                     {featuredNews.category?.nameTh ?? featuredNews.source?.type ?? "ข่าวสาร"}
+                  </span>
+                  <span className={`rounded-md ${getNewsStatusColor(featuredNews.status)} px-3 py-1 text-xs font-black text-white`}>
+                    {getNewsStatusLabel(featuredNews.status)}
                   </span>
                   <span className="text-sm font-bold text-slate-500">
                     {formatNewsDate(featuredNews.publishedAt ?? featuredNews.sourcePublishedAt ?? featuredNews.fetchedAt)}
@@ -396,6 +485,9 @@ export default async function NewsPage({
                     <span className={`rounded-md ${getNewsCategoryColor(item.category?.slug)} px-2.5 py-1 text-xs font-black text-white`}>
                       {item.category?.nameTh ?? item.source?.type ?? "ข่าวสาร"}
                     </span>
+                    <span className={`rounded-md ${getNewsStatusColor(item.status)} px-2.5 py-1 text-xs font-black text-white`}>
+                      {getNewsStatusLabel(item.status)}
+                    </span>
                     <span className="text-xs font-bold text-slate-500">
                       {formatNewsDate(item.publishedAt ?? item.sourcePublishedAt ?? item.fetchedAt)}
                     </span>
@@ -417,6 +509,7 @@ export default async function NewsPage({
             currentPage={currentPage}
             pageCount={pageCount}
             query={query}
+            status={selectedStatus}
           />
         </div>
       </section>

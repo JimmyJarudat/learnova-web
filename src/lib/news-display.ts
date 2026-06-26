@@ -1,4 +1,12 @@
 export const fallbackNewsImage = "/images/teacher-card-general.png";
+export const hiddenNewsStatuses = ["closed", "cancelled", "archived"] as const;
+export const newsStatusOptions = [
+  { slug: "upcoming", label: "ยังไม่เปิดรับสมัคร", color: "bg-[#7c3aed]" },
+  { slug: "open", label: "เปิดรับสมัคร", color: "bg-[#00a86b]" },
+  { slug: "closing_soon", label: "ใกล้หมดเขต", color: "bg-[#f6b21a]" },
+  { slug: "published", label: "ข่าวทั่วไป", color: "bg-[#0b66c3]" },
+  { slug: "draft", label: "ร่าง", color: "bg-slate-500" },
+] as const;
 
 const categoryColors: Record<string, string> = {
   "teacher-assistant": "bg-[#e94b7b]",
@@ -27,7 +35,23 @@ export function getNewsImageUrl(imageUrl?: string | null): string {
 }
 
 export function getVisibleNewsStatuses(nodeEnv = process.env.NODE_ENV): string[] {
-  return nodeEnv === "production" ? ["published"] : ["published", "draft"];
+  const publishedStatuses = newsStatusOptions
+    .map((status) => status.slug)
+    .filter((status) => status !== "draft");
+
+  return nodeEnv === "production" ? publishedStatuses : [...publishedStatuses, "draft"];
+}
+
+export function getNewsStatusLabel(status?: string | null): string {
+  return newsStatusOptions.find((option) => option.slug === status)?.label ?? "ข่าวสาร";
+}
+
+export function getNewsStatusColor(status?: string | null): string {
+  return newsStatusOptions.find((option) => option.slug === status)?.color ?? "bg-[#071f4a]";
+}
+
+export function getSafeNewsStatus(status: string, visibleStatuses: string[]): string {
+  return visibleStatuses.includes(status) ? status : "";
 }
 
 export function getSafeNewsPage(pageValue: string | number | null | undefined, totalCount: number, pageSize: number) {

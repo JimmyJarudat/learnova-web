@@ -4,6 +4,8 @@ import {
   formatNewsDate,
   getNewsCategoryColor,
   getNewsImageUrl,
+  getNewsStatusLabel,
+  getSafeNewsStatus,
   getNewsSummary,
   getSafeNewsPage,
   getVisibleNewsStatuses,
@@ -43,9 +45,30 @@ describe("news display helpers", () => {
   });
 
   test("shows draft news outside production only", () => {
-    expect(getVisibleNewsStatuses("development")).toEqual(["published", "draft"]);
-    expect(getVisibleNewsStatuses("test")).toEqual(["published", "draft"]);
-    expect(getVisibleNewsStatuses("production")).toEqual(["published"]);
+    expect(getVisibleNewsStatuses("development")).toEqual([
+      "upcoming",
+      "open",
+      "closing_soon",
+      "published",
+      "draft",
+    ]);
+    expect(getVisibleNewsStatuses("production")).toEqual([
+      "upcoming",
+      "open",
+      "closing_soon",
+      "published",
+    ]);
+    expect(getVisibleNewsStatuses("development").includes("closed")).toBe(false);
+    expect(getVisibleNewsStatuses("development").includes("cancelled")).toBe(false);
+    expect(getVisibleNewsStatuses("development").includes("archived")).toBe(false);
+  });
+
+  test("returns labels and validates selectable news statuses", () => {
+    const visibleStatuses = getVisibleNewsStatuses("production");
+
+    expect(getNewsStatusLabel("open")).toBe("เปิดรับสมัคร");
+    expect(getSafeNewsStatus("open", visibleStatuses)).toBe("open");
+    expect(getSafeNewsStatus("closed", visibleStatuses)).toBe("");
   });
 
   test("keeps requested pagination within available pages", () => {
