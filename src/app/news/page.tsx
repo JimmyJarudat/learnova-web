@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { siteConfig } from "@/config/site";
 import type { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
 import {
@@ -17,10 +19,28 @@ import {
   newsStatusOptions,
 } from "@/lib/news-display";
 import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news-search";
+import { getNewsCanonicalPath, getNewsSeoFilterLabel, shouldIndexNewsPage } from "@/lib/news-seo";
 import { NewsSearchForm } from "./news-search-form";
 
 const heroImage = "/images/news-hero-teacher-officials.png";
 const pageSize = 10;
+const newsPath = "/news";
+const newsTitle = "ข่าวรับสมัครครู สอบครูผู้ช่วย และประกาศการศึกษา";
+const newsDescription =
+  "ศูนย์รวมข่าวรับสมัครครู สอบครูผู้ช่วย พนักงานราชการครู และประกาศสำคัญจากหน่วยงานการศึกษา พร้อมค้นหาตามหมวด หน่วยงาน แท็ก และสถานะรับสมัคร";
+const newsKeywords = [
+  "ข่าวรับสมัครครู",
+  "ข่าวสอบครูผู้ช่วย",
+  "สอบครูผู้ช่วย",
+  "สมัครครู",
+  "รับสมัครครูอัตราจ้าง",
+  "พนักงานราชการครู",
+  "ข่าวการศึกษา",
+  "ประกาศ ก.ค.ศ.",
+  "ข่าว สพฐ",
+  "ข่าว สอศ",
+  "Learnova ข่าวครู",
+];
 
 export const dynamic = "force-dynamic";
 
@@ -32,9 +52,22 @@ type NewsSearchParams = {
 };
 
 type ArticleWhere = Prisma.NewsArticleWhereInput;
+type NewsArticleItem = Awaited<ReturnType<typeof getNewsData>>["articles"][number];
 
 function getSingleParam(value?: string | string[]): string {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+function sanitizeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+function getAbsoluteUrl(path: string): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  return `${siteConfig.url}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
 function buildNewsHref({
@@ -68,6 +101,124 @@ function buildNewsHref({
 
   const search = params.toString();
   return search ? `/news?${search}` : "/news";
+}
+
+function getNewsMetadataUrl({
+  categorySlug,
+  page,
+  query,
+  status,
+}: {
+  categorySlug: string;
+  page: string;
+  query: string;
+  status: string;
+}) {
+  return buildNewsHref({
+    categorySlug,
+    page: Number(page) > 1 ? Number(page) : undefined,
+    query,
+    status,
+  });
+}
+
+function getNewsRobots(query: string, status: string) {
+  const shouldIndex = shouldIndexNewsPage(query, status);
+
+  return {
+    index: shouldIndex,
+    follow: true,
+    googleBot: {
+      index: shouldIndex,
+      follow: true,
+      "max-image-preview": "large" as const,
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  };
+}
+
+async function getCategoryName(categorySlug: string) {
+  if (!categorySlug) {
+    return "";
+  }
+
+  const category = await prisma.newsCategory.findUnique({
+    where: { slug: categorySlug },
+    select: { nameTh: true },
+  });
+
+  return category?.nameTh ?? "";
+}
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<NewsSearchParams>;
+}): Promise<Metadata> {
+  const params = (await searchParams) ?? {};
+  const query = normalizeNewsSearchQuery(getSingleParam(params.q));
+  const categorySlug = getSingleParam(params.category).trim();
+  const requestedStatus = getSingleParam(params.status).trim();
+  const requestedPage = getSingleParam(params.page).trim();
+  const visibleStatuses = getVisibleNewsStatuses();
+  const selectedStatus = getSafeNewsStatus(requestedStatus, visibleStatuses);
+  const categoryName = await getCategoryName(categorySlug);
+  const pageLabel = Number(requestedPage) > 1 ? ` หน้า ${Number(requestedPage)}` : "";
+  const filterLabel = getNewsSeoFilterLabel({
+    categoryName,
+    query,
+    statusLabel: selectedStatus ? getNewsStatusLabel(selectedStatus) : "",
+  });
+  const title = filterLabel ? `${filterLabel}${pageLabel} - ข่าวครู` : newsTitle;
+  const description = filterLabel
+    ? `รวมข่าวครูและประกาศการศึกษาตามตัวกรอง ${filterLabel}${pageLabel} จาก Learnova พร้อมค้นหาข่าวรับสมัครครู สอบครูผู้ช่วย และพนักงานราชการครู`
+    : newsDescription;
+  const currentPath = getNewsMetadataUrl({
+    categorySlug,
+    page: requestedPage,
+    query,
+    status: selectedStatus,
+  });
+  const canonicalPath = getNewsCanonicalPath({
+    cleanPath: buildNewsHref({ categorySlug, query: "", status: "" }),
+    currentPath,
+    query,
+    status: selectedStatus,
+  });
+
+  return {
+    title,
+    description,
+    keywords: newsKeywords,
+    alternates: {
+      canonical: canonicalPath,
+    },
+    robots: getNewsRobots(query, selectedStatus),
+    openGraph: {
+      title,
+      description,
+      url: currentPath,
+      siteName: siteConfig.name,
+      locale: "th_TH",
+      type: "website",
+      images: [
+        {
+          url: heroImage,
+          width: 1200,
+          height: 630,
+          alt: "ข่าวรับสมัครครูและประกาศการศึกษา Learnova",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [heroImage],
+    },
+    category: "Education",
+  };
 }
 
 function NewsImage({
@@ -196,6 +347,87 @@ function getPaginationPages(currentPage: number, pageCount: number) {
     .sort((a, b) => a - b);
 }
 
+function buildNewsJsonLd({
+  articles,
+  categoryName,
+  currentPath,
+  description,
+  title,
+}: {
+  articles: NewsArticleItem[];
+  categoryName: string;
+  currentPath: string;
+  description: string;
+  title: string;
+}) {
+  const pageUrl = getAbsoluteUrl(currentPath);
+
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: title,
+      description,
+      inLanguage: "th-TH",
+      isPartOf: {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}#website`,
+        name: siteConfig.name,
+        url: siteConfig.url,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${siteConfig.url}${newsPath}?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+      about: categoryName || "ข่าวครู ข่าวรับสมัครครู และประกาศการศึกษา",
+      mainEntity: {
+        "@type": "ItemList",
+        itemListElement: articles.map((article, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          url: article.sourceUrl,
+          item: {
+            "@type": "NewsArticle",
+            headline: article.title,
+            description: getNewsSummary(article),
+            url: article.sourceUrl,
+            image: getAbsoluteUrl(getNewsImageUrl(article.imageUrl)),
+            datePublished: (article.publishedAt ?? article.sourcePublishedAt ?? article.fetchedAt).toISOString(),
+            dateModified: article.updatedAt.toISOString(),
+            articleSection: article.category?.nameTh ?? article.source?.type ?? "ข่าวสาร",
+            keywords: article.tags,
+            publisher: {
+              "@type": "Organization",
+              name: article.sourceName ?? article.source?.name ?? "Learnova",
+            },
+          },
+        })),
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: siteConfig.name,
+          item: siteConfig.url,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: categoryName || "ข่าวสาร",
+          item: pageUrl,
+        },
+      ],
+    },
+  ];
+}
+
 function Pagination({
   categorySlug,
   currentPage,
@@ -286,9 +518,29 @@ export default async function NewsPage({
   } = await getNewsData(query, selectedCategory, requestedStatus, requestedPage);
   const featuredNews = articles.find((article) => article.isFeatured) ?? articles[0];
   const newsItems = featuredNews ? articles.filter((article) => article.id !== featuredNews.id) : articles;
+  const categoryName = categories.find((category) => category.slug === selectedCategory)?.nameTh ?? "";
+  const currentPath = getNewsMetadataUrl({
+    categorySlug: selectedCategory,
+    page: requestedPage,
+    query,
+    status: selectedStatus,
+  });
+  const jsonLd = buildNewsJsonLd({
+    articles,
+    categoryName,
+    currentPath,
+    description: newsDescription,
+    title: categoryName ? `${categoryName} - ข่าวครู Learnova` : newsTitle,
+  });
 
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: sanitizeJsonLd(jsonLd),
+        }}
+      />
       <SiteHeader />
 
       <section className="relative overflow-hidden bg-[#071f4a]">

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { siteConfig } from "@/config/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://learnova.jarudat.com"),
+  metadataBase: new URL(siteConfig.url),
 
   title: {
     default: "Learnova | แนวข้อสอบครูผู้ช่วย สพฐ. สอศ. สกร. อปท.",
@@ -68,8 +69,8 @@ export const metadata: Metadata = {
     title: "Learnova | แนวข้อสอบครูผู้ช่วย สพฐ. สอศ. สกร. อปท.",
     description:
       "รวมแนวข้อสอบครูผู้ช่วย ข้อสอบย้อนหลัง สรุปเนื้อหา และแบบทดสอบวัดระดับ พร้อมเฉลยละเอียดและวิเคราะห์ผลสอบ",
-    url: "https://learnova.jarudat.com",
-    siteName: "Learnova",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     locale: "th_TH",
     type: "website",
   },
