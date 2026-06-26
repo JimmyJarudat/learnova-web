@@ -49,6 +49,13 @@ export type NewsArticleMinAggregateOutputType = {
   sourceUrl: string | null
   imageUrl: string | null
   status: string | null
+  applicationStart: Date | null
+  applicationEnd: Date | null
+  closedAt: Date | null
+  cancelledAt: Date | null
+  archivedAt: Date | null
+  externalId: string | null
+  lastSeenAt: Date | null
   relevanceScore: number | null
   viewCount: number | null
   isFeatured: boolean | null
@@ -74,6 +81,13 @@ export type NewsArticleMaxAggregateOutputType = {
   sourceUrl: string | null
   imageUrl: string | null
   status: string | null
+  applicationStart: Date | null
+  applicationEnd: Date | null
+  closedAt: Date | null
+  cancelledAt: Date | null
+  archivedAt: Date | null
+  externalId: string | null
+  lastSeenAt: Date | null
   relevanceScore: number | null
   viewCount: number | null
   isFeatured: boolean | null
@@ -100,6 +114,13 @@ export type NewsArticleCountAggregateOutputType = {
   imageUrl: number
   tags: number
   status: number
+  applicationStart: number
+  applicationEnd: number
+  closedAt: number
+  cancelledAt: number
+  archivedAt: number
+  externalId: number
+  lastSeenAt: number
   relevanceScore: number
   viewCount: number
   isFeatured: number
@@ -138,6 +159,13 @@ export type NewsArticleMinAggregateInputType = {
   sourceUrl?: true
   imageUrl?: true
   status?: true
+  applicationStart?: true
+  applicationEnd?: true
+  closedAt?: true
+  cancelledAt?: true
+  archivedAt?: true
+  externalId?: true
+  lastSeenAt?: true
   relevanceScore?: true
   viewCount?: true
   isFeatured?: true
@@ -163,6 +191,13 @@ export type NewsArticleMaxAggregateInputType = {
   sourceUrl?: true
   imageUrl?: true
   status?: true
+  applicationStart?: true
+  applicationEnd?: true
+  closedAt?: true
+  cancelledAt?: true
+  archivedAt?: true
+  externalId?: true
+  lastSeenAt?: true
   relevanceScore?: true
   viewCount?: true
   isFeatured?: true
@@ -189,6 +224,13 @@ export type NewsArticleCountAggregateInputType = {
   imageUrl?: true
   tags?: true
   status?: true
+  applicationStart?: true
+  applicationEnd?: true
+  closedAt?: true
+  cancelledAt?: true
+  archivedAt?: true
+  externalId?: true
+  lastSeenAt?: true
   relevanceScore?: true
   viewCount?: true
   isFeatured?: true
@@ -303,6 +345,13 @@ export type NewsArticleGroupByOutputType = {
   imageUrl: string | null
   tags: string[]
   status: string
+  applicationStart: Date | null
+  applicationEnd: Date | null
+  closedAt: Date | null
+  cancelledAt: Date | null
+  archivedAt: Date | null
+  externalId: string | null
+  lastSeenAt: Date | null
   relevanceScore: number
   viewCount: number
   isFeatured: boolean
@@ -353,6 +402,13 @@ export type NewsArticleWhereInput = {
   imageUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   tags?: Prisma.StringNullableListFilter<"NewsArticle">
   status?: Prisma.StringFilter<"NewsArticle"> | string
+  applicationStart?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  applicationEnd?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  externalId?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   relevanceScore?: Prisma.IntFilter<"NewsArticle"> | number
   viewCount?: Prisma.IntFilter<"NewsArticle"> | number
   isFeatured?: Prisma.BoolFilter<"NewsArticle"> | boolean
@@ -382,6 +438,13 @@ export type NewsArticleOrderByWithRelationInput = {
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  applicationStart?: Prisma.SortOrderInput | Prisma.SortOrder
+  applicationEnd?: Prisma.SortOrderInput | Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   relevanceScore?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -414,6 +477,13 @@ export type NewsArticleWhereUniqueInput = Prisma.AtLeast<{
   imageUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   tags?: Prisma.StringNullableListFilter<"NewsArticle">
   status?: Prisma.StringFilter<"NewsArticle"> | string
+  applicationStart?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  applicationEnd?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  externalId?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   relevanceScore?: Prisma.IntFilter<"NewsArticle"> | number
   viewCount?: Prisma.IntFilter<"NewsArticle"> | number
   isFeatured?: Prisma.BoolFilter<"NewsArticle"> | boolean
@@ -443,6 +513,13 @@ export type NewsArticleOrderByWithAggregationInput = {
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  applicationStart?: Prisma.SortOrderInput | Prisma.SortOrder
+  applicationEnd?: Prisma.SortOrderInput | Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   relevanceScore?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -478,6 +555,13 @@ export type NewsArticleScalarWhereWithAggregatesInput = {
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
   tags?: Prisma.StringNullableListFilter<"NewsArticle">
   status?: Prisma.StringWithAggregatesFilter<"NewsArticle"> | string
+  applicationStart?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
+  applicationEnd?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
+  archivedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
+  externalId?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
+  lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
   relevanceScore?: Prisma.IntWithAggregatesFilter<"NewsArticle"> | number
   viewCount?: Prisma.IntWithAggregatesFilter<"NewsArticle"> | number
   isFeatured?: Prisma.BoolWithAggregatesFilter<"NewsArticle"> | boolean
@@ -503,6 +587,13 @@ export type NewsArticleCreateInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -532,6 +623,13 @@ export type NewsArticleUncheckedCreateInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -557,6 +655,13 @@ export type NewsArticleUpdateInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -586,6 +691,13 @@ export type NewsArticleUncheckedUpdateInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -613,6 +725,13 @@ export type NewsArticleCreateManyInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -638,6 +757,13 @@ export type NewsArticleUpdateManyMutationInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -665,6 +791,13 @@ export type NewsArticleUncheckedUpdateManyInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -710,6 +843,13 @@ export type NewsArticleCountOrderByAggregateInput = {
   imageUrl?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  applicationStart?: Prisma.SortOrder
+  applicationEnd?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
+  externalId?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   relevanceScore?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -741,6 +881,13 @@ export type NewsArticleMaxOrderByAggregateInput = {
   sourceUrl?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  applicationStart?: Prisma.SortOrder
+  applicationEnd?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
+  externalId?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   relevanceScore?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -766,6 +913,13 @@ export type NewsArticleMinOrderByAggregateInput = {
   sourceUrl?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  applicationStart?: Prisma.SortOrder
+  applicationEnd?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
+  externalId?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   relevanceScore?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -888,6 +1042,13 @@ export type NewsArticleCreateWithoutSourceInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -915,6 +1076,13 @@ export type NewsArticleUncheckedCreateWithoutSourceInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -971,6 +1139,13 @@ export type NewsArticleScalarWhereInput = {
   imageUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   tags?: Prisma.StringNullableListFilter<"NewsArticle">
   status?: Prisma.StringFilter<"NewsArticle"> | string
+  applicationStart?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  applicationEnd?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  externalId?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   relevanceScore?: Prisma.IntFilter<"NewsArticle"> | number
   viewCount?: Prisma.IntFilter<"NewsArticle"> | number
   isFeatured?: Prisma.BoolFilter<"NewsArticle"> | boolean
@@ -996,6 +1171,13 @@ export type NewsArticleCreateWithoutCategoryInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -1023,6 +1205,13 @@ export type NewsArticleUncheckedCreateWithoutCategoryInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -1075,6 +1264,13 @@ export type NewsArticleCreateManySourceInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -1100,6 +1296,13 @@ export type NewsArticleUpdateWithoutSourceInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1127,6 +1330,13 @@ export type NewsArticleUncheckedUpdateWithoutSourceInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1153,6 +1363,13 @@ export type NewsArticleUncheckedUpdateManyWithoutSourceInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1179,6 +1396,13 @@ export type NewsArticleCreateManyCategoryInput = {
   imageUrl?: string | null
   tags?: Prisma.NewsArticleCreatetagsInput | string[]
   status?: string
+  applicationStart?: Date | string | null
+  applicationEnd?: Date | string | null
+  closedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  archivedAt?: Date | string | null
+  externalId?: string | null
+  lastSeenAt?: Date | string | null
   relevanceScore?: number
   viewCount?: number
   isFeatured?: boolean
@@ -1204,6 +1428,13 @@ export type NewsArticleUpdateWithoutCategoryInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1231,6 +1462,13 @@ export type NewsArticleUncheckedUpdateWithoutCategoryInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1257,6 +1495,13 @@ export type NewsArticleUncheckedUpdateManyWithoutCategoryInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.NewsArticleUpdatetagsInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relevanceScore?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1286,6 +1531,13 @@ export type NewsArticleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   imageUrl?: boolean
   tags?: boolean
   status?: boolean
+  applicationStart?: boolean
+  applicationEnd?: boolean
+  closedAt?: boolean
+  cancelledAt?: boolean
+  archivedAt?: boolean
+  externalId?: boolean
+  lastSeenAt?: boolean
   relevanceScore?: boolean
   viewCount?: boolean
   isFeatured?: boolean
@@ -1315,6 +1567,13 @@ export type NewsArticleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   imageUrl?: boolean
   tags?: boolean
   status?: boolean
+  applicationStart?: boolean
+  applicationEnd?: boolean
+  closedAt?: boolean
+  cancelledAt?: boolean
+  archivedAt?: boolean
+  externalId?: boolean
+  lastSeenAt?: boolean
   relevanceScore?: boolean
   viewCount?: boolean
   isFeatured?: boolean
@@ -1344,6 +1603,13 @@ export type NewsArticleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   imageUrl?: boolean
   tags?: boolean
   status?: boolean
+  applicationStart?: boolean
+  applicationEnd?: boolean
+  closedAt?: boolean
+  cancelledAt?: boolean
+  archivedAt?: boolean
+  externalId?: boolean
+  lastSeenAt?: boolean
   relevanceScore?: boolean
   viewCount?: boolean
   isFeatured?: boolean
@@ -1373,6 +1639,13 @@ export type NewsArticleSelectScalar = {
   imageUrl?: boolean
   tags?: boolean
   status?: boolean
+  applicationStart?: boolean
+  applicationEnd?: boolean
+  closedAt?: boolean
+  cancelledAt?: boolean
+  archivedAt?: boolean
+  externalId?: boolean
+  lastSeenAt?: boolean
   relevanceScore?: boolean
   viewCount?: boolean
   isFeatured?: boolean
@@ -1386,7 +1659,7 @@ export type NewsArticleSelectScalar = {
   updatedAt?: boolean
 }
 
-export type NewsArticleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sourceId" | "categoryId" | "title" | "slug" | "excerpt" | "summary" | "content" | "sourceName" | "sourceUrl" | "imageUrl" | "tags" | "status" | "relevanceScore" | "viewCount" | "isFeatured" | "sourcePublishedAt" | "publishedAt" | "fetchedAt" | "rawData" | "createdBy" | "updatedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["newsArticle"]>
+export type NewsArticleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sourceId" | "categoryId" | "title" | "slug" | "excerpt" | "summary" | "content" | "sourceName" | "sourceUrl" | "imageUrl" | "tags" | "status" | "applicationStart" | "applicationEnd" | "closedAt" | "cancelledAt" | "archivedAt" | "externalId" | "lastSeenAt" | "relevanceScore" | "viewCount" | "isFeatured" | "sourcePublishedAt" | "publishedAt" | "fetchedAt" | "rawData" | "createdBy" | "updatedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["newsArticle"]>
 export type NewsArticleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   source?: boolean | Prisma.NewsArticle$sourceArgs<ExtArgs>
   category?: boolean | Prisma.NewsArticle$categoryArgs<ExtArgs>
@@ -1420,9 +1693,38 @@ export type $NewsArticlePayload<ExtArgs extends runtime.Types.Extensions.Interna
     imageUrl: string | null
     tags: string[]
     /**
-     * draft, published, archived, rejected
+     * draft, published, upcoming, open, closing_soon, closed, cancelled, archived
      */
     status: string
+    /**
+     * วันที่เริ่มรับสมัคร ใช้กับข่าวสมัครงาน/เปิดสอบ
+     */
+    applicationStart: Date | null
+    /**
+     * วันที่สิ้นสุดรับสมัคร ใช้คำนวณ open / closing_soon / closed
+     */
+    applicationEnd: Date | null
+    /**
+     * เวลาที่ระบบ mark ว่าปิดรับสมัครแล้ว
+     */
+    closedAt: Date | null
+    /**
+     * เวลาที่ mark ว่าประกาศถูกยกเลิก
+     */
+    cancelledAt: Date | null
+    /**
+     * เวลาที่เก็บถาวร
+     */
+    archivedAt: Date | null
+    /**
+     * id จากต้นทาง เช่น JOB OCSC: 10859
+     * ใช้สำหรับ sync/upsert คู่กับ sourceId
+     */
+    externalId: string | null
+    /**
+     * เวลาล่าสุดที่ workflow ยังเจอข่าวนี้จากต้นทาง
+     */
+    lastSeenAt: Date | null
     relevanceScore: number
     viewCount: number
     isFeatured: boolean
@@ -1872,6 +2174,13 @@ export interface NewsArticleFieldRefs {
   readonly imageUrl: Prisma.FieldRef<"NewsArticle", 'String'>
   readonly tags: Prisma.FieldRef<"NewsArticle", 'String[]'>
   readonly status: Prisma.FieldRef<"NewsArticle", 'String'>
+  readonly applicationStart: Prisma.FieldRef<"NewsArticle", 'DateTime'>
+  readonly applicationEnd: Prisma.FieldRef<"NewsArticle", 'DateTime'>
+  readonly closedAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
+  readonly cancelledAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
+  readonly archivedAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
+  readonly externalId: Prisma.FieldRef<"NewsArticle", 'String'>
+  readonly lastSeenAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
   readonly relevanceScore: Prisma.FieldRef<"NewsArticle", 'Int'>
   readonly viewCount: Prisma.FieldRef<"NewsArticle", 'Int'>
   readonly isFeatured: Prisma.FieldRef<"NewsArticle", 'Boolean'>
