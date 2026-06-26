@@ -438,6 +438,28 @@ export async function getPackagePartAttemptHistory(partId: string, userId: strin
   };
 }
 
+export async function getPracticeSetAttemptHistory(setId: string, userId: string) {
+  const attempts = await prisma.examAttempt.findMany({
+    where: {
+      practiceSetId: setId,
+      userId,
+      status: ExamAttemptStatus.SUBMITTED,
+    },
+    orderBy: [{ submittedAt: "desc" }, { createdAt: "desc" }],
+    take: 10,
+  });
+
+  const bestAttempt = attempts
+    .slice()
+    .sort((a, b) => toNumber(b.score) - toNumber(a.score) || toNumber(b.maxScore) - toNumber(a.maxScore))[0];
+
+  return {
+    attemptCount: attempts.length,
+    bestAttempt: bestAttempt ? mapAttemptSummary(bestAttempt) : null,
+    latestAttempts: attempts.map(mapAttemptSummary),
+  };
+}
+
 export async function getExamPackagePart(
   affiliationSlug: string,
   majorSlug: string,
@@ -630,6 +652,7 @@ export async function getPracticeSet(categorySlug: string, setSlug: string) {
   }
 
   return {
+    id: practiceSet.id,
     slug: practiceSet.slug,
     title: practiceSet.title,
     scopeLabel: practiceSet.scopeLabel,

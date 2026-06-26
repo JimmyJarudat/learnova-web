@@ -79,6 +79,7 @@ type SubmitResult = {
 type ExamRunnerProps = {
   part: ExamPart;
   initialHistory?: AttemptHistory;
+  submitUrl?: string;
 };
 
 type AttemptSummary = {
@@ -154,7 +155,7 @@ function getChoiceClass({
   return "border-slate-200 bg-slate-50 opacity-75";
 }
 
-export function ExamRunner({ part, initialHistory }: ExamRunnerProps) {
+export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps) {
   const initialSeconds = Math.max(part.durationMinutes * 60, 1);
   const [selectedChoices, setSelectedChoices] = useState<Record<string, string>>({});
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
@@ -202,7 +203,7 @@ export function ExamRunner({ part, initialHistory }: ExamRunnerProps) {
     setIsSubmitting(true);
 
     const durationSeconds = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
-    const response = await fetch(`/api/exams/package-parts/${part.id}/submit`, {
+    const response = await fetch(submitUrl ?? `/api/exams/package-parts/${part.id}/submit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

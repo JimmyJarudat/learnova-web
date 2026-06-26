@@ -6,9 +6,9 @@ import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/config/site";
 import { getExamOverview } from "@/server/exams/exam-data";
 
-const pageTitle = "คลังข้อสอบครูผู้ช่วย แยกตามสังกัดและวิชา";
+const pageTitle = "คลังข้อสอบครูผู้ช่วย ภาค ก และจำลองสนามจริง";
 const pageDescription =
-  "เลือกข้อสอบครูผู้ช่วยตามสังกัด เช่น สพฐ. สอศ. สกร. อปท. กทม. แล้วเจาะต่อเป็น ภาค ก วิชาชีพครู กฎหมายการศึกษา และชุดข้อสอบหลายปี";
+  "ฝึกภาค ก กลางที่ใช้ร่วมหลายสังกัด หรือเลือกสังกัดและเอกเพื่อจำลองสนามจริง เช่น สพฐ. สอศ. สกร. อปท. กทม.";
 
 export const metadata: Metadata = {
   title: pageTitle,
@@ -69,17 +69,17 @@ export default async function ExamsPage() {
               คลังข้อสอบ
             </span>
             <h1 className="mt-5 text-4xl font-black leading-tight sm:text-6xl">
-              เริ่มฝึกข้อสอบให้ตรงสนามที่คุณจะสอบ
+              เลือกฝึกให้ตรงจังหวะที่คุณต้องใช้
             </h1>
             <p className="mt-5 max-w-2xl text-lg font-semibold leading-8 text-white/85">
-              เลือกสนามสอบของคุณ แล้วเข้าไปฝึก ภาค ก วิชาชีพครู กฎหมาย หรือเนื้อหาเฉพาะสังกัด พร้อมชุดย้อนหลังและชุดจำลองสนามที่จัดไว้ให้เริ่มทำได้ทันที
+              ฝึกภาค ก แบบรวมได้ทันที หรือเลือกสังกัด เอก และปีสอบเพื่อจำลองสนามเต็มชุดที่มี ภาค ก ภาค ข และภาค ค อยู่ในหน้าเดียว
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/exams/all" className="rounded-xl bg-[#ffd35a] px-6 py-3 text-sm font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-[#f6bf22]">
-                ดูข้อสอบทั้งหมด
+              <Link href="/exams/practice/part-a" className="rounded-xl bg-[#ffd35a] px-6 py-3 text-sm font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-[#f6bf22]">
+                ฝึกภาค ก
               </Link>
               <Link href="/exams/ovec" className="rounded-xl bg-[#ffd35a] px-6 py-3 text-sm font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-[#f6bf22]">
-                เริ่มจาก สอศ.
+                จำลองสนาม สอศ.
               </Link>
               <Link href="#affiliations" className="rounded-xl bg-white px-6 py-3 text-sm font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-slate-100">
                 เลือกสังกัดสอบ
@@ -110,7 +110,7 @@ export default async function ExamsPage() {
               <h2 className="mt-1 text-3xl font-black text-[#071f4a]">อยากฝึกเรื่องไหนซ้ำ ๆ</h2>
             </div>
             <p className="max-w-xl text-sm font-semibold leading-6 text-slate-500">
-              สำหรับคนที่อยากเก็บ ภาค ก กฎหมาย หรือวิชาชีพครูหลายชุด โดยไม่ต้องเลือกสังกัดและเอกก่อน
+              สำหรับคนที่อยากฝึกภาคที่ใช้ร่วมกันหลายสนาม โดยไม่ต้องเลือกสังกัดและเอกก่อน
             </p>
           </div>
 
@@ -140,10 +140,10 @@ export default async function ExamsPage() {
           className="group grid gap-5 rounded-lg border border-[#0b66c3]/20 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl lg:grid-cols-[1fr_auto] lg:items-center"
         >
           <div>
-            <p className="text-sm font-black text-[#0b66c3]">ข้อสอบทั้งหมด</p>
-            <h2 className="mt-1 text-2xl font-black text-[#071f4a]">รวมทุกภาค ทุกวิชา ทุกหน่วยงานในหน้าเดียว</h2>
+            <p className="text-sm font-black text-[#0b66c3]">สนามจริงทั้งหมด</p>
+            <h2 className="mt-1 text-2xl font-black text-[#071f4a]">รวมชุดจำลองสนามตามสังกัด เอก และปีสอบ</h2>
             <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-slate-600">
-              เหมาะสำหรับคนที่อยากไล่ดูทั้งหมดก่อนเลือกสนาม หรืออยากค้นหาชุดย้อนหลังจากหลายสังกัดพร้อมกัน
+              เหมาะสำหรับคนที่เลือกสนามสอบแล้ว และต้องการเห็นชุดเต็มของสนามนั้น ทั้ง ภาค ก ภาค ข และภาค ค
             </p>
           </div>
           <span className="inline-flex w-fit rounded-xl bg-[#0b66c3] px-5 py-3 text-sm font-black text-white transition group-hover:bg-[#084f99]">
@@ -192,9 +192,9 @@ export default async function ExamsPage() {
         <div>
           <div className="mb-5">
             <p className="text-sm font-black text-[#0b66c3]">เริ่มทำได้เลย</p>
-            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดข้อสอบที่พร้อมเปิด</h2>
+            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดจำลองสนามจริงที่พร้อมเปิด</h2>
             <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
-              เลือกเส้นทางตามสังกัดและเอกก่อน แล้วค่อยเลือกว่าจะเริ่มทำ ภาค ก หรือ ภาค ข ในชุดนั้น
+              เลือกเส้นทางตามสังกัดและเอกก่อน แล้วเข้าไปเลือกทำ ภาค ก ภาค ข หรือ ภาค ค ของสนามนั้น
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
@@ -211,7 +211,7 @@ export default async function ExamsPage() {
                   </div>
                   <h3 className="mt-4 text-lg font-black leading-7 text-[#071f4a]">{pack.title}</h3>
                   <p className="mt-2 text-sm font-semibold text-slate-600">
-                    เลือกทำ ภาค ก, วิชาชีพครู, ภาค ข {pack.majorShortName} หรือ ภาค ค
+                    เลือกทำ ภาค ก, ภาค ข วิชาชีพครู, ภาค ข {pack.majorShortName} หรือ ภาค ค
                   </p>
                 </Link>
               ))}
@@ -222,10 +222,10 @@ export default async function ExamsPage() {
           <p className="text-sm font-black text-[#ffd35a]">เริ่มยังไงดี</p>
           <div className="mt-5 space-y-4">
             {[
-              ["1", "เลือกสังกัด", "เริ่มจากสนามที่ต้องสอบจริง เช่น สอศ. หรือ สพฐ."],
-              ["2", "เลือกเอก", "เลือกเอกคอม เอกคณิต เอกอังกฤษ หรือเอกที่สมัคร"],
-              ["3", "เลือกปี/ชุด", "เลือกปี 2568, 2567 หรือชุดจำลองสนามเต็มชุด"],
-              ["4", "เลือกภาค", "เลือกทำ ภาค ก ภาค ข วิชาชีพครู ภาค ข วิชาเอก หรือ ภาค ค"],
+              ["1", "ฝึกภาค ก รวม", "เริ่มซ้อมพื้นฐานกลางได้ทันที โดยไม่ต้องเลือกสังกัดหรือเอก"],
+              ["2", "จำลองสนาม", "เลือกสังกัด เอก และปีสอบเมื่อต้องการทำชุดเต็ม"],
+              ["3", "เลือกภาค", "ในสนามจำลองจะมี ภาค ก ภาค ข และภาค ค ให้เลือก"],
+              ["4", "ดูคะแนน", "ส่งคำตอบแล้วดูคะแนนสูงสุดและประวัติของแต่ละภาคได้"],
             ].map((item) => (
               <div key={item[0]} className="flex gap-3">
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#ffd35a] text-sm font-black text-[#071f4a]">{item[0]}</span>

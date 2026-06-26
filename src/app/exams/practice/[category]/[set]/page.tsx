@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { Fragment } from "react";
-import { RichContent } from "@/components/exams/rich-content";
+import { ExamRunner } from "@/components/exams/exam-runner";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { getPracticeSet } from "@/server/exams/exam-data";
+import { getAuthOptions } from "@/lib/auth/options";
+import { getPracticeSet, getPracticeSetAttemptHistory } from "@/server/exams/exam-data";
 
 type PracticeSetPageProps = {
   params: Promise<{ category: string; set: string }>;
@@ -32,11 +33,29 @@ export async function generateMetadata({ params }: PracticeSetPageProps): Promis
 
 export default async function PracticeSetPage({ params }: PracticeSetPageProps) {
   const { category: categorySlug, set: setSlug } = await params;
+  const currentPath = `/exams/practice/${categorySlug}/${setSlug}`;
+  const session = await getServerSession(await getAuthOptions());
+
+  if (!session?.user?.id) {
+    redirect(`/login?callbackUrl=${encodeURIComponent(currentPath)}`);
+  }
+
   const practiceSet = await getPracticeSet(categorySlug, setSlug);
 
   if (!practiceSet) {
     notFound();
   }
+
+  const history = await getPracticeSetAttemptHistory(practiceSet.id, session.user.id);
+  const runnerPart = {
+    id: practiceSet.id,
+    title: practiceSet.title,
+    shortTitle: practiceSet.category.shortTitle,
+    durationMinutes: practiceSet.durationMinutes,
+    totalQuestions: practiceSet.totalQuestions,
+    difficulty: practiceSet.difficulty,
+    questions: practiceSet.questions,
+  };
 
   return (
     <main className="min-h-screen bg-[#eef2f7] text-slate-950">
@@ -59,8 +78,8 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
               <p className="text-xl font-black text-[#ffd35a]">{practiceSet.durationMinutes}:00</p>
             </div>
             <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-slate-200">
-              <p className="text-xs font-bold text-slate-500">ทำแล้ว</p>
-              <p className="text-xl font-black text-[#071f4a]">0/{practiceSet.totalQuestions}</p>
+              <p className="text-xs font-bold text-slate-500">ข้อทั้งหมด</p>
+              <p className="text-xl font-black text-[#071f4a]">{practiceSet.totalQuestions}</p>
             </div>
             <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-slate-200">
               <p className="text-xs font-bold text-slate-500">ระดับ</p>
@@ -70,108 +89,11 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_320px] lg:px-8">
-        <div className="space-y-5">
-          {practiceSet.questions.length > 0 ? (
-            practiceSet.questions.map((question, index) => (
-              <Fragment key={question.id}>
-                {question.section && question.section.id !== practiceSet.questions[index - 1]?.section?.id ? (
-                  <section className="rounded-lg border border-[#0b66c3]/20 bg-[#0b66c3] p-5 text-white shadow-sm">
-                    <p className="text-sm font-black text-[#ffd35a]">หัวข้อ</p>
-                    <h2 className="mt-1 text-2xl font-black">{question.section.title}</h2>
-                    <RichContent content={question.section.description} format={question.section.contentFormat} className="mt-2 text-sm font-semibold text-white/80" />
-                  </section>
-                ) : null}
-
-                {question.passage && question.passage.id !== practiceSet.questions[index - 1]?.passage?.id ? (
-                  <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                    <p className="text-sm font-black text-[#0b66c3]">อ่านข้อความต่อไปนี้ แล้วตอบคำถามที่เกี่ยวข้อง</p>
-                    {question.passage.title ? <h2 className="mt-2 text-xl font-black text-[#071f4a]">{question.passage.title}</h2> : null}
-                    {question.passage.imageUrl ? (
-                      <img src={question.passage.imageUrl} alt="" className="mt-4 max-h-[420px] w-auto max-w-full rounded-lg border border-slate-200 object-contain" />
-                    ) : null}
-                    <RichContent content={question.passage.content} format={question.passage.contentFormat} className="mt-3 text-sm font-semibold text-slate-700" />
-                  </section>
-                ) : null}
-
-                <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-black text-[#0b66c3]">ข้อ {question.no}</p>
-                      {question.inlinePassage ? (
-                        <RichContent content={question.inlinePassage} format={question.contentFormat} className="mt-3 rounded-lg bg-slate-50 p-4 text-sm font-semibold text-slate-700" />
-                      ) : null}
-                      {question.imageUrl ? (
-                        <img src={question.imageUrl} alt="" className="mt-4 max-h-[420px] w-auto max-w-full rounded-lg border border-slate-200 object-contain" />
-                      ) : null}
-                      {question.assets.map((asset) => (
-                        <figure key={asset.id} className="mt-4">
-                          <img src={asset.url} alt={asset.altText ?? ""} className="max-h-[420px] w-auto max-w-full rounded-lg border border-slate-200 object-contain" />
-                          {asset.caption ? <figcaption className="mt-2 text-xs font-semibold text-slate-500">{asset.caption}</figcaption> : null}
-                        </figure>
-                      ))}
-                      <RichContent content={question.stem} format={question.contentFormat} className="mt-2 text-xl font-black leading-8 text-[#071f4a]" />
-                    </div>
-                    <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">
-                      {question.score} คะแนน
-                    </span>
-                  </div>
-
-                  <div className="mt-5 grid gap-3">
-                    {question.choices.map((choice) => (
-                      <label key={choice.id} className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-[#0b66c3] hover:bg-white">
-                        <input type="radio" name={`question-${question.id}`} className="mt-1 h-4 w-4 accent-[#0b66c3]" />
-                        <span className="text-sm font-semibold leading-6 text-slate-700">
-                          <span className="font-black">{choice.label}.</span>
-                          <RichContent content={choice.text} format={choice.contentFormat} className="ml-1 inline-block" />
-                          {choice.imageUrl ? <img src={choice.imageUrl} alt="" className="mt-3 max-h-64 w-auto max-w-full rounded-lg border border-slate-200 object-contain" /> : null}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </article>
-              </Fragment>
-            ))
-          ) : (
-            <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
-              <p className="text-sm font-black text-[#0b66c3]">ยังไม่มีคำถามในชุดฝึกนี้</p>
-              <h2 className="mt-2 text-2xl font-black text-[#071f4a]">เพิ่มคำถามในฐานข้อมูลแล้วหน้านี้จะแสดงทันที</h2>
-              <p className="mx-auto mt-3 max-w-xl text-sm font-semibold leading-6 text-slate-500">
-                ข้อมูลชุดฝึกนี้มาจาก `practice_sets` แล้ว เหลือผูกคำถามผ่าน `practice_set_questions`
-              </p>
-            </div>
-          )}
-        </div>
-
-        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-black text-[#071f4a]">สารบัญข้อสอบ</h2>
-            <div className="mt-4 grid grid-cols-5 gap-2">
-              {Array.from({ length: Math.max(practiceSet.totalQuestions, practiceSet.questions.length, 1) }).map((_, index) => (
-                <button
-                  key={index + 1}
-                  className={`h-10 rounded-lg text-sm font-black ${
-                    index < practiceSet.questions.length ? "bg-[#0b66c3] text-white" : "bg-slate-100 text-slate-500"
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-lg bg-[#071f4a] p-5 text-white shadow-sm">
-            <p className="text-sm font-black text-[#ffd35a]">พร้อมส่งคำตอบ</p>
-            <h2 className="mt-2 text-2xl font-black">ตรวจคะแนนหลังทำเสร็จ</h2>
-            <p className="mt-3 text-sm font-semibold leading-6 text-white/70">
-              ระบบจะสรุปคะแนนของ {practiceSet.category.shortTitle} พร้อมหัวข้อที่ควรกลับไปทบทวน
-            </p>
-            <button className="mt-5 w-full rounded-xl bg-[#ffd35a] px-4 py-3 text-sm font-black text-[#071f4a]">
-              ส่งคำตอบ
-            </button>
-          </div>
-        </aside>
-      </section>
+      <ExamRunner
+        part={runnerPart}
+        initialHistory={history}
+        submitUrl={`/api/exams/practice-sets/${practiceSet.id}/submit`}
+      />
 
       <SiteFooter />
     </main>

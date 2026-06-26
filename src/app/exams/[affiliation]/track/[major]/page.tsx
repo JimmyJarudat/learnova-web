@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: MajorPageProps): Promise<Meta
 
   return {
     title: `${track.affiliation.label} ${track.major.shortName} เลือกปีและชุดข้อสอบ`,
-    description: `เลือกปีและชุดข้อสอบของ ${track.major.shortName} สนาม ${track.affiliation.label} ก่อนเลือกทำ ภาค ก หรือ ภาค ข`,
+    description: `เลือกปีและชุดจำลองสนามของ ${track.major.shortName} สนาม ${track.affiliation.label} ก่อนเลือกทำ ภาค ก ภาค ข หรือ ภาค ค`,
     alternates: {
       canonical: `/exams/${track.affiliation.slug}/track/${track.major.slug}`,
     },
@@ -49,7 +49,7 @@ export default async function ExamMajorPage({ params }: MajorPageProps) {
             {track.affiliation.label} {track.major.shortName}
           </h1>
           <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-white/85">
-            เลือกปีหรือชุดข้อสอบก่อน แล้วเข้าไปเลือกว่าจะฝึก ภาค ก, ภาค ข วิชาชีพครู, ภาค ข {track.major.shortName} หรือ ภาค ค
+            เลือกปีหรือชุดจำลองสนามก่อน แล้วเข้าไปเลือกทำ ภาค ก, ภาค ข วิชาชีพครู, ภาค ข {track.major.shortName} หรือ ภาค ค ในชุดเดียวกัน
           </p>
         </div>
       </section>

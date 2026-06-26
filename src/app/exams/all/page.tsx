@@ -7,9 +7,9 @@ import { siteConfig } from "@/config/site";
 import { getAuthOptions } from "@/lib/auth/options";
 import { getAllExamPackages } from "@/server/exams/exam-data";
 
-const pageTitle = "ข้อสอบทั้งหมด ครูผู้ช่วยทุกสังกัด";
+const pageTitle = "ชุดจำลองสนามจริง ครูผู้ช่วยทุกสังกัด";
 const pageDescription =
-  "รวมข้อสอบครูผู้ช่วยทุกภาค ทุกวิชา และทุกหน่วยงาน ทั้ง สพฐ. สอศ. สกร. อปท. กทม. พร้อมชุดย้อนหลังและชุดจำลองสนาม";
+  "รวมชุดจำลองสนามจริงครูผู้ช่วยตามสังกัด เอก และปีสอบ ทั้ง สพฐ. สอศ. สกร. อปท. กทม.";
 
 export const metadata: Metadata = {
   title: pageTitle,
@@ -44,12 +44,12 @@ export default async function AllExamsPage() {
           </Link>
           <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_420px] lg:items-end">
             <div>
-              <p className="text-sm font-black text-white/70">ข้อสอบทั้งหมด</p>
-              <h1 className="mt-2 text-4xl font-black leading-tight sm:text-5xl">
-                รวมทุกภาค ทุกวิชา ทุกหน่วยงาน
-              </h1>
-              <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-white/85">
-                ดูชุดข้อสอบทั้งหมดในหน้าเดียว ทั้ง ภาค ก วิชาชีพครู กฎหมายการศึกษา และเนื้อหาเฉพาะสังกัดจากหลายสนามสอบ
+            <p className="text-sm font-black text-white/70">สนามจริงทั้งหมด</p>
+            <h1 className="mt-2 text-4xl font-black leading-tight sm:text-5xl">
+                รวมชุดจำลองสนามตามสังกัดและเอก
+            </h1>
+            <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-white/85">
+                ดูชุดสอบเฉพาะสนามในหน้าเดียว เหมาะกับช่วงที่รู้แล้วว่าจะสอบสังกัดไหน เอกอะไร และอยากลองทำชุดที่ตรงสนามจริง
               </p>
             </div>
             <div className="grid grid-cols-3 gap-3">
@@ -74,10 +74,10 @@ export default async function AllExamsPage() {
         <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-sm font-black text-[#0b66c3]">ค้นแบบเร็ว</p>
-            <h2 className="mt-1 text-2xl font-black text-[#071f4a]">กรองตามสังกัดและวิชา</h2>
+            <h2 className="mt-1 text-2xl font-black text-[#071f4a]">กรองตามสังกัด เอก และปีสอบ</h2>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">
-            {["ทั้งหมด", ...affiliations.map((item) => item.label), "ภาค ก", "วิชาชีพครู", "กฎหมาย"].map((item) => (
+            {["ทั้งหมด", ...affiliations.map((item) => item.label), "วิชาชีพครู", "ภาค ข", "ภาค ค"].map((item) => (
               <button
                 key={item}
                 className="shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-600 shadow-sm transition hover:border-[#0b66c3] hover:text-[#0b66c3]"

@@ -50,7 +50,7 @@ export default async function ExamPackagePage({ params }: PackagePageProps) {
           </Link>
           <h1 className="mt-5 text-4xl font-black leading-tight sm:text-5xl">{pack.title}</h1>
           <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-white/85">
-            ตอนนี้เลือกชุดแล้ว เหลือเลือกว่าจะเริ่มทำภาคไหนก่อน ภาค ก และวิชาชีพครูใช้ร่วมกันทุกเอก ส่วนภาค ข วิชาเอกนี้เป็นของ {pack.major.shortName}
+            ตอนนี้คุณอยู่ในโหมดจำลองสนามจริงของ {pack.affiliation.label} เอก {pack.major.shortName} ชุดนี้รวม ภาค ก ภาค ข และภาค ค ไว้ในที่เดียว
           </p>
         </div>
       </section>
