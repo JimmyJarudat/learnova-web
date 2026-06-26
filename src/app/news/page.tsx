@@ -283,7 +283,7 @@ async function getNewsData(query: string, categorySlug: string, status: string, 
     ...baseVisibilityWhere,
     ...(selectedStatus ? { status: selectedStatus } : {}),
   } satisfies ArticleWhere;
-  const [categories, statusCounts, totalCount] = await Promise.all([
+  const [categories, statusCounts, totalCount, allCategoriesCount] = await Promise.all([
     prisma.newsCategory.findMany({
       where: {
         isActive: true,
@@ -318,6 +318,7 @@ async function getNewsData(query: string, categorySlug: string, status: string, 
         })),
     ),
     prisma.newsArticle.count({ where: articleWhere }),
+    prisma.newsArticle.count({ where: categoryCountWhere }),
   ]);
   const { currentPage, pageCount } = getSafeNewsPage(requestedPage, totalCount, pageSize);
   const articles = await prisma.newsArticle.findMany({
@@ -335,6 +336,7 @@ async function getNewsData(query: string, categorySlug: string, status: string, 
     pageCount,
     selectedStatus,
     statusCounts: statusCounts.filter((option) => option.count > 0),
+    allCategoriesCount,
     totalCount,
   };
 }
@@ -514,6 +516,7 @@ export default async function NewsPage({
     pageCount,
     selectedStatus,
     statusCounts,
+    allCategoriesCount,
     totalCount,
   } = await getNewsData(query, selectedCategory, requestedStatus, requestedPage);
   const featuredNews = articles.find((article) => article.isFeatured) ?? articles[0];
@@ -608,6 +611,7 @@ export default async function NewsPage({
             <div className="flex max-w-full gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
               <Link
                 href={buildNewsHref({ query, status: selectedStatus })}
+                scroll={false}
                 className={`shrink-0 rounded-lg px-4 py-2 text-sm font-black transition ${
                   selectedCategory === ""
                     ? "bg-[#071f4a] text-white"
@@ -615,12 +619,13 @@ export default async function NewsPage({
                 }`}
               >
                 ทั้งหมด
-                <span className="ml-1 text-xs opacity-70">({totalCount})</span>
+                <span className="ml-1 text-xs opacity-70">({allCategoriesCount})</span>
               </Link>
               {categories.map((category) => (
                 <Link
                   key={category.slug}
                   href={buildNewsHref({ categorySlug: category.slug, query, status: selectedStatus })}
+                  scroll={false}
                   className={`shrink-0 rounded-lg px-4 py-2 text-sm font-black transition ${
                     selectedCategory === category.slug
                       ? "bg-[#071f4a] text-white"
