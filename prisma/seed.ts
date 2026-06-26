@@ -252,129 +252,30 @@ const examMajorSeeds = [
     description: "ระบบคอมพิวเตอร์ เครือข่าย ฐานข้อมูล การเขียนโปรแกรม และเทคโนโลยีการศึกษา",
     sortOrder: 10,
   },
-  {
-    slug: "major-math",
-    name: "เอกคณิตศาสตร์",
-    shortName: "เอกคณิต",
-    description: "จำนวนและพีชคณิต เรขาคณิต สถิติ ความน่าจะเป็น และโจทย์ประยุกต์",
-    sortOrder: 20,
-  },
-  {
-    slug: "major-english",
-    name: "เอกภาษาอังกฤษ",
-    shortName: "เอกอังกฤษ",
-    description: "Grammar, vocabulary, reading, classroom English และการสอนภาษาอังกฤษ",
-    sortOrder: 30,
-  },
-  {
-    slug: "major-early-childhood",
-    name: "เอกปฐมวัย",
-    shortName: "เอกปฐมวัย",
-    description: "พัฒนาการเด็กปฐมวัย การจัดประสบการณ์ การประเมินเด็กเล็ก และสื่อการเรียนรู้",
-    sortOrder: 40,
-  },
 ];
 
-const practiceCategorySeeds = [
-  {
-    slug: "part-a",
-    title: "ภาค ก รวมทุกสังกัด",
-    shortTitle: "ภาค ก",
-    description: "ฝึกความสามารถทั่วไป ภาษาไทย คณิต เหตุผล และความรู้รอบตัวจากหลายแนวสนาม",
-    colorClass: "bg-[#0b66c3]",
-    sortOrder: 10,
-  },
-  {
-    slug: "teaching-profession",
-    title: "วิชาชีพครู รวมทุกสังกัด",
-    shortTitle: "วิชาชีพครู",
-    description: "ฝึกหลักสูตร การสอน จิตวิทยา การวัดผล และจรรยาบรรณวิชาชีพครู",
-    colorClass: "bg-[#00a86b]",
-    sortOrder: 20,
-  },
-  {
-    slug: "education-law",
-    title: "กฎหมายการศึกษา",
-    shortTitle: "กฎหมาย",
-    description: "รวมข้อสอบกฎหมายและระเบียบที่ใช้ได้หลายสนาม พร้อมชุดสั้นและชุดจับเวลา",
-    colorClass: "bg-[#f6b21a]",
-    sortOrder: 30,
-  },
-  {
-    slug: "reasoning",
-    title: "คณิตและเหตุผล",
-    shortTitle: "เหตุผล",
-    description: "เน้นโจทย์คำนวณ อนุกรม ตาราง เงื่อนไข และการวิเคราะห์เชิงเหตุผล",
-    colorClass: "bg-[#e94b7b]",
-    sortOrder: 40,
-  },
-];
+const desiredExamPackageSeed = {
+  slug: "part-a-2568-set-1",
+  title: "สอศ. เอกคอมพิวเตอร์ ภาค ก ปี 2568 ชุดที่ 1",
+  year: "2568",
+  label: "ภาค ก",
+  description: "โครงชุดข้อสอบจริงชุดแรกสำหรับ สอศ. เอกคอมพิวเตอร์ ภาค ก",
+  sortOrder: 10,
+};
 
-const examPackageSeeds = [
-  {
-    slug: "2568-set-1",
-    title: "ปี 2568 ชุดที่ 1",
-    year: "2568",
-    label: "ชุดที่ 1",
-    description: "ชุดล่าสุดสำหรับลองทำตามเส้นทางสังกัดและเอกที่เลือก",
-    sortOrder: 10,
-  },
-  {
-    slug: "2567-set-1",
-    title: "ปี 2567 ชุดที่ 1",
-    year: "2567",
-    label: "ชุดย้อนหลัง",
-    description: "ทบทวนแนวข้อสอบย้อนหลังและจุดที่ออกซ้ำบ่อย",
-    sortOrder: 20,
-  },
-  {
-    slug: "full-mock-1",
-    title: "ชุดจำลองสนามเต็มรูปแบบ 1",
-    year: "จำลอง",
-    label: "Full Mock",
-    description: "จำลองสนามแบบแยกภาค เพื่อเลือกฝึกตามจุดที่ต้องการก่อนสอบจริง",
-    sortOrder: 30,
-  },
-];
-
-const practiceSetSeeds = [
-  {
-    suffix: "foundation-1",
-    titlePrefix: "ชุดพื้นฐาน 1",
-    scopeLabel: "ทุกสังกัด",
-    yearLabel: "พื้นฐาน",
-    description: "เริ่มจากข้อพื้นฐานและแนวที่ควรรู้ก่อนขยับไปชุดจับเวลา",
-    durationMinutes: 30,
-    totalQuestions: 30,
-    totalScore: 30,
-    difficulty: "ง่าย-กลาง",
-    sortOrder: 10,
-  },
-  {
-    suffix: "mixed-2568",
-    titlePrefix: "รวมแนว 2568",
-    scopeLabel: "ทุกสังกัด",
-    yearLabel: "2568",
-    description: "รวมโจทย์หลายแนวในชุดเดียว เหมาะกับการวัดภาพรวมก่อนสอบ",
-    durationMinutes: 45,
-    totalQuestions: 50,
-    totalScore: 50,
-    difficulty: "กลาง",
-    sortOrder: 20,
-  },
-  {
-    suffix: "speed-30",
-    titlePrefix: "จับเวลา 30 ข้อ",
-    scopeLabel: "ทุกสังกัด",
-    yearLabel: "จับเวลา",
-    description: "ฝึกทำเร็ว คุมเวลา และจับจังหวะการตัดตัวเลือก",
-    durationMinutes: 25,
-    totalQuestions: 30,
-    totalScore: 30,
-    difficulty: "กลาง",
-    sortOrder: 30,
-  },
-];
+const desiredExamPartSeed = {
+  slug: "part-a-general",
+  kind: ExamPartKind.PART_A_GENERAL,
+  title: "ภาค ก ความรู้ความสามารถทั่วไป",
+  shortTitle: "ภาค ก",
+  audienceLabel: "สอศ. เอกคอม",
+  description: "ความสามารถทั่วไป ภาษาไทย คณิต เหตุผล และความรู้รอบตัว",
+  durationMinutes: 60,
+  totalQuestions: 60,
+  totalScore: 60,
+  difficulty: "กลาง",
+  sortOrder: 10,
+};
 
 function encryptConfigValue(value: string) {
   if (!value) {
@@ -451,12 +352,12 @@ async function seedSystemConfigs(configs: SystemConfigSeed[], fallbackCategory: 
 async function seedExamMasterData() {
   let affiliationCount = 0;
   let majorCount = 0;
-  let trackCount = 0;
-  let practiceCategoryCount = 0;
-  let packageCount = 0;
-  let packagePartCount = 0;
-  let practiceSetCount = 0;
-  let practiceSetAffiliationCount = 0;
+  let deletedPracticeSetLinks = 0;
+  let deletedPracticeSets = 0;
+  let deletedPracticeCategories = 0;
+  let deletedPackages = 0;
+  let deletedTracks = 0;
+  let deletedMajors = 0;
 
   for (const affiliation of examAffiliationSeeds) {
     await prisma.examAffiliation.upsert({
@@ -475,257 +376,150 @@ async function seedExamMasterData() {
     affiliationCount += 1;
   }
 
-  for (const major of examMajorSeeds) {
-    await prisma.examMajor.upsert({
-      where: { slug: major.slug },
-      create: major,
-      update: {
-        name: major.name,
-        shortName: major.shortName,
-        description: major.description,
-        sortOrder: major.sortOrder,
-        isActive: true,
-      },
-    });
-    majorCount += 1;
-  }
+  const desiredMajor = examMajorSeeds[0];
 
-  for (const affiliationSeed of examAffiliationSeeds) {
-    const affiliation = await prisma.examAffiliation.findUniqueOrThrow({
-      where: { slug: affiliationSeed.slug },
-      select: { id: true, label: true, slug: true },
-    });
-
-    for (const majorSeed of examMajorSeeds) {
-      const major = await prisma.examMajor.findUniqueOrThrow({
-        where: { slug: majorSeed.slug },
-        select: { id: true, name: true, slug: true },
-      });
-
-      await prisma.examTrack.upsert({
-        where: {
-          affiliationId_majorId: {
-            affiliationId: affiliation.id,
-            majorId: major.id,
-          },
-        },
-        create: {
-          affiliationId: affiliation.id,
-          majorId: major.id,
-          slug: major.slug,
-          title: `${affiliation.label} ${major.name}`,
-          description: `เส้นทางข้อสอบสำหรับผู้สมัครสอบ ${affiliation.label} ${major.name}`,
-          sortOrder: majorSeed.sortOrder,
-        },
-        update: {
-          slug: major.slug,
-          title: `${affiliation.label} ${major.name}`,
-          description: `เส้นทางข้อสอบสำหรับผู้สมัครสอบ ${affiliation.label} ${major.name}`,
-          sortOrder: majorSeed.sortOrder,
-          isActive: true,
-        },
-      });
-      trackCount += 1;
-    }
-  }
-
-  for (const category of practiceCategorySeeds) {
-    await prisma.practiceCategory.upsert({
-      where: { slug: category.slug },
-      create: category,
-      update: {
-        title: category.title,
-        shortTitle: category.shortTitle,
-        description: category.description,
-        colorClass: category.colorClass,
-        sortOrder: category.sortOrder,
-        isActive: true,
-      },
-    });
-    practiceCategoryCount += 1;
-  }
-
-  const affiliations = await prisma.examAffiliation.findMany({
-    where: { isActive: true },
-    select: { id: true, label: true, slug: true },
+  const major = await prisma.examMajor.upsert({
+    where: { slug: desiredMajor.slug },
+    create: desiredMajor,
+    update: {
+      name: desiredMajor.name,
+      shortName: desiredMajor.shortName,
+      description: desiredMajor.description,
+      sortOrder: desiredMajor.sortOrder,
+      isActive: true,
+    },
   });
-  const tracks = await prisma.examTrack.findMany({
-    where: { isActive: true },
-    include: {
-      affiliation: { select: { label: true } },
-      major: { select: { name: true, shortName: true } },
+  majorCount += 1;
+
+  const ovec = await prisma.examAffiliation.findUniqueOrThrow({
+    where: { slug: "ovec" },
+    select: { id: true, label: true },
+  });
+
+  const cleanupResult = await prisma.$transaction(async (tx) => {
+    const practiceSetLinks = await tx.practiceSetAffiliation.deleteMany({});
+    const practiceSets = await tx.practiceSet.deleteMany({});
+    const practiceCategories = await tx.practiceCategory.deleteMany({});
+    const packages = await tx.examPackage.deleteMany({
+      where: {
+        OR: [
+          { slug: { not: desiredExamPackageSeed.slug } },
+          {
+            track: {
+              OR: [
+                { affiliationId: { not: ovec.id } },
+                { majorId: { not: major.id } },
+              ],
+            },
+          },
+        ],
+      },
+    });
+    const tracks = await tx.examTrack.deleteMany({
+      where: {
+        OR: [
+          { affiliationId: { not: ovec.id } },
+          { majorId: { not: major.id } },
+        ],
+      },
+    });
+    const majors = await tx.examMajor.deleteMany({
+      where: {
+        id: { not: major.id },
+      },
+    });
+
+    return {
+      practiceSetLinks: practiceSetLinks.count,
+      practiceSets: practiceSets.count,
+      practiceCategories: practiceCategories.count,
+      packages: packages.count,
+      tracks: tracks.count,
+      majors: majors.count,
+    };
+  });
+
+  deletedPracticeSetLinks = cleanupResult.practiceSetLinks;
+  deletedPracticeSets = cleanupResult.practiceSets;
+  deletedPracticeCategories = cleanupResult.practiceCategories;
+  deletedPackages = cleanupResult.packages;
+  deletedTracks = cleanupResult.tracks;
+  deletedMajors = cleanupResult.majors;
+
+  const track = await prisma.examTrack.upsert({
+    where: {
+      affiliationId_majorId: {
+        affiliationId: ovec.id,
+        majorId: major.id,
+      },
+    },
+    create: {
+      affiliationId: ovec.id,
+      majorId: major.id,
+      slug: major.slug,
+      title: `${ovec.label} ${major.name}`,
+      description: `เส้นทางข้อสอบสำหรับผู้สมัครสอบ ${ovec.label} ${major.name}`,
+      sortOrder: 10,
+    },
+    update: {
+      slug: major.slug,
+      title: `${ovec.label} ${major.name}`,
+      description: `เส้นทางข้อสอบสำหรับผู้สมัครสอบ ${ovec.label} ${major.name}`,
+      sortOrder: 10,
+      isActive: true,
     },
   });
 
-  for (const track of tracks) {
-    for (const packageSeed of examPackageSeeds) {
-      const examPackage = await prisma.examPackage.upsert({
-        where: {
-          trackId_slug: {
-            trackId: track.id,
-            slug: packageSeed.slug,
-          },
-        },
-        create: {
-          trackId: track.id,
-          slug: packageSeed.slug,
-          title: `${track.affiliation.label} ${track.major.name} ${packageSeed.title}`,
-          year: packageSeed.year,
-          label: packageSeed.label,
-          description: packageSeed.description,
-          sortOrder: packageSeed.sortOrder,
-        },
-        update: {
-          title: `${track.affiliation.label} ${track.major.name} ${packageSeed.title}`,
-          year: packageSeed.year,
-          label: packageSeed.label,
-          description: packageSeed.description,
-          sortOrder: packageSeed.sortOrder,
-          isActive: true,
-        },
-      });
-      packageCount += 1;
-
-      const packagePartSeeds = [
-        {
-          slug: "part-a-general",
-          kind: ExamPartKind.PART_A_GENERAL,
-          title: "ภาค ก ความรู้ความสามารถทั่วไป",
-          shortTitle: "ภาค ก",
-          audienceLabel: "ทุกเอก",
-          description: "ความสามารถทั่วไป ภาษาไทย คณิต เหตุผล และความรู้รอบตัว",
-          durationMinutes: 60,
-          totalQuestions: 60,
-          totalScore: 60,
-          difficulty: "กลาง",
-          sortOrder: 10,
-        },
-        {
-          slug: "part-b-profession",
-          kind: ExamPartKind.PART_B_PROFESSION,
-          title: "ภาค ข วิชาชีพครู",
-          shortTitle: "วิชาชีพครู",
-          audienceLabel: "ทุกเอก",
-          description: "หลักสูตร การสอน จิตวิทยา การวัดผล และจรรยาบรรณครู",
-          durationMinutes: 60,
-          totalQuestions: 50,
-          totalScore: 50,
-          difficulty: "กลาง",
-          sortOrder: 20,
-        },
-        {
-          slug: "part-b-major",
-          kind: ExamPartKind.PART_B_MAJOR,
-          title: `ภาค ข ${track.major.name}`,
-          shortTitle: track.major.shortName ?? track.major.name,
-          audienceLabel: track.major.name,
-          description: `ข้อสอบเฉพาะเอกสำหรับ ${track.major.name} ตามสนามที่เลือก`,
-          durationMinutes: 60,
-          totalQuestions: 50,
-          totalScore: 50,
-          difficulty: "กลาง-ยาก",
-          sortOrder: 30,
-        },
-        {
-          slug: "part-c-interview",
-          kind: ExamPartKind.PART_C_INTERVIEW,
-          title: "ภาค ค ความเหมาะสมกับตำแหน่ง",
-          shortTitle: "ภาค ค",
-          audienceLabel: "สัมภาษณ์",
-          description: "แนวคำถามสัมภาษณ์ แฟ้มสะสมงาน และสถานการณ์ในห้องเรียน",
-          durationMinutes: 30,
-          totalQuestions: 20,
-          totalScore: 20,
-          difficulty: "ประเมินตัวตน",
-          sortOrder: 40,
-        },
-      ];
-
-      for (const partSeed of packagePartSeeds) {
-        await prisma.examPackagePart.upsert({
-          where: {
-            packageId_slug: {
-              packageId: examPackage.id,
-              slug: partSeed.slug,
-            },
-          },
-          create: {
-            packageId: examPackage.id,
-            ...partSeed,
-          },
-          update: {
-            ...partSeed,
-            isActive: true,
-          },
-        });
-        packagePartCount += 1;
-      }
-    }
-  }
-
-  const categories = await prisma.practiceCategory.findMany({
-    where: { isActive: true },
-    select: { id: true, slug: true, title: true, shortTitle: true },
+  const examPackage = await prisma.examPackage.upsert({
+    where: {
+      trackId_slug: {
+        trackId: track.id,
+        slug: desiredExamPackageSeed.slug,
+      },
+    },
+    create: {
+      trackId: track.id,
+      ...desiredExamPackageSeed,
+    },
+    update: {
+      ...desiredExamPackageSeed,
+      isActive: true,
+    },
   });
 
-  for (const category of categories) {
-    for (const setSeed of practiceSetSeeds) {
-      const practiceSet = await prisma.practiceSet.upsert({
-        where: {
-          categoryId_slug: {
-            categoryId: category.id,
-            slug: `${category.slug}-${setSeed.suffix}`,
-          },
-        },
-        create: {
-          categoryId: category.id,
-          slug: `${category.slug}-${setSeed.suffix}`,
-          title: `${category.shortTitle ?? category.title} ${setSeed.titlePrefix}`,
-          scopeLabel: setSeed.scopeLabel,
-          yearLabel: setSeed.yearLabel,
-          description: setSeed.description,
-          durationMinutes: setSeed.durationMinutes,
-          totalQuestions: setSeed.totalQuestions,
-          totalScore: setSeed.totalScore,
-          difficulty: setSeed.difficulty,
-          sortOrder: setSeed.sortOrder,
-        },
-        update: {
-          title: `${category.shortTitle ?? category.title} ${setSeed.titlePrefix}`,
-          scopeLabel: setSeed.scopeLabel,
-          yearLabel: setSeed.yearLabel,
-          description: setSeed.description,
-          durationMinutes: setSeed.durationMinutes,
-          totalQuestions: setSeed.totalQuestions,
-          totalScore: setSeed.totalScore,
-          difficulty: setSeed.difficulty,
-          sortOrder: setSeed.sortOrder,
-          isActive: true,
-        },
-      });
-      practiceSetCount += 1;
+  await prisma.examPackagePart.upsert({
+    where: {
+      packageId_slug: {
+        packageId: examPackage.id,
+        slug: desiredExamPartSeed.slug,
+      },
+    },
+    create: {
+      packageId: examPackage.id,
+      ...desiredExamPartSeed,
+    },
+    update: {
+      ...desiredExamPartSeed,
+      isActive: true,
+    },
+  });
 
-      for (const affiliation of affiliations) {
-        await prisma.practiceSetAffiliation.upsert({
-          where: {
-            practiceSetId_affiliationId: {
-              practiceSetId: practiceSet.id,
-              affiliationId: affiliation.id,
-            },
-          },
-          create: {
-            practiceSetId: practiceSet.id,
-            affiliationId: affiliation.id,
-          },
-          update: {},
-        });
-        practiceSetAffiliationCount += 1;
-      }
-    }
-  }
+  await prisma.examPackagePart.deleteMany({
+    where: {
+      packageId: examPackage.id,
+      slug: { not: desiredExamPartSeed.slug },
+    },
+  });
 
   console.log(
-    `Seeded exam master data: ${affiliationCount} affiliations, ${majorCount} majors, ${trackCount} tracks, ${practiceCategoryCount} practice categories, ${packageCount} packages, ${packagePartCount} parts, ${practiceSetCount} practice sets, ${practiceSetAffiliationCount} practice links`,
+    [
+      `Seeded exam data: ${affiliationCount} affiliations`,
+      `${majorCount} major`,
+      "1 track",
+      "1 package",
+      "1 part",
+      `cleanup deleted ${deletedMajors} majors, ${deletedTracks} tracks, ${deletedPackages} packages, ${deletedPracticeCategories} practice categories, ${deletedPracticeSets} practice sets, ${deletedPracticeSetLinks} practice links`,
+    ].join(", "),
   );
 }
 

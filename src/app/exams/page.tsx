@@ -102,19 +102,20 @@ export default async function ExamsPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
-        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-black text-[#0b66c3]">ฝึกตามหมวด</p>
-            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">อยากฝึกเรื่องไหนซ้ำ ๆ</h2>
+      {practiceCategories.length > 0 ? (
+        <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
+          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-black text-[#0b66c3]">ฝึกตามหมวด</p>
+              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">อยากฝึกเรื่องไหนซ้ำ ๆ</h2>
+            </div>
+            <p className="max-w-xl text-sm font-semibold leading-6 text-slate-500">
+              สำหรับคนที่อยากเก็บ ภาค ก กฎหมาย หรือวิชาชีพครูหลายชุด โดยไม่ต้องเลือกสังกัดและเอกก่อน
+            </p>
           </div>
-          <p className="max-w-xl text-sm font-semibold leading-6 text-slate-500">
-            สำหรับคนที่อยากเก็บ ภาค ก กฎหมาย หรือวิชาชีพครูหลายชุด โดยไม่ต้องเลือกสังกัดและเอกก่อน
-          </p>
-        </div>
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {practiceCategories.map((category) => (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {practiceCategories.map((category) => (
               <Link
                 key={category.slug}
                 href={`/exams/practice/${category.slug}`}
@@ -129,8 +130,9 @@ export default async function ExamsPage() {
                 </div>
               </Link>
             ))}
-        </div>
-      </section>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
         <Link
@@ -190,7 +192,7 @@ export default async function ExamsPage() {
         <div>
           <div className="mb-5">
             <p className="text-sm font-black text-[#0b66c3]">เริ่มทำได้เลย</p>
-            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดจำลองสนามยอดนิยม</h2>
+            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดข้อสอบที่พร้อมเปิด</h2>
             <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
               เลือกเส้นทางตามสังกัดและเอกก่อน แล้วค่อยเลือกว่าจะเริ่มทำ ภาค ก หรือ ภาค ข ในชุดนั้น
             </p>

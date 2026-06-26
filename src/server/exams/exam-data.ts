@@ -49,7 +49,7 @@ export async function getExamOverview() {
       },
     }),
     prisma.examPackage.findMany({
-      where: { isActive: true, slug: "full-mock-1" },
+      where: { isActive: true },
       take: 4,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
       include: {
