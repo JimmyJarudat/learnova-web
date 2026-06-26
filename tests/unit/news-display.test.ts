@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   fallbackNewsImage,
   formatNewsDate,
+  formatNewsViewCount,
   getNewsCategoryColor,
   getNewsImageUrl,
   getNewsStatusLabel,
@@ -38,6 +39,14 @@ describe("news display helpers", () => {
 
   test("formats dates with the Thai Buddhist calendar", () => {
     expect(formatNewsDate(new Date("2026-06-24T00:00:00.000Z"))).toContain("2569");
+  });
+
+  test("formats article view counts for compact card display", () => {
+    expect(formatNewsViewCount(0)).toBe("0");
+    expect(formatNewsViewCount(999)).toBe("999");
+    expect(formatNewsViewCount(1250)).toBe("1.3K");
+    expect(formatNewsViewCount(12_000)).toBe("12K");
+    expect(formatNewsViewCount(1_250_000)).toBe("1.3M");
   });
 
   test("returns a default category color for unknown category slugs", () => {

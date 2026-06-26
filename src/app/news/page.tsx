@@ -20,8 +20,11 @@ import {
 } from "@/lib/news-display";
 import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news-search";
 import { getNewsCanonicalPath, getNewsSeoFilterLabel, shouldIndexNewsPage } from "@/lib/news-seo";
+import { getNewsReadHref } from "@/lib/news-view";
 import { NewsLinkProgress } from "./news-link-progress";
 import { NewsSearchForm } from "./news-search-form";
+import { NewsTrackedLink } from "./news-tracked-link";
+import { NewsViewCount } from "./news-view-count";
 
 const heroImage = "/images/news-hero-teacher-officials.png";
 const pageSize = 10;
@@ -419,6 +422,11 @@ function buildNewsJsonLd({
               "@type": "Organization",
               name: article.sourceName ?? article.source?.name ?? "Learnova",
             },
+            interactionStatistic: {
+              "@type": "InteractionCounter",
+              interactionType: "https://schema.org/ReadAction",
+              userInteractionCount: article.viewCount,
+            },
           },
         })),
       },
@@ -672,10 +680,12 @@ export default async function NewsPage({
           </div>
 
           {featuredNews ? (
-            <Link
-              href={featuredNews.sourceUrl}
+            <NewsTrackedLink
+              articleId={featuredNews.id}
+              href={getNewsReadHref(featuredNews.id)}
               target="_blank"
               rel="noreferrer"
+              prefetch={false}
               className="group grid overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)]"
             >
               <div className="flex flex-col justify-center p-6 lg:p-10">
@@ -694,6 +704,11 @@ export default async function NewsPage({
                   {featuredNews.sourceName ? (
                     <span className="text-sm font-bold text-slate-400">จาก {featuredNews.sourceName}</span>
                   ) : null}
+                  <NewsViewCount
+                    articleId={featuredNews.id}
+                    initialViewCount={featuredNews.viewCount}
+                    className="text-sm font-bold text-slate-400"
+                  />
                 </div>
                 <h3 className="mt-4 text-2xl font-black leading-tight text-[#071f4a] group-hover:text-[#0b66c3] sm:text-3xl">
                   {featuredNews.title}
@@ -711,7 +726,7 @@ export default async function NewsPage({
                   className="object-cover transition duration-500 group-hover:scale-105"
                 />
               </div>
-            </Link>
+            </NewsTrackedLink>
           ) : (
             <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center">
               <h3 className="text-xl font-black text-[#071f4a]">ยังไม่พบข่าว</h3>
@@ -723,11 +738,13 @@ export default async function NewsPage({
 
           {newsItems.length > 0 ? <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {newsItems.map((item) => (
-              <Link
+              <NewsTrackedLink
                 key={item.id}
-                href={item.sourceUrl}
+                articleId={item.id}
+                href={getNewsReadHref(item.id)}
                 target="_blank"
                 rel="noreferrer"
+                prefetch={false}
                 className="group grid overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="relative h-52 bg-slate-50 sm:h-56">
@@ -746,8 +763,16 @@ export default async function NewsPage({
                     <span className={`rounded-md ${getNewsStatusColor(item.status)} px-2.5 py-1 text-xs font-black text-white`}>
                       {getNewsStatusLabel(item.status)}
                     </span>
-                    <span className="text-xs font-bold text-slate-500">
-                      {formatNewsDate(item.publishedAt ?? item.sourcePublishedAt ?? item.fetchedAt)}
+                    <span className="ml-auto flex shrink-0 items-center gap-2 text-right">
+                      <span className="text-xs font-bold text-slate-500">
+                        {formatNewsDate(item.publishedAt ?? item.sourcePublishedAt ?? item.fetchedAt)}
+                      </span>
+                      <NewsViewCount
+                        articleId={item.id}
+                        initialViewCount={item.viewCount}
+                        suffix=""
+                        className="rounded-full bg-[#fff2c2] px-2 py-0.5 text-xs font-black text-[#9a5b00]"
+                      />
                     </span>
                   </div>
                   <h3 className="mt-3 min-h-14 text-lg font-black leading-7 text-[#071f4a] group-hover:text-[#0b66c3]">
@@ -758,7 +783,7 @@ export default async function NewsPage({
                   </p>
                   <span className="mt-4 inline-block text-sm font-black text-[#0b66c3]">อ่านจากแหล่งข่าว →</span>
                 </div>
-              </Link>
+              </NewsTrackedLink>
             ))}
           </div> : null}
 

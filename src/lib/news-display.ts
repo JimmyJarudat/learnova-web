@@ -88,3 +88,17 @@ export function formatNewsDate(date?: Date | null): string {
     timeZone: "Asia/Bangkok",
   }).format(date);
 }
+
+export function formatNewsViewCount(viewCount?: number | null): string {
+  const safeViewCount = Math.max(0, Math.floor(viewCount ?? 0));
+
+  if (safeViewCount >= 1_000_000) {
+    return `${(safeViewCount / 1_000_000).toFixed(safeViewCount >= 10_000_000 ? 0 : 1).replace(".0", "")}M`;
+  }
+
+  if (safeViewCount >= 1_000) {
+    return `${(safeViewCount / 1_000).toFixed(safeViewCount >= 10_000 ? 0 : 1).replace(".0", "")}K`;
+  }
+
+  return String(safeViewCount);
+}
