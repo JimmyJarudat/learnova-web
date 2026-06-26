@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { getServerSession } from "next-auth";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/config/site";
+import { getAuthOptions } from "@/lib/auth/options";
 import { getAllExamPackages } from "@/server/exams/exam-data";
 
 const pageTitle = "ข้อสอบทั้งหมด ครูผู้ช่วยทุกสังกัด";
@@ -28,7 +30,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AllExamsPage() {
-  const { affiliations, packages, totals } = await getAllExamPackages();
+  const session = await getServerSession(await getAuthOptions());
+  const { affiliations, packages, totals } = await getAllExamPackages(session?.user?.id);
 
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
@@ -103,7 +106,15 @@ export default async function AllExamsPage() {
                 </div>
                 <span className="text-sm font-black text-[#0b66c3]">{pack.partCount} ภาค</span>
                 <span className="text-sm font-semibold text-slate-600">{pack.label}</span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">พร้อมเลือก</span>
+                {pack.history?.bestAttempt ? (
+                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-center text-xs font-black text-emerald-700">
+                    สูงสุด {pack.history.bestAttempt.score}/{pack.history.bestAttempt.maxScore}
+                  </span>
+                ) : session?.user?.id ? (
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">ยังไม่เคยทำ</span>
+                ) : (
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">เข้าสู่ระบบเพื่อเก็บคะแนน</span>
+                )}
                 <span className="text-sm font-black text-[#0b66c3] lg:text-right">เลือกภาค →</span>
               </Link>
             ))}

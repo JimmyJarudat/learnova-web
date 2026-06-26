@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { getAuthOptions } from "@/lib/auth/options";
 import { getExamPackage } from "@/server/exams/exam-data";
 
 type PackagePageProps = {
@@ -30,7 +32,8 @@ export async function generateMetadata({ params }: PackagePageProps): Promise<Me
 
 export default async function ExamPackagePage({ params }: PackagePageProps) {
   const { affiliation: affiliationSlug, major: majorSlug, package: packageSlug } = await params;
-  const pack = await getExamPackage(affiliationSlug, majorSlug, packageSlug);
+  const session = await getServerSession(await getAuthOptions());
+  const pack = await getExamPackage(affiliationSlug, majorSlug, packageSlug, session?.user?.id);
 
   if (!pack) {
     notFound();
@@ -74,6 +77,26 @@ export default async function ExamPackagePage({ params }: PackagePageProps) {
               <p className="mt-4 text-sm font-semibold text-slate-500">
                 {part.totalQuestions} ข้อ | {part.durationMinutes} นาที | {part.difficulty}
               </p>
+              {part.history?.bestAttempt ? (
+                <div className="mt-5 rounded-lg bg-emerald-50 p-4 text-emerald-900">
+                  <p className="text-xs font-black">คะแนนสูงสุดที่เคยทำ</p>
+                  <p className="mt-1 text-2xl font-black">
+                    {part.history.bestAttempt.score}/{part.history.bestAttempt.maxScore} คะแนน
+                  </p>
+                  <p className="mt-1 text-xs font-semibold">
+                    ทำแล้ว {part.history.attemptCount} ครั้ง
+                  </p>
+                </div>
+              ) : session?.user?.id ? (
+                <div className="mt-5 rounded-lg bg-slate-50 p-4 text-slate-600">
+                  <p className="text-xs font-black">ยังไม่เคยทำภาคนี้</p>
+                  <p className="mt-1 text-xs font-semibold">เริ่มทำครั้งแรกเพื่อเก็บประวัติคะแนน</p>
+                </div>
+              ) : (
+                <div className="mt-5 rounded-lg bg-slate-50 p-4 text-slate-600">
+                  <p className="text-xs font-black">เข้าสู่ระบบเพื่อเก็บประวัติคะแนน</p>
+                </div>
+              )}
               <p className="mt-5 text-sm font-black text-[#0b66c3]">เริ่มทำภาคนี้ →</p>
             </Link>
           ))}

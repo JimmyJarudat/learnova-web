@@ -1,4 +1,5 @@
 import "server-only";
+import { ExamAttemptStatus } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
 
 const affiliationThemeBySlug: Record<string, string> = {
@@ -19,6 +20,27 @@ function toNumber(value: number | { toString(): string } | null | undefined) {
   }
 
   return Number(value.toString());
+}
+
+function mapAttemptSummary(attempt: {
+  id: string;
+  score: { toString(): string };
+  maxScore: { toString(): string };
+  totalQuestions: number;
+  answeredCount: number;
+  durationSeconds: number | null;
+  submittedAt: Date | null;
+  createdAt: Date;
+}) {
+  return {
+    id: attempt.id,
+    score: toNumber(attempt.score),
+    maxScore: toNumber(attempt.maxScore),
+    totalQuestions: attempt.totalQuestions,
+    answeredCount: attempt.answeredCount,
+    durationSeconds: attempt.durationSeconds,
+    submittedAt: (attempt.submittedAt ?? attempt.createdAt).toISOString(),
+  };
 }
 
 export async function getExamOverview() {
@@ -108,7 +130,7 @@ export async function getExamOverview() {
   };
 }
 
-export async function getAllExamPackages() {
+export async function getAllExamPackages(userId?: string) {
   const [packages, affiliations] = await Promise.all([
     prisma.examPackage.findMany({
       where: { isActive: true },
@@ -134,6 +156,38 @@ export async function getAllExamPackages() {
     }),
   ]);
 
+  const attempts = userId
+    ? await prisma.examAttempt.findMany({
+        where: {
+          userId,
+          status: ExamAttemptStatus.SUBMITTED,
+          packagePartId: {
+            in: packages.flatMap((pack) => pack.parts.map((part) => part.id)),
+          },
+        },
+        orderBy: [{ submittedAt: "desc" }, { createdAt: "desc" }],
+        include: {
+          packagePart: {
+            select: {
+              id: true,
+              packageId: true,
+            },
+          },
+        },
+      })
+    : [];
+  const attemptsByPackageId = new Map<string, typeof attempts>();
+
+  for (const attempt of attempts) {
+    const packageId = attempt.packagePart?.packageId;
+
+    if (!packageId) {
+      continue;
+    }
+
+    attemptsByPackageId.set(packageId, [...(attemptsByPackageId.get(packageId) ?? []), attempt]);
+  }
+
   return {
     affiliations,
     totals: {
@@ -141,19 +195,32 @@ export async function getAllExamPackages() {
       sets: packages.length,
       questions: await prisma.examQuestion.count({ where: { isActive: true } }),
     },
-    packages: packages.map((pack) => ({
-      slug: pack.slug,
-      title: pack.title,
-      year: pack.year,
-      label: pack.label,
-      description: pack.description,
-      partCount: pack.parts.length,
-      affiliationSlug: pack.track.affiliation.slug,
-      affiliationLabel: pack.track.affiliation.label,
-      majorSlug: pack.track.major.slug,
-      majorName: pack.track.major.name,
-      majorShortName: pack.track.major.shortName ?? pack.track.major.name,
-    })),
+    packages: packages.map((pack) => {
+      const packageAttempts = attemptsByPackageId.get(pack.id) ?? [];
+      const bestAttempt = packageAttempts
+        .slice()
+        .sort((a, b) => toNumber(b.score) - toNumber(a.score) || toNumber(b.maxScore) - toNumber(a.maxScore))[0];
+
+      return {
+        slug: pack.slug,
+        title: pack.title,
+        year: pack.year,
+        label: pack.label,
+        description: pack.description,
+        partCount: pack.parts.length,
+        affiliationSlug: pack.track.affiliation.slug,
+        affiliationLabel: pack.track.affiliation.label,
+        majorSlug: pack.track.major.slug,
+        majorName: pack.track.major.name,
+        majorShortName: pack.track.major.shortName ?? pack.track.major.name,
+        history: userId
+          ? {
+              attemptCount: packageAttempts.length,
+              bestAttempt: bestAttempt ? mapAttemptSummary(bestAttempt) : null,
+            }
+          : null,
+      };
+    }),
   };
 }
 
@@ -253,7 +320,7 @@ export async function getExamTrack(affiliationSlug: string, majorSlug: string) {
   };
 }
 
-export async function getExamPackage(affiliationSlug: string, majorSlug: string, packageSlug: string) {
+export async function getExamPackage(affiliationSlug: string, majorSlug: string, packageSlug: string, userId?: string) {
   const pack = await prisma.examPackage.findFirst({
     where: {
       slug: packageSlug,
@@ -282,6 +349,28 @@ export async function getExamPackage(affiliationSlug: string, majorSlug: string,
     return null;
   }
 
+  const attempts = userId
+    ? await prisma.examAttempt.findMany({
+        where: {
+          userId,
+          status: ExamAttemptStatus.SUBMITTED,
+          packagePartId: {
+            in: pack.parts.map((part) => part.id),
+          },
+        },
+        orderBy: [{ submittedAt: "desc" }, { createdAt: "desc" }],
+      })
+    : [];
+  const attemptsByPartId = new Map<string, typeof attempts>();
+
+  for (const attempt of attempts) {
+    if (!attempt.packagePartId) {
+      continue;
+    }
+
+    attemptsByPartId.set(attempt.packagePartId, [...(attemptsByPartId.get(attempt.packagePartId) ?? []), attempt]);
+  }
+
   return {
     slug: pack.slug,
     title: pack.title,
@@ -298,17 +387,54 @@ export async function getExamPackage(affiliationSlug: string, majorSlug: string,
       name: pack.track.major.name,
       shortName: pack.track.major.shortName ?? pack.track.major.name,
     },
-    parts: pack.parts.map((part) => ({
-      slug: part.slug,
-      title: part.title,
-      shortTitle: part.shortTitle ?? part.title,
-      audienceLabel: part.audienceLabel,
-      description: part.description,
-      durationMinutes: part.durationMinutes,
-      totalQuestions: part.totalQuestions,
-      totalScore: toNumber(part.totalScore),
-      difficulty: part.difficulty,
-    })),
+    parts: pack.parts.map((part) => {
+      const partAttempts = attemptsByPartId.get(part.id) ?? [];
+      const bestAttempt = partAttempts
+        .slice()
+        .sort((a, b) => toNumber(b.score) - toNumber(a.score) || toNumber(b.maxScore) - toNumber(a.maxScore))[0];
+
+      return {
+        id: part.id,
+        slug: part.slug,
+        title: part.title,
+        shortTitle: part.shortTitle ?? part.title,
+        audienceLabel: part.audienceLabel,
+        description: part.description,
+        durationMinutes: part.durationMinutes,
+        totalQuestions: part.totalQuestions,
+        totalScore: toNumber(part.totalScore),
+        difficulty: part.difficulty,
+        history: userId
+          ? {
+              attemptCount: partAttempts.length,
+              latestAttempt: partAttempts[0] ? mapAttemptSummary(partAttempts[0]) : null,
+              bestAttempt: bestAttempt ? mapAttemptSummary(bestAttempt) : null,
+            }
+          : null,
+      };
+    }),
+  };
+}
+
+export async function getPackagePartAttemptHistory(partId: string, userId: string) {
+  const attempts = await prisma.examAttempt.findMany({
+    where: {
+      packagePartId: partId,
+      userId,
+      status: ExamAttemptStatus.SUBMITTED,
+    },
+    orderBy: [{ submittedAt: "desc" }, { createdAt: "desc" }],
+    take: 10,
+  });
+
+  const bestAttempt = attempts
+    .slice()
+    .sort((a, b) => toNumber(b.score) - toNumber(a.score) || toNumber(b.maxScore) - toNumber(a.maxScore))[0];
+
+  return {
+    attemptCount: attempts.length,
+    bestAttempt: bestAttempt ? mapAttemptSummary(bestAttempt) : null,
+    latestAttempts: attempts.map(mapAttemptSummary),
   };
 }
 
@@ -364,6 +490,7 @@ export async function getExamPackagePart(
   }
 
   return {
+    id: part.id,
     slug: part.slug,
     title: part.title,
     shortTitle: part.shortTitle ?? part.title,
