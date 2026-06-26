@@ -4,7 +4,14 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/config/site";
-import { examAffiliations, examTrackPackages, getExamMajor, getExamTotals } from "@/lib/exam-mock";
+import {
+  examAffiliations,
+  examTrackPackages,
+  getExamMajor,
+  getExamTotals,
+  practiceCategories,
+  practiceSets,
+} from "@/lib/exam-mock";
 
 const pageTitle = "คลังข้อสอบครูผู้ช่วย แยกตามสังกัดและวิชา";
 const pageDescription =
@@ -98,6 +105,40 @@ export default function ExamsPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
+        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-black text-[#0b66c3]">ฝึกตามหมวด</p>
+            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">อยากฝึกเรื่องไหนซ้ำ ๆ</h2>
+          </div>
+          <p className="max-w-xl text-sm font-semibold leading-6 text-slate-500">
+            สำหรับคนที่อยากเก็บ ภาค ก กฎหมาย หรือวิชาชีพครูหลายชุด โดยไม่ต้องเลือกสังกัดและเอกก่อน
+          </p>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {practiceCategories.map((category) => {
+            const sets = practiceSets.filter((set) => set.categorySlug === category.slug);
+
+            return (
+              <Link
+                key={category.slug}
+                href={`/exams/practice/${category.slug}`}
+                className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <span className={`block h-1.5 w-16 rounded-full ${category.color}`} />
+                <h3 className="mt-4 text-xl font-black leading-7 text-[#071f4a] group-hover:text-[#0b66c3]">{category.title}</h3>
+                <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{category.description}</p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{sets.length} ชุด</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">ทุกสังกัด</span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

@@ -12,6 +12,10 @@ import {
   getExamTrackPart,
   getExamTrackParts,
   getExamTotals,
+  getPracticeCategory,
+  getPracticeSet,
+  getPracticeSets,
+  practiceCategories,
 } from "@/lib/exam-mock";
 
 describe("exam mock data", () => {
@@ -60,6 +64,18 @@ describe("exam mock data", () => {
       "part-c-interview",
     ]);
     expect(getExamTrackPart(major, "major-computer")?.partLabel).toBe("เอกคอมพิวเตอร์");
+  });
+
+  test("supports topic practice flow without choosing affiliation first", () => {
+    const category = getPracticeCategory("part-a");
+    const sets = getPracticeSets("part-a");
+    const set = getPracticeSet("part-a", "part-a-speed-30");
+
+    expect(practiceCategories.map((item) => item.slug)).toContain("part-a");
+    expect(category?.title).toBe("ภาค ก รวมทุกสังกัด");
+    expect(sets).toHaveLength(4);
+    expect(set?.questions).toBe(30);
+    expect(set?.scope).toBe("ทุกสังกัด");
   });
 
   test("totals are derived from the mock set collection", () => {

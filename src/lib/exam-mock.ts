@@ -65,6 +65,26 @@ export type ExamTrackPart = {
   description: string;
 };
 
+export type PracticeCategory = {
+  slug: string;
+  title: string;
+  shortTitle: string;
+  description: string;
+  color: string;
+};
+
+export type PracticeSet = {
+  slug: string;
+  categorySlug: string;
+  title: string;
+  scope: string;
+  year: string;
+  questions: number;
+  durationMinutes: number;
+  difficulty: string;
+  description: string;
+};
+
 const commonSubjects: ExamSubject[] = [
   {
     slug: "part-a-general",
@@ -314,6 +334,84 @@ export const examTrackPackages: ExamTrackPackage[] = examAffiliations.flatMap((a
     ]),
 );
 
+export const practiceCategories: PracticeCategory[] = [
+  {
+    slug: "part-a",
+    title: "ภาค ก รวมทุกสังกัด",
+    shortTitle: "ภาค ก",
+    description: "ฝึกความสามารถทั่วไป ภาษาไทย คณิต เหตุผล และความรู้รอบตัวจากหลายแนวสนาม",
+    color: "bg-[#0b66c3]",
+  },
+  {
+    slug: "teaching-profession",
+    title: "วิชาชีพครู รวมทุกสังกัด",
+    shortTitle: "วิชาชีพครู",
+    description: "ฝึกหลักสูตร การสอน จิตวิทยา การวัดผล และจรรยาบรรณวิชาชีพครู",
+    color: "bg-[#00a86b]",
+  },
+  {
+    slug: "education-law",
+    title: "กฎหมายการศึกษา",
+    shortTitle: "กฎหมาย",
+    description: "รวมข้อสอบกฎหมายและระเบียบที่ใช้ได้หลายสนาม พร้อมชุดสั้นและชุดจับเวลา",
+    color: "bg-[#f6b21a]",
+  },
+  {
+    slug: "reasoning",
+    title: "คณิตและเหตุผล",
+    shortTitle: "เหตุผล",
+    description: "เน้นโจทย์คำนวณ อนุกรม ตาราง เงื่อนไข และการวิเคราะห์เชิงเหตุผล",
+    color: "bg-[#e94b7b]",
+  },
+];
+
+export const practiceSets: PracticeSet[] = practiceCategories.flatMap((category) => [
+  {
+    slug: `${category.slug}-foundation-1`,
+    categorySlug: category.slug,
+    title: `${category.shortTitle} ชุดพื้นฐาน 1`,
+    scope: "ทุกสังกัด",
+    year: "พื้นฐาน",
+    questions: 30,
+    durationMinutes: 30,
+    difficulty: "ง่าย",
+    description: `ชุดเริ่มต้นสำหรับเก็บพื้นฐาน ${category.title} เหมาะกับการวอร์มก่อนทำชุดยาว`,
+  },
+  {
+    slug: `${category.slug}-mixed-2568`,
+    categorySlug: category.slug,
+    title: `${category.shortTitle} รวมแนวปี 2568`,
+    scope: "สพฐ. / สอศ. / สกร.",
+    year: "2568",
+    questions: 60,
+    durationMinutes: 75,
+    difficulty: "กลาง",
+    description: `รวมแนวข้อสอบ ${category.title} จากหลายสนาม เพื่อดูประเด็นที่ออกซ้ำ`,
+  },
+  {
+    slug: `${category.slug}-speed-30`,
+    categorySlug: category.slug,
+    title: `${category.shortTitle} จับเวลา 30 ข้อ`,
+    scope: "ทุกสังกัด",
+    year: "จับเวลา",
+    questions: 30,
+    durationMinutes: 25,
+    difficulty: "กลาง",
+    description: "เหมาะสำหรับฝึกความเร็วและตัดสินใจในเวลาจำกัด",
+  },
+  {
+    slug: `${category.slug}-hard-drill`,
+    categorySlug: category.slug,
+    title: `${category.shortTitle} ตะลุยโจทย์ยาก`,
+    scope: "ทุกสังกัด",
+    year: "เข้มข้น",
+    questions: 50,
+    durationMinutes: 60,
+    difficulty: "ยาก",
+    description: "รวมโจทย์ที่ต้องใช้ความเข้าใจและการวิเคราะห์มากกว่าชุดพื้นฐาน",
+  },
+]);
+
 export function getExamTrackParts(major: ExamSubject): ExamTrackPart[] {
   return [
     {
@@ -451,6 +549,18 @@ export function getExamTrackPackage(
 
 export function getExamTrackPart(major: ExamSubject, partSlug: string): ExamTrackPart | undefined {
   return getExamTrackParts(major).find((part) => part.slug === partSlug);
+}
+
+export function getPracticeCategory(slug: string): PracticeCategory | undefined {
+  return practiceCategories.find((category) => category.slug === slug);
+}
+
+export function getPracticeSets(categorySlug: string): PracticeSet[] {
+  return practiceSets.filter((set) => set.categorySlug === categorySlug);
+}
+
+export function getPracticeSet(categorySlug: string, setSlug: string): PracticeSet | undefined {
+  return practiceSets.find((set) => set.categorySlug === categorySlug && set.slug === setSlug);
 }
 
 export function getExamTotals() {
