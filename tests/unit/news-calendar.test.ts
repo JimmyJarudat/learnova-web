@@ -5,7 +5,7 @@ import {
   getCalendarDays,
   getCalendarMonth,
   getCalendarMonthLabel,
-} from "@/lib/news-calendar";
+} from "@/lib/news/news-calendar";
 
 describe("news calendar helpers", () => {
   test("creates a complete Sunday-first six-week month grid", () => {

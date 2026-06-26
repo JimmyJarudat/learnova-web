@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatNewsViewCount } from "@/lib/news-display";
+import { formatNewsViewCount } from "@/lib/news/news-display";
 import { newsViewClickEventName, type NewsViewClickEventDetail } from "./news-view-events";
 
 type NewsViewCountProps = {

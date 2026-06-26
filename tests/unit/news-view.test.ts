@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getNewsReadHref, isNewsArticleId } from "@/lib/news-view";
+import { getNewsReadHref, isNewsArticleId } from "@/lib/news/news-view";
 
 describe("news view helpers", () => {
   test("builds the tracked source link route", () => {

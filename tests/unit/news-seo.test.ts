@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getNewsCanonicalPath, getNewsSeoFilterLabel, shouldIndexNewsPage } from "@/lib/news-seo";
+import { getNewsCanonicalPath, getNewsSeoFilterLabel, shouldIndexNewsPage } from "@/lib/news/news-seo";
 
 describe("news seo helpers", () => {
   test("indexes clean news listing pages", () => {

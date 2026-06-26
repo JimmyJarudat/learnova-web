@@ -17,10 +17,10 @@ import {
   getSafeNewsStatus,
   getVisibleNewsStatuses,
   newsStatusOptions,
-} from "@/lib/news-display";
-import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news-search";
-import { getNewsCanonicalPath, getNewsSeoFilterLabel, shouldIndexNewsPage } from "@/lib/news-seo";
-import { getNewsReadHref } from "@/lib/news-view";
+} from "@/lib/news/news-display";
+import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news/news-search";
+import { getNewsCanonicalPath, getNewsSeoFilterLabel, shouldIndexNewsPage } from "@/lib/news/news-seo";
+import { getNewsReadHref } from "@/lib/news/news-view";
 import { NewsLinkProgress } from "./news-link-progress";
 import { NewsSearchForm } from "./news-search-form";
 import { NewsTrackedLink } from "./news-tracked-link";

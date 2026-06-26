@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news-search";
+import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news/news-search";
 
 describe("news search helpers", () => {
   test("normalizes extra whitespace", () => {

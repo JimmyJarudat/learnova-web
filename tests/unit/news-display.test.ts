@@ -11,7 +11,7 @@ import {
   getSafeNewsPage,
   getVisibleNewsCalendarStatuses,
   getVisibleNewsStatuses,
-} from "@/lib/news-display";
+} from "@/lib/news/news-display";
 
 describe("news display helpers", () => {
   test("falls back to the local news image when the article has no image", () => {

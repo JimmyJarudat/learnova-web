@@ -11,8 +11,8 @@ import {
   getNewsStatusLabel,
   getNewsSummary,
   getVisibleNewsCalendarStatuses,
-} from "@/lib/news-display";
-import { getNewsReadHref } from "@/lib/news-view";
+} from "@/lib/news/news-display";
+import { getNewsReadHref } from "@/lib/news/news-view";
 import { NewsTrackedLink } from "../news-tracked-link";
 import { NewsViewCount } from "../news-view-count";
 import { NewsCalendarMonth } from "./calendar-month";

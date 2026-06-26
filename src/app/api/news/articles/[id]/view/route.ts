@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db/postgres";
-import { getVisibleNewsStatuses } from "@/lib/news-display";
-import { isNewsArticleId } from "@/lib/news-view";
+import { getVisibleNewsStatuses } from "@/lib/news/news-display";
+import { isNewsArticleId } from "@/lib/news/news-view";
 
 export const dynamic = "force-dynamic";
 

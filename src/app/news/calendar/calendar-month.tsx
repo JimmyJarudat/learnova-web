@@ -7,8 +7,8 @@ import {
   getCalendarDateLabel,
   getCalendarDays,
   getCalendarMonthLabel,
-} from "@/lib/news-calendar";
-import { getNewsReadHref } from "@/lib/news-view";
+} from "@/lib/news/news-calendar";
+import { getNewsReadHref } from "@/lib/news/news-view";
 import { NewsTrackedLink } from "../news-tracked-link";
 
 const weekdayLabels = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];

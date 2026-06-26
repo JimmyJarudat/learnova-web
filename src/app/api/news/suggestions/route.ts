@@ -1,7 +1,7 @@
 import type { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
-import { getSafeNewsStatus, getVisibleNewsStatuses } from "@/lib/news-display";
-import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news-search";
+import { getSafeNewsStatus, getVisibleNewsStatuses } from "@/lib/news/news-display";
+import { getNewsSearchTerms, normalizeNewsSearchQuery } from "@/lib/news/news-search";
 
 export const dynamic = "force-dynamic";
 
