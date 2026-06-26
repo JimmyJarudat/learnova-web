@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -18,26 +17,71 @@ import { NewsTrackedLink } from "../news-tracked-link";
 import { NewsViewCount } from "../news-view-count";
 import { NewsCalendarMonth } from "./calendar-month";
 
-const calendarTitle = "ปฏิทินรับสมัครสอบครูและสนามสอบ";
+const calendarPath = "/news/calendar";
+const calendarHeroImage = "/images/news-calendar-hero.png";
+const calendarTitle = "ปฏิทินสอบครูและรับสมัครครูผู้ช่วย";
 const calendarDescription =
-  "รวมกำหนดการรับสมัครสอบครู ข่าวเปิดรับสมัคร และประกาศใกล้หมดเขตจากแหล่งข่าวต้นทาง เพื่อช่วยวางแผนติดตามสนามสอบได้ทันเวลา";
+  "ปฏิทินรับสมัครสอบครู ผู้ช่วยครู และประกาศสนามสอบจากหน่วยงานการศึกษา รวมวันเปิดรับสมัคร วันปิดรับสมัคร ข่าวใกล้หมดเขต และลิงก์ประกาศต้นทางสำหรับวางแผนสอบครูได้ทันเวลา";
+const calendarKeywords = [
+  "ปฏิทินสอบครู",
+  "ปฏิทินรับสมัครสอบครู",
+  "รับสมัครสอบครู",
+  "สอบครูผู้ช่วย",
+  "ข่าวสอบครูผู้ช่วย",
+  "สมัครครูผู้ช่วย",
+  "สนามสอบครู",
+  "ครูผู้ช่วย สพฐ",
+  "ครูผู้ช่วย สอศ",
+  "ครูผู้ช่วย สกร",
+  "ครูผู้ช่วย อปท",
+  "ข่าวรับสมัครครู",
+  "ประกาศรับสมัครครู",
+  "Learnova ปฏิทินสอบครู",
+];
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: calendarTitle,
   description: calendarDescription,
+  keywords: calendarKeywords,
   alternates: {
-    canonical: "/news/calendar",
+    canonical: calendarPath,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   openGraph: {
     title: calendarTitle,
     description: calendarDescription,
-    url: "/news/calendar",
+    url: calendarPath,
     siteName: siteConfig.name,
     locale: "th_TH",
     type: "website",
+    images: [
+      {
+        url: calendarHeroImage,
+        width: 1200,
+        height: 630,
+        alt: "ปฏิทินรับสมัครสอบครูและข่าวสนามสอบ Learnova",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: calendarTitle,
+    description: calendarDescription,
+    images: [calendarHeroImage],
+  },
+  category: "Education",
 };
 
 function formatApplicationRange(start?: Date | null, end?: Date | null): string {
@@ -85,12 +129,153 @@ async function getCalendarData() {
   return { articles, statusCounts };
 }
 
+type CalendarArticleItem = Awaited<ReturnType<typeof getCalendarData>>["articles"][number];
+type CalendarStatusCount = Awaited<ReturnType<typeof getCalendarData>>["statusCounts"][number];
+
+function sanitizeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+function getAbsoluteUrl(path: string): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  return `${siteConfig.url}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+function buildCalendarJsonLd({
+  articles,
+  statusCounts,
+  totalCount,
+}: {
+  articles: CalendarArticleItem[];
+  statusCounts: CalendarStatusCount[];
+  totalCount: number;
+}) {
+  const pageUrl = getAbsoluteUrl(calendarPath);
+
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: calendarTitle,
+      description: calendarDescription,
+      inLanguage: "th-TH",
+      isPartOf: {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}#website`,
+        name: siteConfig.name,
+        url: siteConfig.url,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${siteConfig.url}/news?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: getAbsoluteUrl(calendarHeroImage),
+        width: 1200,
+        height: 630,
+      },
+      about: [
+        "ปฏิทินสอบครู",
+        "ข่าวรับสมัครสอบครู",
+        "สอบครูผู้ช่วย",
+        "ประกาศรับสมัครครู",
+      ],
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: totalCount,
+        itemListElement: articles.map((article, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          url: getAbsoluteUrl(getNewsReadHref(article.id)),
+          item: {
+            "@type": "NewsArticle",
+            headline: article.title,
+            description: getNewsSummary(article),
+            url: getAbsoluteUrl(getNewsReadHref(article.id)),
+            sameAs: article.sourceUrl,
+            image: getAbsoluteUrl(calendarHeroImage),
+            datePublished: (article.publishedAt ?? article.sourcePublishedAt ?? article.fetchedAt).toISOString(),
+            dateModified: article.updatedAt.toISOString(),
+            articleSection: article.category?.nameTh ?? article.source?.type ?? "ข่าวรับสมัครครู",
+            keywords: article.tags.length > 0 ? article.tags : calendarKeywords,
+            publisher: {
+              "@type": "Organization",
+              name: article.sourceName ?? article.source?.name ?? siteConfig.name,
+            },
+            isPartOf: {
+              "@id": `${pageUrl}#webpage`,
+            },
+          },
+        })),
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: siteConfig.name,
+          item: siteConfig.url,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "ข่าวสาร",
+          item: getAbsoluteUrl("/news"),
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: calendarTitle,
+          item: pageUrl,
+        },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "@id": `${pageUrl}#calendar-data`,
+      name: "ข้อมูลปฏิทินรับสมัครสอบครู Learnova",
+      description: "ชุดข้อมูลข่าวรับสมัครสอบครูที่ใช้แสดงวันเปิดรับสมัคร วันปิดรับสมัคร และสถานะข่าวบน Learnova",
+      url: pageUrl,
+      inLanguage: "th-TH",
+      creator: {
+        "@type": "Organization",
+        name: siteConfig.name,
+        url: siteConfig.url,
+      },
+      keywords: calendarKeywords,
+      variableMeasured: statusCounts.map((item) => ({
+        "@type": "PropertyValue",
+        name: getNewsStatusLabel(item.status),
+        value: item.count,
+      })),
+    },
+  ];
+}
+
 export default async function NewsCalendarPage() {
   const { articles, statusCounts } = await getCalendarData();
   const totalCount = statusCounts.reduce((sum, item) => sum + item.count, 0);
+  const jsonLd = buildCalendarJsonLd({ articles, statusCounts, totalCount });
 
   return (
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: sanitizeJsonLd(jsonLd),
+        }}
+      />
       <SiteHeader />
 
       <section className="relative overflow-hidden bg-[#071f4a] bg-[url('/images/news-calendar-hero.png')] bg-cover bg-center bg-no-repeat text-white">

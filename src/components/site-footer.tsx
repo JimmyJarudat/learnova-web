@@ -1,18 +1,18 @@
 import Link from "next/link";
 
 const examLinks = [
-  { href: "/affiliations/obec", label: "สพฐ." },
-  { href: "/affiliations/bma", label: "กทม." },
-  { href: "/affiliations/ovec", label: "สอศ." },
-  { href: "/affiliations/dole", label: "สกร." },
-  { href: "/affiliations/dla", label: "อปท." },
+  { href: "/affiliations/obec", label: "สพฐ.", soon: true },
+  { href: "/affiliations/bma", label: "กทม.", soon: true },
+  { href: "/affiliations/ovec", label: "สอศ.", soon: true },
+  { href: "/affiliations/dole", label: "สกร.", soon: true },
+  { href: "/affiliations/dla", label: "อปท.", soon: true },
 ];
 
 const learningLinks = [
-  { href: "/practice", label: "คลังข้อสอบ" },
-  { href: "/articles", label: "บทความสรุป" },
-  { href: "/study-plan", label: "แผนอ่านสอบ" },
-  { href: "/affiliations", label: "เทียบสังกัด" },
+  { href: "/exams", label: "คลังข้อสอบ" },
+  { href: "/articles", label: "บทความสรุป", soon: true },
+  { href: "/study-plan", label: "แผนอ่านสอบ", soon: true },
+  { href: "/affiliations", label: "เทียบสังกัด", soon: true },
 ];
 
 const supportLinks = [
@@ -28,7 +28,7 @@ function FooterColumn({
   links,
 }: {
   title: string;
-  links: Array<{ href: string; label: string; newTab?: boolean }>;
+  links: Array<{ href: string; label: string; newTab?: boolean; soon?: boolean }>;
 }) {
   return (
     <nav aria-label={title} className="border-t border-white/10 pt-5 sm:border-t-0 sm:pt-0">
@@ -40,9 +40,17 @@ function FooterColumn({
               href={link.href}
               target={link.newTab ? "_blank" : undefined}
               rel={link.newTab ? "noopener noreferrer" : undefined}
-              className="block rounded-lg py-2 text-sm font-semibold text-white/72 transition hover:text-[#ffd35a] sm:inline sm:rounded-none sm:py-0"
+              aria-disabled={link.soon ? true : undefined}
+              className={`flex items-center gap-2 rounded-lg py-2 text-sm font-semibold transition sm:inline-flex sm:rounded-none sm:py-0 ${
+                link.soon ? "text-white/42 hover:text-white/55" : "text-white/72 hover:text-[#ffd35a]"
+              }`}
             >
-              {link.label}
+              <span>{link.label}</span>
+              {link.soon ? (
+                <span className="rounded-full border border-[#ffd35a]/25 bg-[#ffd35a]/10 px-2 py-0.5 text-[10px] font-black uppercase text-[#ffd35a]">
+                  Soon
+                </span>
+              ) : null}
             </Link>
           </li>
         ))}
