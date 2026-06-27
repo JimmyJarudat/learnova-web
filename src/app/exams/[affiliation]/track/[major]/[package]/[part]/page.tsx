@@ -89,7 +89,12 @@ export default async function TrackPartPage({ params }: TrackPartPageProps) {
       </section>
 
       {isInterviewPart ? (
-        <InterviewCoach examTitle={`${part.title} ${part.package.title}`} affiliationLabel={part.affiliation.label} majorName={part.major.shortName} />
+        <InterviewCoach
+          examTitle={`${part.title} ${part.package.title}`}
+          affiliationLabel={part.affiliation.label}
+          majorName={part.major.shortName}
+          durationMinutes={part.durationMinutes}
+        />
       ) : (
         <ExamRunner
           part={part}
