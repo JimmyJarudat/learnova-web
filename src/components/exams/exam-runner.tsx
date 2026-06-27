@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { RichContent } from "@/components/exams/rich-content";
+import { analyzeExamResult } from "@/utils/exam-result-analysis";
 
 type ExamChoice = {
   id: string;
@@ -230,6 +231,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isNavigatorOpen, setIsNavigatorOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isResultAnalysisOpen, setIsResultAnalysisOpen] = useState(false);
   const [isIncompleteConfirmOpen, setIsIncompleteConfirmOpen] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
@@ -268,6 +270,23 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
       .slice(0, 5);
   }, [currentAttempt, initialHistory?.latestAttempts]);
   const attemptCount = (initialHistory?.attemptCount ?? 0) + (currentAttempt ? 1 : 0);
+  const resultAnalysis = useMemo(() => {
+    if (!result?.ok || result.score == null || result.maxScore == null) {
+      return null;
+    }
+
+    return analyzeExamResult(
+      {
+        score: result.score,
+        maxScore: result.maxScore,
+        totalQuestions: result.totalQuestions ?? part.questions.length,
+        answeredCount: result.answeredCount ?? 0,
+        correctCount: result.correctCount ?? 0,
+        durationSeconds: result.durationSeconds ?? 0,
+      },
+      initialHistory?.bestAttempt,
+    );
+  }, [initialHistory?.bestAttempt, part.questions.length, result]);
 
   const answeredCount = Object.keys(selectedChoices).length;
   const unansweredCount = Math.max(part.questions.length - answeredCount, 0);
@@ -360,6 +379,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
     }
 
     setResult(payload);
+    setIsResultAnalysisOpen(Boolean(response?.ok && payload.ok));
     setIsSubmitting(false);
   }
 
@@ -474,6 +494,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
     setSecondsLeft(initialSeconds);
     setStartedAt(Date.now());
     setIsSubmitting(false);
+    setIsResultAnalysisOpen(false);
     setIsIncompleteConfirmOpen(false);
     setIsLeaveConfirmOpen(false);
     setIsLeaving(false);
@@ -649,25 +670,6 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
     <>
     <section className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_320px] lg:px-8">
       <div className="space-y-5">
-        {result?.ok ? (
-          <section className="rounded-lg bg-[#071f4a] p-6 text-white shadow-sm">
-            <p className="text-sm font-black text-[#ffd35a]">ผลคะแนน</p>
-            <h2 className="mt-2 text-4xl font-black">
-              {result.score}/{result.maxScore} คะแนน
-            </h2>
-            <p className="mt-3 text-sm font-semibold text-white/75">
-              ตอบถูก {result.correctCount}/{result.totalQuestions} ข้อ | ทำแล้ว {result.answeredCount} ข้อ | ใช้เวลา {formatTime(result.durationSeconds ?? 0)}
-            </p>
-            <button
-              type="button"
-              onClick={restartExam}
-              className="mt-5 rounded-xl bg-[#ffd35a] px-5 py-3 text-sm font-black text-[#071f4a] transition hover:bg-[#f6bf22]"
-            >
-              ทำอีกครั้ง
-            </button>
-          </section>
-        ) : null}
-
         {result && !result.ok ? (
           <section className="rounded-lg border border-rose-200 bg-rose-50 p-5 text-rose-900 shadow-sm">
             <h2 className="text-xl font-black">ยังส่งคำตอบไม่ได้</h2>
@@ -991,6 +993,110 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
                 className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-black text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 ออกโดยไม่บันทึก
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    ) : null}
+    {isResultAnalysisOpen && result?.ok && resultAnalysis ? (
+      <div className="fixed inset-0 z-[65] grid place-items-center bg-slate-950/60 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true">
+        <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-white shadow-2xl">
+          <div className="bg-[#071f4a] p-5 text-white">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-[#ffd35a]">Result Analysis</p>
+                <h2 className="mt-1 text-2xl font-black">สรุปผลสอบรอบนี้</h2>
+                <p className="mt-1 text-sm font-semibold text-white/65">ระบบตรวจคะแนนและเปิดเฉลยให้แล้ว</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsResultAnalysisOpen(false)}
+                className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-sm font-black text-white transition hover:bg-white/15"
+              >
+                ปิด
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 p-5">
+            <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-sm font-black text-[#0b66c3]">คะแนนที่ได้</p>
+                  <p className="mt-1 text-4xl font-black text-[#071f4a]">
+                    {result.score ?? 0}/{result.maxScore ?? 0}
+                  </p>
+                  <p className="mt-2 text-lg font-black text-slate-700">
+                    {resultAnalysis.percentage}% | {resultAnalysis.levelLabel}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-[#fff2c2] px-4 py-3 text-[#071f4a]">
+                  <p className="text-xs font-black text-[#071f4a]/60">เทียบคะแนนสูงสุดเดิม</p>
+                  <p className="mt-1 text-2xl font-black">
+                    {resultAnalysis.bestScoreDiff == null
+                      ? "ครั้งแรก"
+                      : resultAnalysis.bestScoreDiff > 0
+                        ? `+${resultAnalysis.bestScoreDiff}`
+                        : resultAnalysis.bestScoreDiff === 0
+                          ? "เท่าเดิม"
+                          : resultAnalysis.bestScoreDiff}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100">
+                <div className="h-full rounded-full bg-[#0b66c3]" style={{ width: `${resultAnalysis.percentage}%` }} />
+              </div>
+
+              <p className="mt-4 rounded-lg bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-600">
+                {resultAnalysis.advice}
+              </p>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-4">
+              <div className="rounded-lg bg-emerald-50 p-4 text-emerald-900 ring-1 ring-emerald-100">
+                <p className="text-xs font-black">ตอบถูก</p>
+                <p className="mt-1 text-2xl font-black">{result.correctCount ?? 0}</p>
+              </div>
+              <div className="rounded-lg bg-rose-50 p-4 text-rose-900 ring-1 ring-rose-100">
+                <p className="text-xs font-black">ตอบผิด</p>
+                <p className="mt-1 text-2xl font-black">{resultAnalysis.incorrectCount}</p>
+              </div>
+              <div className="rounded-lg bg-amber-50 p-4 text-amber-900 ring-1 ring-amber-100">
+                <p className="text-xs font-black">ไม่ได้ตอบ</p>
+                <p className="mt-1 text-2xl font-black">{resultAnalysis.unansweredCount}</p>
+              </div>
+              <div className="rounded-lg bg-blue-50 p-4 text-[#071f4a] ring-1 ring-blue-100">
+                <p className="text-xs font-black">ใช้เวลา</p>
+                <p className="mt-1 text-2xl font-black">{formatTime(result.durationSeconds ?? 0)}</p>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <button
+                type="button"
+                onClick={() => setIsResultAnalysisOpen(false)}
+                className="rounded-xl bg-[#ffd35a] px-4 py-3 text-sm font-black text-[#071f4a] transition hover:bg-[#f6bf22]"
+              >
+                ดูเฉลยต่อ
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsResultAnalysisOpen(false);
+                  setIsHistoryOpen(true);
+                }}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-[#0b66c3] transition hover:border-[#0b66c3]"
+              >
+                ดูประวัติคะแนน
+              </button>
+              <button
+                type="button"
+                onClick={restartExam}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-600 transition hover:border-[#0b66c3] hover:text-[#0b66c3]"
+              >
+                ทำอีกครั้ง
               </button>
             </div>
           </div>
