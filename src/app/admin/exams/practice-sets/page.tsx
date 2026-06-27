@@ -60,6 +60,7 @@ async function createPracticeSet(formData: FormData) {
   const kind = getPracticeSetKind(formData.get("kind"));
   const title = String(formData.get("title") ?? "").trim();
   const yearLabel = String(formData.get("yearLabel") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
   const slug = slugify(String(formData.get("slug") ?? "") || title);
   const durationMinutes = Number(formData.get("durationMinutes") ?? 120);
 
@@ -81,7 +82,7 @@ async function createPracticeSet(formData: FormData) {
       title,
       scopeLabel: "ใช้ร่วมหลายสังกัด",
       yearLabel,
-      description: `${title} สำหรับ${category.shortTitle ?? category.title}`,
+      description: description || `${title} สำหรับ${category.shortTitle ?? category.title}`,
       durationMinutes: Number.isFinite(durationMinutes) ? durationMinutes : 120,
       totalQuestions: 0,
       totalScore: 0,
@@ -125,6 +126,7 @@ async function updatePracticeSet(formData: FormData) {
   const slug = slugify(String(formData.get("slug") ?? "") || title);
   const yearLabel = String(formData.get("yearLabel") ?? "").trim();
   const scopeLabel = String(formData.get("scopeLabel") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
   const durationMinutes = Number(formData.get("durationMinutes") ?? 120);
   const difficulty = String(formData.get("difficulty") ?? "").trim();
   const sortOrder = Number(formData.get("sortOrder") ?? 20);
@@ -142,6 +144,7 @@ async function updatePracticeSet(formData: FormData) {
       slug,
       yearLabel: yearLabel || null,
       scopeLabel: scopeLabel || "ใช้ร่วมหลายสังกัด",
+      description: description || null,
       durationMinutes: Number.isFinite(durationMinutes) ? durationMinutes : 120,
       difficulty: difficulty || null,
       sortOrder: Number.isFinite(sortOrder) ? sortOrder : 20,
@@ -205,6 +208,15 @@ export default async function AdminExamPracticeSetsPage() {
           <label className="block">
             <span className="text-sm font-black text-slate-700">Slug</span>
             <input name="slug" className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 text-sm font-semibold outline-none focus:border-[#0b66c3]" placeholder="part-b-education-law-2567-set-1" />
+          </label>
+          <label className="block lg:col-span-2">
+            <span className="text-sm font-black text-slate-700">รายละเอียดชุด</span>
+            <textarea
+              name="description"
+              rows={3}
+              className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 text-sm font-semibold outline-none focus:border-[#0b66c3]"
+              placeholder="เช่น ภาค ก ครูผู้ช่วย รอบทั่วไป สำหรับภาค ก"
+            />
           </label>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
@@ -276,6 +288,15 @@ export default async function AdminExamPracticeSetsPage() {
                   <label className="block">
                     <span className="text-xs font-black text-slate-600">Slug</span>
                     <input name="slug" defaultValue={set.slug} required className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block lg:col-span-2">
+                    <span className="text-xs font-black text-slate-600">รายละเอียดชุด</span>
+                    <textarea
+                      name="description"
+                      defaultValue={set.description ?? ""}
+                      rows={3}
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]"
+                    />
                   </label>
                   <label className="block">
                     <span className="text-xs font-black text-slate-600">ปี</span>

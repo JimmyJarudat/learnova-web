@@ -20,6 +20,13 @@ type AdminExamQuestionsPageProps = {
   }>;
 };
 
+type DestinationOption = {
+  value: string;
+  label: string;
+  meta: string;
+  typeLabel: "คลังฝึกกลาง" | "ชุดจำลองสนาม";
+};
+
 const jsonImportExample = `{
   "section": "ส่วนที่ 1 ความสามารถด้านตัวเลข",
   "topic": "ตอนที่ 1 อนุกรมและการคิดเชิงตรรกะ",
@@ -54,6 +61,39 @@ const jsonImportExample = `{
 
 function readText(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
+}
+
+function DestinationSelect({
+  name = "destination",
+  options,
+  defaultValue,
+}: {
+  name?: string;
+  options: DestinationOption[];
+  defaultValue: string;
+}) {
+  return (
+    <select name={name} defaultValue={defaultValue} required className="mt-2 w-full rounded-lg border border-[#cfe5ff] bg-[#f7fbff] px-3 py-3 text-sm font-semibold text-slate-700 outline-none focus:border-[#0b66c3]">
+      <optgroup label="คลังฝึกกลาง">
+        {options
+          .filter((option) => option.typeLabel === "คลังฝึกกลาง")
+          .map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label} ({option.meta})
+            </option>
+          ))}
+      </optgroup>
+      <optgroup label="ชุดจำลองสนาม">
+        {options
+          .filter((option) => option.typeLabel === "ชุดจำลองสนาม")
+          .map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label} ({option.meta})
+            </option>
+          ))}
+      </optgroup>
+    </select>
+  );
 }
 
 function buildQuestionsAdminPath(destination: string, status?: string, count?: number) {
@@ -488,19 +528,19 @@ async function getQuestionsPageData() {
 export default async function AdminExamQuestionsPage({ searchParams }: AdminExamQuestionsPageProps) {
   const { destination = "", status = "", count = "" } = await searchParams;
   const { practiceSets, packages } = await getQuestionsPageData();
-  const destinationOptions = [
+  const destinationOptions: DestinationOption[] = [
     ...practiceSets.map((set) => ({
       value: `practice:${set.id}`,
       label: `${set.category.title} / ${set.title}`,
       meta: `${set._count.items} ข้อ`,
-      typeLabel: "คลังฝึกกลาง",
+      typeLabel: "คลังฝึกกลาง" as const,
     })),
     ...packages.flatMap((pack) =>
       pack.parts.map((part) => ({
         value: `part:${part.id}`,
         label: `${pack.track.affiliation.label} / ${pack.track.major.shortName ?? pack.track.major.name} / ${pack.title} / ${part.title}`,
         meta: `${part._count.items} ข้อ`,
-        typeLabel: "ชุดจำลองสนาม",
+        typeLabel: "ชุดจำลองสนาม" as const,
       })),
     ),
   ];
@@ -523,58 +563,21 @@ export default async function AdminExamQuestionsPage({ searchParams }: AdminExam
         <p className="mt-2 text-sm font-semibold text-slate-500">
           เลือกปลายทาง เช่น ภาค ข วิชาชีพครู แล้วกรอกโจทย์เอง หรือวาง JSON/เลือกไฟล์ ระบบจะเพิ่มเป็นข้อต่อไปอัตโนมัติ
         </p>
-      </div>
-
-      <section className="rounded-lg border border-[#cfe5ff] bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
-          <form action="/admin/exams/questions" className="flex-1">
-            <label className="block">
-              <span className="text-sm font-black text-[#064c9b]">ปลายทางที่จะเพิ่มคำถาม</span>
-              <select name="destination" defaultValue={selectedDestinationValue} required className="mt-2 w-full rounded-lg border border-[#cfe5ff] bg-[#f7fbff] px-3 py-3 text-sm font-semibold text-slate-700 outline-none focus:border-[#0b66c3]">
-                <optgroup label="คลังฝึกกลาง">
-                  {destinationOptions
-                    .filter((option) => option.typeLabel === "คลังฝึกกลาง")
-                    .map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label} ({option.meta})
-                      </option>
-                    ))}
-                </optgroup>
-                <optgroup label="ชุดจำลองสนาม">
-                  {destinationOptions
-                    .filter((option) => option.typeLabel === "ชุดจำลองสนาม")
-                    .map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label} ({option.meta})
-                      </option>
-                    ))}
-                </optgroup>
-              </select>
-            </label>
-            <button className="mt-3 rounded-lg bg-[#0759b8] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#0b66c3]">
-              ใช้ปลายทางนี้
-            </button>
-          </form>
-          <div className="rounded-xl bg-[#eef6ff] p-4 lg:w-[360px]">
-            <p className="text-xs font-black text-[#0b66c3]">กำลังเพิ่มเข้า</p>
-            <p className="mt-1 text-sm font-black leading-6 text-[#064c9b]">{selectedDestination?.label ?? "ยังไม่มีปลายทาง"}</p>
-            <p className="mt-1 text-xs font-semibold text-slate-500">
-              {selectedDestination?.typeLabel ?? "-"} | {selectedDestination?.meta ?? "0 ข้อ"}
-            </p>
-          </div>
-        </div>
         {successMessage ? (
           <p className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700">
             {successMessage}
           </p>
         ) : null}
-      </section>
+      </div>
 
       <div className="grid gap-6">
-        <form action={addQuestion} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <input type="hidden" name="destination" value={selectedDestinationValue} />
+        <form action={addQuestion} className="order-2 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-sm font-black text-[#0b66c3]">เพิ่มทีละข้อ</p>
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <label className="block">
+              <span className="text-sm font-black text-slate-700">ปลายทางคำถาม</span>
+              <DestinationSelect options={destinationOptions} defaultValue={selectedDestinationValue} />
+            </label>
             <label className="block">
               <span className="text-sm font-black text-slate-700">หัวข้อ/ตอน</span>
               <input name="sectionTitle" className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 text-sm font-semibold outline-none focus:border-[#0b66c3]" placeholder="เช่น ความรู้วิชาชีพครู" />
@@ -617,8 +620,7 @@ export default async function AdminExamQuestionsPage({ searchParams }: AdminExam
           </AdminSubmitButton>
         </form>
 
-        <form action={importQuestions} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <input type="hidden" name="destination" value={selectedDestinationValue} />
+        <form action={importQuestions} className="order-1 rounded-lg border-2 border-[#0b66c3] bg-white p-5 shadow-sm">
           <p className="text-sm font-black text-[#0b66c3]">นำเข้า JSON / ไฟล์</p>
           <h2 className="mt-1 text-2xl font-black text-[#071f4a]">เพิ่มหลายข้อในครั้งเดียว</h2>
           <p className="mt-2 text-sm font-semibold text-slate-500">
@@ -626,6 +628,13 @@ export default async function AdminExamQuestionsPage({ searchParams }: AdminExam
           </p>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <label className="block">
+              <span className="text-sm font-black text-slate-700">ปลายทางคำถาม</span>
+              <DestinationSelect options={destinationOptions} defaultValue={selectedDestinationValue} />
+              <span className="mt-2 block rounded-lg bg-amber-50 px-3 py-2 text-xs font-black text-amber-800">
+                ตรวจปลายทางตรงนี้ก่อนกดนำเข้า ระบบจะนำเข้าไปยังชุดที่เลือกในฟอร์มนี้ทันที
+              </span>
+            </label>
             <label className="block">
               <span className="text-sm font-black text-slate-700">หัวข้อสำรอง</span>
               <input name="sectionTitle" className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 text-sm font-semibold outline-none focus:border-[#0b66c3]" placeholder="ไม่กรอกก็ได้ เช่น ส่วนที่ 1 ความรู้วิชาชีพครู" />
@@ -654,7 +663,9 @@ export default async function AdminExamQuestionsPage({ searchParams }: AdminExam
           </AdminSubmitButton>
         </form>
 
-        <JsonExampleCopy value={jsonImportExample} />
+        <div className="order-3">
+          <JsonExampleCopy value={jsonImportExample} />
+        </div>
       </div>
     </section>
   );
