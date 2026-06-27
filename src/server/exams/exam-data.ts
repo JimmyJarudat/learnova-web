@@ -43,6 +43,25 @@ function mapAttemptSummary(attempt: {
   };
 }
 
+function getPassageRanges<T extends { position: number; question: { passageId: string | null } }>(items: T[]) {
+  const ranges = new Map<string, { firstNo: number; lastNo: number }>();
+
+  for (const item of items) {
+    if (!item.question.passageId) {
+      continue;
+    }
+
+    const current = ranges.get(item.question.passageId);
+
+    ranges.set(item.question.passageId, {
+      firstNo: current ? Math.min(current.firstNo, item.position) : item.position,
+      lastNo: current ? Math.max(current.lastNo, item.position) : item.position,
+    });
+  }
+
+  return ranges;
+}
+
 export async function getExamOverview() {
   const [affiliations, practiceCategories, popularPackages, totals] = await Promise.all([
     prisma.examAffiliation.findMany({
@@ -511,6 +530,8 @@ export async function getExamPackagePart(
     return null;
   }
 
+  const passageRanges = getPassageRanges(part.items);
+
   return {
     id: part.id,
     slug: part.slug,
@@ -561,6 +582,7 @@ export async function getExamPackagePart(
             content: item.question.sharedPassage.content,
             contentFormat: item.question.sharedPassage.contentFormat,
             imageUrl: item.question.sharedPassage.imageUrl,
+            range: passageRanges.get(item.question.sharedPassage.id) ?? null,
           }
         : null,
       assets: item.question.assets.map((asset) => ({
@@ -651,6 +673,8 @@ export async function getPracticeSet(categorySlug: string, setSlug: string) {
     return null;
   }
 
+  const passageRanges = getPassageRanges(practiceSet.items);
+
   return {
     id: practiceSet.id,
     slug: practiceSet.slug,
@@ -692,6 +716,7 @@ export async function getPracticeSet(categorySlug: string, setSlug: string) {
             content: item.question.sharedPassage.content,
             contentFormat: item.question.sharedPassage.contentFormat,
             imageUrl: item.question.sharedPassage.imageUrl,
+            range: passageRanges.get(item.question.sharedPassage.id) ?? null,
           }
         : null,
       assets: item.question.assets.map((asset) => ({

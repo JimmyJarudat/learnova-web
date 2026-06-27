@@ -53,6 +53,32 @@ async function createPracticeCategory(formData: FormData) {
   revalidatePath("/exams");
 }
 
+async function deletePracticeCategory(formData: FormData) {
+  "use server";
+
+  const categoryId = String(formData.get("categoryId") ?? "");
+
+  if (!categoryId) {
+    throw new Error("ไม่พบหมวดที่ต้องการลบ");
+  }
+
+  await prisma.$transaction([
+    prisma.practiceSet.updateMany({
+      where: { categoryId },
+      data: { isActive: false },
+    }),
+    prisma.practiceCategory.update({
+      where: { id: categoryId },
+      data: { isActive: false },
+    }),
+  ]);
+
+  revalidatePath("/admin/exams/categories");
+  revalidatePath("/admin/exams/practice-sets");
+  revalidatePath("/admin/exams/questions");
+  revalidatePath("/exams");
+}
+
 export default async function AdminExamCategoriesPage() {
   const categories = await prisma.practiceCategory.findMany({
     where: { isActive: true },
@@ -92,11 +118,19 @@ export default async function AdminExamCategoriesPage() {
         </div>
         <div className="divide-y divide-slate-100">
           {categories.map((category) => (
-            <div key={category.id} className="p-5">
-              <p className="font-black text-[#071f4a]">{category.title}</p>
-              <p className="mt-1 text-sm font-semibold text-slate-500">
-                {category.slug} | {category._count.sets} ชุด
-              </p>
+            <div key={category.id} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-black text-[#071f4a]">{category.title}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-500">
+                  {category.slug} | {category._count.sets} ชุด
+                </p>
+              </div>
+              <form action={deletePracticeCategory}>
+                <input type="hidden" name="categoryId" value={category.id} />
+                <button className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
+                  ลบ
+                </button>
+              </form>
             </div>
           ))}
         </div>

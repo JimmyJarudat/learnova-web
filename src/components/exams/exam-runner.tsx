@@ -32,6 +32,10 @@ type ExamQuestion = {
     content: string;
     contentFormat: string;
     imageUrl: string | null;
+    range: {
+      firstNo: number;
+      lastNo: number;
+    } | null;
   } | null;
   assets: Array<{
     id: string;
@@ -109,6 +113,18 @@ function formatAttemptDate(value: string) {
     dateStyle: "short",
     timeStyle: "short",
   }).format(new Date(value));
+}
+
+function formatPassageRange(range: { firstNo: number; lastNo: number } | null) {
+  if (!range) {
+    return "ใช้ตอบคำถามที่เกี่ยวข้อง";
+  }
+
+  if (range.firstNo === range.lastNo) {
+    return `ใช้ตอบคำถามข้อ ${range.firstNo}`;
+  }
+
+  return `ใช้ตอบคำถามข้อ ${range.firstNo}-${range.lastNo}`;
 }
 
 function toAttemptSummary(result: SubmitResult): AttemptSummary | null {
@@ -327,7 +343,10 @@ export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps)
 
               {question.passage && question.passage.id !== part.questions[index - 1]?.passage?.id ? (
                 <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                  <p className="text-sm font-black text-[#0b66c3]">อ่านข้อความต่อไปนี้ แล้วตอบคำถามที่เกี่ยวข้อง</p>
+                  <p className="text-sm font-black text-[#0b66c3]">อ่านข้อความต่อไปนี้ แล้วตอบคำถาม</p>
+                  <p className="mt-1 inline-flex rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">
+                    {formatPassageRange(question.passage.range)}
+                  </p>
                   {question.passage.title ? <h2 className="mt-2 text-xl font-black text-[#071f4a]">{question.passage.title}</h2> : null}
                   {question.passage.imageUrl ? (
                     <img src={question.passage.imageUrl} alt="" className="mt-4 max-h-[420px] w-auto max-w-full rounded-lg border border-slate-200 object-contain" />

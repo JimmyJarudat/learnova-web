@@ -57,6 +57,25 @@ async function createPracticeSet(formData: FormData) {
   revalidatePath("/exams");
 }
 
+async function deletePracticeSet(formData: FormData) {
+  "use server";
+
+  const setId = String(formData.get("setId") ?? "");
+
+  if (!setId) {
+    throw new Error("ไม่พบชุดคลังฝึกที่ต้องการลบ");
+  }
+
+  await prisma.practiceSet.update({
+    where: { id: setId },
+    data: { isActive: false },
+  });
+
+  revalidatePath("/admin/exams/practice-sets");
+  revalidatePath("/admin/exams/questions");
+  revalidatePath("/exams");
+}
+
 export default async function AdminExamPracticeSetsPage() {
   const [categories, practiceSets] = await Promise.all([
     prisma.practiceCategory.findMany({
@@ -119,11 +138,24 @@ export default async function AdminExamPracticeSetsPage() {
         </div>
         <div className="divide-y divide-slate-100">
           {practiceSets.map((set) => (
-            <Link key={set.id} href={`/exams/practice/${set.category.slug}/${set.slug}`} className="block p-5 transition hover:bg-slate-50">
-              <p className="text-xs font-black text-[#0b66c3]">{set.category.title}</p>
-              <p className="font-black text-[#071f4a]">{set.title}</p>
-              <p className="mt-1 text-sm font-semibold text-slate-500">{set._count.items} ข้อ | {set.durationMinutes} นาที</p>
-            </Link>
+            <div key={set.id} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-black text-[#0b66c3]">{set.category.title}</p>
+                <p className="font-black text-[#071f4a]">{set.title}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-500">{set._count.items} ข้อ | {set.durationMinutes} นาที</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Link href={`/exams/practice/${set.category.slug}/${set.slug}`} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-black text-[#0b66c3] transition hover:bg-[#eef6ff]">
+                  ดูหน้าเว็บ
+                </Link>
+                <form action={deletePracticeSet}>
+                  <input type="hidden" name="setId" value={set.id} />
+                  <button className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
+                    ลบ
+                  </button>
+                </form>
+              </div>
+            </div>
           ))}
         </div>
       </section>
