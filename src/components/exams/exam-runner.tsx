@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { RichContent } from "@/components/exams/rich-content";
 
@@ -220,6 +221,7 @@ function getChoiceClass({
 }
 
 export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draftTarget }: ExamRunnerProps) {
+  const router = useRouter();
   const initialSeconds = Math.max(part.durationMinutes * 60, 1);
   const initialDraftDuration = Math.max(0, Math.floor(initialDraft?.durationSecondsUsed ?? 0));
   const [selectedChoices, setSelectedChoices] = useState<Record<string, string>>(() => initialDraft?.selectedChoices ?? {});
@@ -229,11 +231,16 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
   const [isNavigatorOpen, setIsNavigatorOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isIncompleteConfirmOpen, setIsIncompleteConfirmOpen] = useState(false);
+  const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
+  const [pendingLeaveHref, setPendingLeaveHref] = useState<string | null>(null);
   const [draftSaveState, setDraftSaveState] = useState<DraftSaveState>(initialDraft ? "saved" : "idle");
   const [lastDraftSavedAt, setLastDraftSavedAt] = useState<string | null>(initialDraft?.lastSavedAt ?? null);
   const [result, setResult] = useState<SubmitResult | null>(null);
   const hasSubmittedRef = useRef(false);
   const selectedChoicesRef = useRef(selectedChoices);
+  const shouldWarnBeforeLeavingRef = useRef(false);
+  const allowNavigationRef = useRef(false);
   const lastSavedDraftSignatureRef = useRef(initialDraft ? JSON.stringify(initialDraft.selectedChoices) : "");
 
   const resultByQuestionId = useMemo(() => {
@@ -266,6 +273,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
   const unansweredCount = Math.max(part.questions.length - answeredCount, 0);
   const answeredPercent = part.questions.length > 0 ? Math.round((answeredCount / part.questions.length) * 100) : 0;
   const submitted = Boolean(result?.ok);
+  const shouldWarnBeforeLeaving = Boolean(draftTarget && !submitted && answeredCount > 0);
   const draftStatusText =
     draftSaveState === "saving"
       ? "กำลังบันทึกคำตอบ..."
@@ -279,6 +287,20 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
 
   function getDurationSecondsUsed() {
     return Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+  }
+
+  function getDraftPayload() {
+    if (!draftTarget) {
+      return null;
+    }
+
+    return {
+      targetType: draftTarget.type,
+      targetId: draftTarget.id,
+      selectedChoices: selectedChoicesRef.current,
+      durationSecondsUsed: getDurationSecondsUsed(),
+      startedAt: new Date(startedAt).toISOString(),
+    };
   }
 
   function scrollToQuestion(questionId: string) {
@@ -355,18 +377,18 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
     setDraftSaveState("saving");
 
     try {
+      const payloadBody = getDraftPayload();
+
+      if (!payloadBody) {
+        return;
+      }
+
       const response = await fetch("/api/exams/drafts", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          targetType: draftTarget.type,
-          targetId: draftTarget.id,
-          selectedChoices: selectedChoicesRef.current,
-          durationSecondsUsed: getDurationSecondsUsed(),
-          startedAt: new Date(startedAt).toISOString(),
-        }),
+        body: JSON.stringify(payloadBody),
       });
       const payload = (await response.json().catch(() => ({
         ok: false,
@@ -388,6 +410,60 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
     void submitExam({ skipIncompleteConfirm: true });
   }
 
+  function navigateAfterLeaveDecision() {
+    allowNavigationRef.current = true;
+
+    if (pendingLeaveHref) {
+      router.push(pendingLeaveHref);
+      return;
+    }
+
+    window.history.back();
+  }
+
+  function saveDraftBeforePageExit() {
+    const payloadBody = getDraftPayload();
+
+    if (!payloadBody || allowNavigationRef.current || !shouldWarnBeforeLeavingRef.current) {
+      return;
+    }
+
+    void fetch("/api/exams/drafts", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payloadBody),
+      keepalive: true,
+    }).catch(() => undefined);
+  }
+
+  async function deleteDraft() {
+    if (!draftTarget) {
+      return;
+    }
+
+    await fetch(`/api/exams/drafts?targetType=${draftTarget.type}&targetId=${draftTarget.id}`, {
+      method: "DELETE",
+    }).catch(() => undefined);
+
+    lastSavedDraftSignatureRef.current = "";
+    setLastDraftSavedAt(null);
+    setDraftSaveState("idle");
+  }
+
+  async function leaveAfterSavingDraft() {
+    setIsLeaving(true);
+    await saveDraft({ force: true });
+    navigateAfterLeaveDecision();
+  }
+
+  async function leaveWithoutSavingDraft() {
+    setIsLeaving(true);
+    await deleteDraft();
+    navigateAfterLeaveDecision();
+  }
+
   function requestSubmitExam() {
     void submitExam();
   }
@@ -399,6 +475,9 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
     setStartedAt(Date.now());
     setIsSubmitting(false);
     setIsIncompleteConfirmOpen(false);
+    setIsLeaveConfirmOpen(false);
+    setIsLeaving(false);
+    setPendingLeaveHref(null);
     setDraftSaveState("idle");
     setLastDraftSavedAt(null);
     lastSavedDraftSignatureRef.current = "";
@@ -409,6 +488,104 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
   useEffect(() => {
     selectedChoicesRef.current = selectedChoices;
   }, [selectedChoices]);
+
+  useEffect(() => {
+    shouldWarnBeforeLeavingRef.current = shouldWarnBeforeLeaving;
+  }, [shouldWarnBeforeLeaving]);
+
+  useEffect(() => {
+    if (!draftTarget) {
+      return;
+    }
+
+    window.history.pushState({ examLeaveGuard: true }, "", window.location.href);
+
+    function handlePopState() {
+      if (allowNavigationRef.current || !shouldWarnBeforeLeavingRef.current) {
+        return;
+      }
+
+      window.history.pushState({ examLeaveGuard: true }, "", window.location.href);
+      setPendingLeaveHref(null);
+      setIsLeaveConfirmOpen(true);
+    }
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [draftTarget]);
+
+  useEffect(() => {
+    if (!draftTarget) {
+      return;
+    }
+
+    function handleDocumentClick(event: MouseEvent) {
+      if (allowNavigationRef.current || !shouldWarnBeforeLeavingRef.current || event.defaultPrevented) {
+        return;
+      }
+
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return;
+      }
+
+      const anchor = (event.target as Element | null)?.closest("a[href]");
+
+      if (!(anchor instanceof HTMLAnchorElement)) {
+        return;
+      }
+
+      if (anchor.target && anchor.target !== "_self") {
+        return;
+      }
+
+      const url = new URL(anchor.href, window.location.href);
+
+      if (url.origin !== window.location.origin || url.href === window.location.href) {
+        return;
+      }
+
+      event.preventDefault();
+      setPendingLeaveHref(`${url.pathname}${url.search}${url.hash}`);
+      setIsLeaveConfirmOpen(true);
+    }
+
+    document.addEventListener("click", handleDocumentClick, true);
+
+    return () => {
+      document.removeEventListener("click", handleDocumentClick, true);
+    };
+  }, [draftTarget]);
+
+  useEffect(() => {
+    if (!draftTarget) {
+      return;
+    }
+
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
+      if (!shouldWarnBeforeLeavingRef.current) {
+        return;
+      }
+
+      saveDraftBeforePageExit();
+      event.preventDefault();
+      event.returnValue = "";
+    }
+
+    function handlePageHide() {
+      saveDraftBeforePageExit();
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("pagehide", handlePageHide);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("pagehide", handlePageHide);
+    };
+  }, [draftTarget, startedAt]);
 
   useEffect(() => {
     if (!draftTarget || submitted || Object.keys(selectedChoices).length === 0) {
@@ -774,6 +951,48 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
             >
               {isSubmitting ? "กำลังส่ง..." : "ยืนยันส่งคำตอบ"}
             </button>
+          </div>
+        </div>
+      </div>
+    ) : null}
+    {isLeaveConfirmOpen ? (
+      <div className="fixed inset-0 z-[70] grid place-items-center bg-slate-950/60 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true">
+        <div className="w-full max-w-lg rounded-xl bg-white p-5 shadow-2xl">
+          <p className="text-sm font-black text-[#0b66c3]">ออกจากหน้าทำข้อสอบ</p>
+          <h2 className="mt-2 text-2xl font-black text-[#071f4a]">ต้องการบันทึกคำตอบก่อนออกไหม</h2>
+          <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
+            คุณทำไปแล้ว {answeredCount}/{part.questions.length} ข้อ หากบันทึกไว้จะสามารถกลับมาทำต่อจากคำตอบล่าสุดได้
+          </p>
+          <div className="mt-5 grid gap-3">
+            <button
+              type="button"
+              disabled={isLeaving}
+              onClick={leaveAfterSavingDraft}
+              className="rounded-xl bg-[#ffd35a] px-4 py-3 text-sm font-black text-[#071f4a] transition hover:bg-[#f6bf22] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isLeaving ? "กำลังจัดการ..." : "บันทึกแล้วออก"}
+            </button>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                disabled={isLeaving}
+                onClick={() => {
+                  setPendingLeaveHref(null);
+                  setIsLeaveConfirmOpen(false);
+                }}
+                className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-black text-slate-600 transition hover:border-[#0b66c3] hover:text-[#0b66c3] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                ทำต่อ
+              </button>
+              <button
+                type="button"
+                disabled={isLeaving}
+                onClick={leaveWithoutSavingDraft}
+                className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-black text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                ออกโดยไม่บันทึก
+              </button>
+            </div>
           </div>
         </div>
       </div>
