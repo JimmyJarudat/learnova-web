@@ -1,6 +1,7 @@
 import "server-only";
 import { ExamAttemptStatus } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
+import { readDraftSelectedChoices } from "@/server/exams/draft-payload";
 
 const affiliationThemeBySlug: Record<string, string> = {
   obec: "bg-[#0b66c3]",
@@ -40,6 +41,26 @@ function mapAttemptSummary(attempt: {
     answeredCount: attempt.answeredCount,
     durationSeconds: attempt.durationSeconds,
     submittedAt: (attempt.submittedAt ?? attempt.createdAt).toISOString(),
+  };
+}
+
+function mapAttemptDraft(draft: {
+  id: string;
+  answersJson: unknown;
+  startedAt: Date;
+  durationSecondsUsed: number;
+  lastSavedAt: Date;
+} | null) {
+  if (!draft) {
+    return null;
+  }
+
+  return {
+    id: draft.id,
+    selectedChoices: readDraftSelectedChoices(draft.answersJson),
+    startedAt: draft.startedAt.toISOString(),
+    durationSecondsUsed: draft.durationSecondsUsed,
+    lastSavedAt: draft.lastSavedAt.toISOString(),
   };
 }
 
@@ -576,6 +597,18 @@ export async function getPackagePartAttemptHistory(partId: string, userId: strin
   };
 }
 
+export async function getPackagePartAttemptDraft(partId: string, userId: string) {
+  const draft = await prisma.examAttemptDraft.findFirst({
+    where: {
+      packagePartId: partId,
+      userId,
+      status: ExamAttemptStatus.IN_PROGRESS,
+    },
+  });
+
+  return mapAttemptDraft(draft);
+}
+
 export async function getPracticeSetAttemptHistory(setId: string, userId: string) {
   const attempts = await prisma.examAttempt.findMany({
     where: {
@@ -596,6 +629,18 @@ export async function getPracticeSetAttemptHistory(setId: string, userId: string
     bestAttempt: bestAttempt ? mapAttemptSummary(bestAttempt) : null,
     latestAttempts: attempts.map(mapAttemptSummary),
   };
+}
+
+export async function getPracticeSetAttemptDraft(setId: string, userId: string) {
+  const draft = await prisma.examAttemptDraft.findFirst({
+    where: {
+      practiceSetId: setId,
+      userId,
+      status: ExamAttemptStatus.IN_PROGRESS,
+    },
+  });
+
+  return mapAttemptDraft(draft);
 }
 
 export async function getExamPackagePart(

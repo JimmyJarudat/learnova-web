@@ -83,7 +83,12 @@ type SubmitResult = {
 type ExamRunnerProps = {
   part: ExamPart;
   initialHistory?: AttemptHistory;
+  initialDraft?: AttemptDraft | null;
   submitUrl?: string;
+  draftTarget?: {
+    type: "packagePart" | "practiceSet";
+    id: string;
+  };
 };
 
 type AttemptSummary = {
@@ -101,6 +106,16 @@ type AttemptHistory = {
   bestAttempt: AttemptSummary | null;
   latestAttempts: AttemptSummary[];
 };
+
+type AttemptDraft = {
+  id: string;
+  selectedChoices: Record<string, string>;
+  startedAt: string;
+  durationSecondsUsed: number;
+  lastSavedAt: string;
+};
+
+type DraftSaveState = "idle" | "saving" | "saved" | "error";
 
 function formatTime(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -204,18 +219,22 @@ function getChoiceClass({
   return "border-slate-200 bg-slate-50 opacity-75";
 }
 
-export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps) {
+export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draftTarget }: ExamRunnerProps) {
   const initialSeconds = Math.max(part.durationMinutes * 60, 1);
-  const [selectedChoices, setSelectedChoices] = useState<Record<string, string>>({});
-  const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
-  const [startedAt, setStartedAt] = useState(() => Date.now());
+  const initialDraftDuration = Math.max(0, Math.floor(initialDraft?.durationSecondsUsed ?? 0));
+  const [selectedChoices, setSelectedChoices] = useState<Record<string, string>>(() => initialDraft?.selectedChoices ?? {});
+  const [secondsLeft, setSecondsLeft] = useState(() => Math.max(initialSeconds - initialDraftDuration, 0));
+  const [startedAt, setStartedAt] = useState(() => Date.now() - initialDraftDuration * 1000);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isNavigatorOpen, setIsNavigatorOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isIncompleteConfirmOpen, setIsIncompleteConfirmOpen] = useState(false);
+  const [draftSaveState, setDraftSaveState] = useState<DraftSaveState>(initialDraft ? "saved" : "idle");
+  const [lastDraftSavedAt, setLastDraftSavedAt] = useState<string | null>(initialDraft?.lastSavedAt ?? null);
   const [result, setResult] = useState<SubmitResult | null>(null);
   const hasSubmittedRef = useRef(false);
   const selectedChoicesRef = useRef(selectedChoices);
+  const lastSavedDraftSignatureRef = useRef(initialDraft ? JSON.stringify(initialDraft.selectedChoices) : "");
 
   const resultByQuestionId = useMemo(() => {
     const entries = result?.questions?.map((question) => [question.questionId, question] as const) ?? [];
@@ -247,6 +266,20 @@ export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps)
   const unansweredCount = Math.max(part.questions.length - answeredCount, 0);
   const answeredPercent = part.questions.length > 0 ? Math.round((answeredCount / part.questions.length) * 100) : 0;
   const submitted = Boolean(result?.ok);
+  const draftStatusText =
+    draftSaveState === "saving"
+      ? "กำลังบันทึกคำตอบ..."
+      : draftSaveState === "saved"
+        ? lastDraftSavedAt
+          ? `บันทึกล่าสุด ${formatAttemptDate(lastDraftSavedAt)}`
+          : "บันทึกคำตอบแล้ว"
+        : draftSaveState === "error"
+          ? "บันทึกคำตอบไม่สำเร็จ จะลองใหม่อัตโนมัติ"
+          : "ระบบจะบันทึกคำตอบระหว่างทำ";
+
+  function getDurationSecondsUsed() {
+    return Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+  }
 
   function scrollToQuestion(questionId: string) {
     document.getElementsByName(`question-${questionId}`)[0]?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -270,32 +303,89 @@ export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps)
     hasSubmittedRef.current = true;
     setIsSubmitting(true);
 
-    const durationSeconds = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
-    const response = await fetch(submitUrl ?? `/api/exams/package-parts/${part.id}/submit`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        durationSeconds,
-        answers: part.questions.map((question) => ({
-          questionId: question.id,
-          selectedChoiceIds: selectedChoicesRef.current[question.id] ? [selectedChoicesRef.current[question.id]] : [],
-        })),
-      }),
-    });
+    const durationSeconds = getDurationSecondsUsed();
+    let response: Response | null = null;
+    let payload: SubmitResult;
 
-    const payload = (await response.json().catch(() => ({
-      ok: false,
-      message: "ส่งคำตอบไม่สำเร็จ",
-    }))) as SubmitResult;
+    try {
+      response = await fetch(submitUrl ?? `/api/exams/package-parts/${part.id}/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          durationSeconds,
+          answers: part.questions.map((question) => ({
+            questionId: question.id,
+            selectedChoiceIds: selectedChoicesRef.current[question.id] ? [selectedChoicesRef.current[question.id]] : [],
+          })),
+        }),
+      });
 
-    if (!response.ok || !payload.ok) {
+      payload = (await response.json().catch(() => ({
+        ok: false,
+        message: "ส่งคำตอบไม่สำเร็จ",
+      }))) as SubmitResult;
+    } catch {
+      payload = {
+        ok: false,
+        message: "ส่งคำตอบไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง",
+      };
+    }
+
+    if (!response?.ok || !payload.ok) {
       hasSubmittedRef.current = false;
     }
 
     setResult(payload);
     setIsSubmitting(false);
+  }
+
+  async function saveDraft({ force = false }: { force?: boolean } = {}) {
+    if (!draftTarget || submitted || part.questions.length === 0) {
+      return;
+    }
+
+    const signature = JSON.stringify(selectedChoicesRef.current);
+
+    if (!force && signature === lastSavedDraftSignatureRef.current) {
+      return;
+    }
+
+    setDraftSaveState("saving");
+
+    try {
+      const response = await fetch("/api/exams/drafts", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          targetType: draftTarget.type,
+          targetId: draftTarget.id,
+          selectedChoices: selectedChoicesRef.current,
+          durationSecondsUsed: getDurationSecondsUsed(),
+          startedAt: new Date(startedAt).toISOString(),
+        }),
+      });
+      const payload = (await response.json().catch(() => ({
+        ok: false,
+      }))) as { ok?: boolean; draft?: { lastSavedAt?: string } };
+
+      if (!response.ok || !payload.ok) {
+        throw new Error("Draft save failed");
+      }
+
+      lastSavedDraftSignatureRef.current = signature;
+      setLastDraftSavedAt(payload.draft?.lastSavedAt ?? new Date().toISOString());
+      setDraftSaveState("saved");
+    } catch {
+      setDraftSaveState("error");
+    }
+  }
+
+  function retrySubmitExam() {
+    void submitExam({ skipIncompleteConfirm: true });
   }
 
   function requestSubmitExam() {
@@ -309,6 +399,9 @@ export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps)
     setStartedAt(Date.now());
     setIsSubmitting(false);
     setIsIncompleteConfirmOpen(false);
+    setDraftSaveState("idle");
+    setLastDraftSavedAt(null);
+    lastSavedDraftSignatureRef.current = "";
     setResult(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -316,6 +409,30 @@ export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps)
   useEffect(() => {
     selectedChoicesRef.current = selectedChoices;
   }, [selectedChoices]);
+
+  useEffect(() => {
+    if (!draftTarget || submitted || Object.keys(selectedChoices).length === 0) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void saveDraft();
+    }, 1000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [draftTarget, selectedChoices, submitted]);
+
+  useEffect(() => {
+    if (!draftTarget || submitted || Object.keys(selectedChoices).length === 0) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      void saveDraft({ force: true });
+    }, 15000);
+
+    return () => window.clearInterval(intervalId);
+  }, [draftTarget, selectedChoices, submitted]);
 
   useEffect(() => {
     if (submitted || isSubmitting || part.questions.length === 0) {
@@ -378,9 +495,19 @@ export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps)
           <section className="rounded-lg border border-rose-200 bg-rose-50 p-5 text-rose-900 shadow-sm">
             <h2 className="text-xl font-black">ยังส่งคำตอบไม่ได้</h2>
             <p className="mt-2 text-sm font-semibold">{result.message ?? "กรุณาลองอีกครั้ง"}</p>
-            <Link href="/login" className="mt-4 inline-flex rounded-xl bg-rose-700 px-4 py-2 text-sm font-black text-white">
-              เข้าสู่ระบบ
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={retrySubmitExam}
+                className="inline-flex rounded-xl bg-rose-700 px-4 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isSubmitting ? "กำลังส่ง..." : "ลองส่งอีกครั้ง"}
+              </button>
+              <Link href="/login" className="inline-flex rounded-xl border border-rose-200 bg-white px-4 py-2 text-sm font-black text-rose-700">
+                เข้าสู่ระบบ
+              </Link>
+            </div>
           </section>
         ) : null}
 
@@ -502,6 +629,11 @@ export function ExamRunner({ part, initialHistory, submitUrl }: ExamRunnerProps)
           <p className="mt-3 text-sm font-semibold leading-6 text-white/70">
             ทำแล้ว {answeredCount}/{part.questions.length} ข้อ
           </p>
+          {draftTarget && !submitted ? (
+            <p className={`mt-2 text-xs font-black ${draftSaveState === "error" ? "text-rose-200" : "text-white/50"}`}>
+              {draftStatusText}
+            </p>
+          ) : null}
           {currentAttempt ? (
             <div className="mt-4 rounded-lg bg-[#ffd35a] px-3 py-3 text-[#071f4a]">
               <p className="text-xs font-black">คะแนนรอบนี้</p>

@@ -147,6 +147,18 @@ export async function POST(request: Request, { params }: RouteContext) {
       }
     }
 
+    await tx.examAttemptDraft.updateMany({
+      where: {
+        userId,
+        packagePartId: part.id,
+        status: ExamAttemptStatus.IN_PROGRESS,
+      },
+      data: {
+        status: ExamAttemptStatus.SUBMITTED,
+        submittedAt,
+      },
+    });
+
     return createdAttempt;
   });
 

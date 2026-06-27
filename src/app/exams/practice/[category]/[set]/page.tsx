@@ -6,7 +6,7 @@ import { ExamRunner } from "@/components/exams/exam-runner";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getAuthOptions } from "@/lib/auth/options";
-import { getPracticeSet, getPracticeSetAttemptHistory } from "@/server/exams/exam-data";
+import { getPracticeSet, getPracticeSetAttemptDraft, getPracticeSetAttemptHistory } from "@/server/exams/exam-data";
 
 type PracticeSetPageProps = {
   params: Promise<{ category: string; set: string }>;
@@ -46,7 +46,10 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
     notFound();
   }
 
-  const history = await getPracticeSetAttemptHistory(practiceSet.id, session.user.id);
+  const [history, draft] = await Promise.all([
+    getPracticeSetAttemptHistory(practiceSet.id, session.user.id),
+    getPracticeSetAttemptDraft(practiceSet.id, session.user.id),
+  ]);
   const runnerPart = {
     id: practiceSet.id,
     title: practiceSet.title,
@@ -92,7 +95,9 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
       <ExamRunner
         part={runnerPart}
         initialHistory={history}
+        initialDraft={draft}
         submitUrl={`/api/exams/practice-sets/${practiceSet.id}/submit`}
+        draftTarget={{ type: "practiceSet", id: practiceSet.id }}
       />
 
       <SiteFooter />

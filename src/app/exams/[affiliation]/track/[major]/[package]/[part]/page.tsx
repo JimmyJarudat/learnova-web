@@ -6,7 +6,7 @@ import { ExamRunner } from "@/components/exams/exam-runner";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getAuthOptions } from "@/lib/auth/options";
-import { getExamPackagePart, getPackagePartAttemptHistory } from "@/server/exams/exam-data";
+import { getExamPackagePart, getPackagePartAttemptDraft, getPackagePartAttemptHistory } from "@/server/exams/exam-data";
 
 type TrackPartPageProps = {
   params: Promise<{ affiliation: string; major: string; package: string; part: string }>;
@@ -46,7 +46,10 @@ export default async function TrackPartPage({ params }: TrackPartPageProps) {
     notFound();
   }
 
-  const history = await getPackagePartAttemptHistory(part.id, session.user.id);
+  const [history, draft] = await Promise.all([
+    getPackagePartAttemptHistory(part.id, session.user.id),
+    getPackagePartAttemptDraft(part.id, session.user.id),
+  ]);
 
   return (
     <main className="min-h-screen bg-[#eef2f7] text-slate-950">
@@ -80,7 +83,12 @@ export default async function TrackPartPage({ params }: TrackPartPageProps) {
         </div>
       </section>
 
-      <ExamRunner part={part} initialHistory={history} />
+      <ExamRunner
+        part={part}
+        initialHistory={history}
+        initialDraft={draft}
+        draftTarget={{ type: "packagePart", id: part.id }}
+      />
 
       <SiteFooter />
     </main>
