@@ -80,6 +80,64 @@ async function createExamTrack(formData: FormData) {
   revalidatePath("/exams");
 }
 
+async function updateExamTrack(formData: FormData) {
+  "use server";
+
+  const trackId = String(formData.get("trackId") ?? "");
+  const majorId = String(formData.get("majorId") ?? "");
+  const majorName = String(formData.get("majorName") ?? "").trim();
+  const majorShortName = String(formData.get("majorShortName") ?? "").trim();
+  const majorSlug = slugify(String(formData.get("majorSlug") ?? "") || majorName);
+  const trackTitle = String(formData.get("trackTitle") ?? "").trim();
+  const sortOrder = Number(formData.get("sortOrder") ?? 0);
+
+  if (!trackId || !majorId || !majorName || !majorSlug) {
+    throw new Error("กรุณากรอกข้อมูลสนามสอบให้ครบ");
+  }
+
+  await prisma.$transaction([
+    prisma.examMajor.update({
+      where: { id: majorId },
+      data: {
+        name: majorName,
+        shortName: majorShortName || majorName,
+        slug: majorSlug,
+      },
+    }),
+    prisma.examTrack.update({
+      where: { id: trackId },
+      data: {
+        slug: majorSlug,
+        title: trackTitle || majorShortName || majorName,
+        sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
+      },
+    }),
+  ]);
+
+  revalidatePath("/admin/exams/tracks");
+  revalidatePath("/admin/exams/simulations");
+  revalidatePath("/exams");
+}
+
+async function deleteExamTrack(formData: FormData) {
+  "use server";
+
+  const trackId = String(formData.get("trackId") ?? "");
+
+  if (!trackId) {
+    throw new Error("ไม่พบสนามสอบที่ต้องการลบ");
+  }
+
+  await prisma.examTrack.update({
+    where: { id: trackId },
+    data: { isActive: false },
+  });
+
+  revalidatePath("/admin/exams/tracks");
+  revalidatePath("/admin/exams/simulations");
+  revalidatePath("/exams");
+}
+
 export default async function AdminExamTracksPage() {
   const affiliations = await prisma.examAffiliation.findMany({
     where: { isActive: true },
@@ -137,10 +195,49 @@ export default async function AdminExamTracksPage() {
               <p className="text-lg font-black text-[#071f4a]">{affiliation.label}</p>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 {affiliation.tracks.map((track) => (
-                  <div key={track.id} className="rounded-md border border-slate-200 bg-slate-50 p-4">
-                    <p className="font-black text-[#071f4a]">{track.major.shortName ?? track.major.name}</p>
-                    <p className="mt-1 text-xs font-semibold text-slate-500">{track.major.slug}</p>
-                  </div>
+                  <details key={track.id} className="rounded-md border border-[#d8e9ff] bg-[#f7fbff] p-4">
+                    <summary className="cursor-pointer list-none">
+                      <p className="font-black text-[#064c9b]">{track.major.shortName ?? track.major.name}</p>
+                      <p className="mt-1 text-xs font-semibold text-slate-500">
+                        {track.major.slug} | ลำดับ {track.sortOrder}
+                      </p>
+                    </summary>
+                    <div className="mt-4 space-y-3">
+                      <form action={updateExamTrack} className="grid gap-3">
+                        <input type="hidden" name="trackId" value={track.id} />
+                        <input type="hidden" name="majorId" value={track.major.id} />
+                        <label className="block">
+                          <span className="text-xs font-black text-slate-600">ชื่อเอก</span>
+                          <input name="majorName" defaultValue={track.major.name} required className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                        </label>
+                        <label className="block">
+                          <span className="text-xs font-black text-slate-600">ชื่อสั้น</span>
+                          <input name="majorShortName" defaultValue={track.major.shortName ?? ""} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                        </label>
+                        <label className="block">
+                          <span className="text-xs font-black text-slate-600">Slug เอก</span>
+                          <input name="majorSlug" defaultValue={track.major.slug} required className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                        </label>
+                        <label className="block">
+                          <span className="text-xs font-black text-slate-600">ชื่อสนาม</span>
+                          <input name="trackTitle" defaultValue={track.title} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                        </label>
+                        <label className="block">
+                          <span className="text-xs font-black text-slate-600">ลำดับ</span>
+                          <input name="sortOrder" type="number" defaultValue={track.sortOrder} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                        </label>
+                        <button className="rounded-lg bg-[#0759b8] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+                          บันทึก
+                        </button>
+                      </form>
+                      <form action={deleteExamTrack}>
+                        <input type="hidden" name="trackId" value={track.id} />
+                        <button className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
+                          ลบสนามนี้
+                        </button>
+                      </form>
+                    </div>
+                  </details>
                 ))}
               </div>
             </div>

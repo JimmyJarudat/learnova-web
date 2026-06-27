@@ -21,13 +21,13 @@ export function ExamSidebar({ adminLabel, items }: ExamSidebarProps) {
   const isExamActive = pathname.startsWith("/admin/exams");
 
   return (
-    <aside className="border-b border-slate-200 bg-white lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-r">
-      <div className="flex min-h-16 items-center gap-3 border-b border-slate-100 px-4">
-        <Link href="/admin/exams/practice-sets" className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#071f4a] text-sm font-black text-[#ffd35a]">
+    <aside className="border-b border-[#cfe5ff] bg-white lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-r">
+      <div className="flex min-h-16 items-center gap-3 border-b border-[#d8e9ff] px-4">
+        <Link href="/admin/exams" className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#0759b8] text-sm font-black text-white">
           LN
         </Link>
         <div className="min-w-0">
-          <p className="truncate text-sm font-black text-[#071f4a]">Admin</p>
+          <p className="truncate text-sm font-black text-[#064c9b]">Admin</p>
           <p className="truncate text-xs font-semibold text-slate-500">{adminLabel}</p>
         </div>
       </div>
@@ -37,7 +37,7 @@ export function ExamSidebar({ adminLabel, items }: ExamSidebarProps) {
           type="button"
           onClick={() => setIsExamOpen((current) => !current)}
           className={`flex w-full items-center justify-between rounded-md px-3 py-3 text-left transition ${
-            isExamActive ? "bg-[#eef6ff] text-[#071f4a]" : "text-slate-700 hover:bg-[#eef6ff] hover:text-[#071f4a]"
+            isExamActive ? "bg-[#eef6ff] text-[#064c9b]" : "text-slate-700 hover:bg-[#eef6ff] hover:text-[#064c9b]"
           }`}
           aria-expanded={isExamOpen}
         >
@@ -49,7 +49,7 @@ export function ExamSidebar({ adminLabel, items }: ExamSidebarProps) {
         </button>
 
         {isExamOpen ? (
-          <div className="ml-4 mt-1 space-y-1 border-l border-slate-200 pl-3">
+          <div className="ml-4 mt-1 space-y-1 border-l border-[#cfe5ff] pl-3">
             {items.map((item) => {
               const isActive = pathname === item.href;
 
@@ -58,7 +58,7 @@ export function ExamSidebar({ adminLabel, items }: ExamSidebarProps) {
                   key={item.href}
                   href={item.href}
                   className={`block rounded-md px-3 py-2.5 transition ${
-                    isActive ? "bg-[#eef6ff] text-[#071f4a]" : "text-slate-700 hover:bg-[#eef6ff] hover:text-[#071f4a]"
+                    isActive ? "bg-[#dff0ff] text-[#064c9b]" : "text-slate-700 hover:bg-[#eef6ff] hover:text-[#064c9b]"
                   }`}
                 >
                   <span className="block text-sm font-black">{item.label}</span>
@@ -70,8 +70,8 @@ export function ExamSidebar({ adminLabel, items }: ExamSidebarProps) {
         ) : null}
       </nav>
 
-      <div className="mt-auto border-t border-slate-100 p-3 lg:absolute lg:bottom-0 lg:left-0 lg:right-0">
-        <Link href="/exams" className="block rounded-lg border border-slate-200 px-4 py-3 text-center text-sm font-black text-slate-700 transition hover:border-[#0b66c3] hover:text-[#0b66c3]">
+      <div className="mt-auto border-t border-[#d8e9ff] p-3 lg:absolute lg:bottom-0 lg:left-0 lg:right-0">
+        <Link href="/exams" className="block rounded-lg border border-[#cfe5ff] px-4 py-3 text-center text-sm font-black text-[#064c9b] transition hover:border-[#0b66c3] hover:bg-[#eef6ff]">
           เปิดหน้า Exam
         </Link>
       </div>

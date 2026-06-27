@@ -79,6 +79,34 @@ async function deletePracticeCategory(formData: FormData) {
   revalidatePath("/exams");
 }
 
+async function updatePracticeCategory(formData: FormData) {
+  "use server";
+
+  const categoryId = String(formData.get("categoryId") ?? "");
+  const title = String(formData.get("title") ?? "").trim();
+  const shortTitle = String(formData.get("shortTitle") ?? "").trim();
+  const slug = slugify(String(formData.get("slug") ?? "") || title);
+  const sortOrder = Number(formData.get("sortOrder") ?? 0);
+
+  if (!categoryId || !title || !slug) {
+    throw new Error("กรุณากรอกข้อมูลหมวดให้ครบ");
+  }
+
+  await prisma.practiceCategory.update({
+    where: { id: categoryId },
+    data: {
+      title,
+      shortTitle: shortTitle || title,
+      slug,
+      sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
+    },
+  });
+
+  revalidatePath("/admin/exams/categories");
+  revalidatePath("/admin/exams/practice-sets");
+  revalidatePath("/exams");
+}
+
 export default async function AdminExamCategoriesPage() {
   const categories = await prisma.practiceCategory.findMany({
     where: { isActive: true },
@@ -118,20 +146,51 @@ export default async function AdminExamCategoriesPage() {
         </div>
         <div className="divide-y divide-slate-100">
           {categories.map((category) => (
-            <div key={category.id} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-black text-[#071f4a]">{category.title}</p>
-                <p className="mt-1 text-sm font-semibold text-slate-500">
-                  {category.slug} | {category._count.sets} ชุด
-                </p>
+            <details key={category.id} className="group p-5">
+              <summary className="flex cursor-pointer list-none flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-black text-[#064c9b]">{category.title}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-500">
+                    {category.slug} | {category._count.sets} ชุด | ลำดับ {category.sortOrder}
+                  </p>
+                </div>
+                <span className="rounded-lg border border-[#cfe5ff] bg-[#eef6ff] px-4 py-2 text-center text-sm font-black text-[#0b66c3]">
+                  แก้ไข
+                </span>
+              </summary>
+              <div className="mt-5 rounded-xl border border-[#d8e9ff] bg-[#f7fbff] p-4">
+                <form action={updatePracticeCategory} className="grid gap-3 lg:grid-cols-4">
+                  <input type="hidden" name="categoryId" value={category.id} />
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ชื่อหมวด</span>
+                    <input name="title" defaultValue={category.title} required className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ชื่อสั้น</span>
+                    <input name="shortTitle" defaultValue={category.shortTitle ?? ""} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">Slug</span>
+                    <input name="slug" defaultValue={category.slug} required className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ลำดับ</span>
+                    <input name="sortOrder" type="number" defaultValue={category.sortOrder} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <div className="flex flex-wrap gap-2 lg:col-span-4">
+                    <button className="rounded-lg bg-[#0759b8] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+                      บันทึก
+                    </button>
+                  </div>
+                </form>
+                <form action={deletePracticeCategory} className="mt-3">
+                  <input type="hidden" name="categoryId" value={category.id} />
+                  <button className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
+                    ลบหมวดนี้
+                  </button>
+                </form>
               </div>
-              <form action={deletePracticeCategory}>
-                <input type="hidden" name="categoryId" value={category.id} />
-                <button className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
-                  ลบ
-                </button>
-              </form>
-            </div>
+            </details>
           ))}
         </div>
       </section>

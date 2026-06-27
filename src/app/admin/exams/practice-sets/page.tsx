@@ -114,6 +114,44 @@ async function deletePracticeSet(formData: FormData) {
   revalidatePath("/exams");
 }
 
+async function updatePracticeSet(formData: FormData) {
+  "use server";
+
+  const setId = String(formData.get("setId") ?? "");
+  const categoryId = String(formData.get("categoryId") ?? "");
+  const kind = getPracticeSetKind(formData.get("kind"));
+  const title = String(formData.get("title") ?? "").trim();
+  const slug = slugify(String(formData.get("slug") ?? "") || title);
+  const yearLabel = String(formData.get("yearLabel") ?? "").trim();
+  const scopeLabel = String(formData.get("scopeLabel") ?? "").trim();
+  const durationMinutes = Number(formData.get("durationMinutes") ?? 120);
+  const difficulty = String(formData.get("difficulty") ?? "").trim();
+  const sortOrder = Number(formData.get("sortOrder") ?? 20);
+
+  if (!setId || !categoryId || !title || !slug) {
+    throw new Error("กรุณากรอกข้อมูลชุดคลังฝึกให้ครบ");
+  }
+
+  await prisma.practiceSet.update({
+    where: { id: setId },
+    data: {
+      categoryId,
+      kind,
+      title,
+      slug,
+      yearLabel: yearLabel || null,
+      scopeLabel: scopeLabel || "ใช้ร่วมหลายสังกัด",
+      durationMinutes: Number.isFinite(durationMinutes) ? durationMinutes : 120,
+      difficulty: difficulty || null,
+      sortOrder: Number.isFinite(sortOrder) ? sortOrder : 20,
+    },
+  });
+
+  revalidatePath("/admin/exams/practice-sets");
+  revalidatePath("/admin/exams/questions");
+  revalidatePath("/exams");
+}
+
 export default async function AdminExamPracticeSetsPage() {
   const [categories, practiceSets] = await Promise.all([
     prisma.practiceCategory.findMany({
@@ -189,26 +227,89 @@ export default async function AdminExamPracticeSetsPage() {
         </div>
         <div className="divide-y divide-slate-100">
           {practiceSets.map((set) => (
-            <div key={set.id} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <details key={set.id} className="p-5">
+              <summary className="flex cursor-pointer list-none flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs font-black text-[#0b66c3]">{set.category.title}</p>
-                <p className="font-black text-[#071f4a]">{set.title}</p>
+                <p className="font-black text-[#064c9b]">{set.title}</p>
                 <p className="mt-1 text-sm font-semibold text-slate-500">
                   {getPracticeSetKindLabel(set.kind)} | {set.kind === ExamPartKind.PART_C_INTERVIEW ? "ไม่เกิน 10 คำถาม" : `${set._count.items} ข้อ`} | {set.durationMinutes} นาที
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
+                <span className="rounded-lg border border-[#cfe5ff] bg-[#eef6ff] px-4 py-2 text-sm font-black text-[#0b66c3]">
+                  แก้ไข
+                </span>
                 <Link href={`/exams/practice/${set.category.slug}/${set.slug}`} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-black text-[#0b66c3] transition hover:bg-[#eef6ff]">
                   ดูหน้าเว็บ
                 </Link>
-                <form action={deletePracticeSet}>
+              </div>
+              </summary>
+              <div className="mt-5 rounded-xl border border-[#d8e9ff] bg-[#f7fbff] p-4">
+                <form action={updatePracticeSet} className="grid gap-3 lg:grid-cols-3">
+                  <input type="hidden" name="setId" value={set.id} />
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">หมวด</span>
+                    <select name="categoryId" defaultValue={set.categoryId} required className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-[#0b66c3]">
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.title}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ประเภทชุด</span>
+                    <select name="kind" defaultValue={set.kind} required className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-[#0b66c3]">
+                      {practiceSetKindOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ชื่อชุด</span>
+                    <input name="title" defaultValue={set.title} required className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">Slug</span>
+                    <input name="slug" defaultValue={set.slug} required className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ปี</span>
+                    <input name="yearLabel" defaultValue={set.yearLabel ?? ""} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ขอบเขต</span>
+                    <input name="scopeLabel" defaultValue={set.scopeLabel ?? ""} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">เวลา นาที</span>
+                    <input name="durationMinutes" type="number" defaultValue={set.durationMinutes} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ระดับ</span>
+                    <input name="difficulty" defaultValue={set.difficulty ?? ""} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-black text-slate-600">ลำดับ</span>
+                    <input name="sortOrder" type="number" defaultValue={set.sortOrder} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
+                  </label>
+                  <div className="flex flex-wrap gap-2 lg:col-span-3">
+                    <button className="rounded-lg bg-[#0759b8] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+                      บันทึก
+                    </button>
+                  </div>
+                </form>
+                <form action={deletePracticeSet} className="mt-3">
                   <input type="hidden" name="setId" value={set.id} />
                   <button className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
-                    ลบ
+                    ลบชุดนี้
                   </button>
                 </form>
               </div>
-            </div>
+            </details>
           ))}
         </div>
       </section>
