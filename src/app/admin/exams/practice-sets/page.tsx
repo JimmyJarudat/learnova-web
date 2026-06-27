@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
+import { ExamPartKind } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
 
 export const metadata = {
@@ -16,10 +17,46 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+const practiceSetKindOptions = [
+  {
+    value: ExamPartKind.PART_A_GENERAL,
+    label: "ภาค ก / ข้อสอบปรนัย",
+    description: "ใช้ ExamRunner สำหรับข้อสอบแบบมีตัวเลือกและเฉลย",
+  },
+  {
+    value: ExamPartKind.PART_B_PROFESSION,
+    label: "ภาค ข วิชาชีพ / ข้อสอบปรนัย",
+    description: "ใช้กับกฎหมาย การศึกษา หรือความรู้วิชาชีพครู",
+  },
+  {
+    value: ExamPartKind.PART_B_MAJOR,
+    label: "ภาค ข เอกวิชา / ข้อสอบปรนัย",
+    description: "ใช้กับชุดฝึกเฉพาะเอก เช่น คอมพิวเตอร์ คณิตศาสตร์ ภาษาอังกฤษ",
+  },
+  {
+    value: ExamPartKind.PART_C_INTERVIEW,
+    label: "ภาค ค / สัมภาษณ์",
+    description: "ใช้ InterviewCoach สำหรับซ้อมตอบสัมภาษณ์และให้ AI ประเมิน",
+  },
+] as const;
+
+function getPracticeSetKind(value: FormDataEntryValue | null) {
+  const kind = String(value ?? "");
+
+  return practiceSetKindOptions.some((option) => option.value === kind)
+    ? (kind as ExamPartKind)
+    : ExamPartKind.PART_A_GENERAL;
+}
+
+function getPracticeSetKindLabel(kind: ExamPartKind) {
+  return practiceSetKindOptions.find((option) => option.value === kind)?.label ?? "ข้อสอบปรนัย";
+}
+
 async function createPracticeSet(formData: FormData) {
   "use server";
 
   const categoryId = String(formData.get("categoryId") ?? "");
+  const kind = getPracticeSetKind(formData.get("kind"));
   const title = String(formData.get("title") ?? "").trim();
   const yearLabel = String(formData.get("yearLabel") ?? "").trim();
   const slug = slugify(String(formData.get("slug") ?? "") || title);
@@ -38,6 +75,7 @@ async function createPracticeSet(formData: FormData) {
   await prisma.practiceSet.create({
     data: {
       categoryId: category.id,
+      kind,
       slug,
       title,
       scopeLabel: "ใช้ร่วมหลายสังกัด",
@@ -109,6 +147,19 @@ export default async function AdminExamPracticeSetsPage() {
             </select>
           </label>
           <label className="block">
+            <span className="text-sm font-black text-slate-700">ประเภทชุด</span>
+            <select name="kind" required className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-700 outline-none focus:border-[#0b66c3]">
+              {practiceSetKindOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-2 text-xs font-semibold leading-5 text-slate-500">
+              เลือกภาค ค เมื่อต้องการให้หน้าเว็บเปิดเป็นระบบสัมภาษณ์ ไม่ใช่หน้าทำข้อสอบ
+            </p>
+          </label>
+          <label className="block">
             <span className="text-sm font-black text-slate-700">ชื่อชุด</span>
             <input name="title" required className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 text-sm font-semibold outline-none focus:border-[#0b66c3]" placeholder="ภาค ข กฎหมายการศึกษา ปี 2567 ชุดที่ 1" />
           </label>
@@ -142,7 +193,9 @@ export default async function AdminExamPracticeSetsPage() {
               <div>
                 <p className="text-xs font-black text-[#0b66c3]">{set.category.title}</p>
                 <p className="font-black text-[#071f4a]">{set.title}</p>
-                <p className="mt-1 text-sm font-semibold text-slate-500">{set._count.items} ข้อ | {set.durationMinutes} นาที</p>
+                <p className="mt-1 text-sm font-semibold text-slate-500">
+                  {getPracticeSetKindLabel(set.kind)} | {set.kind === ExamPartKind.PART_C_INTERVIEW ? "ไม่เกิน 10 คำถาม" : `${set._count.items} ข้อ`} | {set.durationMinutes} นาที
+                </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Link href={`/exams/practice/${set.category.slug}/${set.slug}`} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-black text-[#0b66c3] transition hover:bg-[#eef6ff]">
