@@ -43,8 +43,9 @@ export default async function AllExamsPage() {
         badges: [category.shortTitle, set.scopeLabel, set.yearLabel].filter(Boolean),
         primaryMeta: `${set.totalQuestions} ข้อ`,
         secondaryMeta: `${set.durationMinutes} นาที`,
-        actionLabel: "เริ่มทำ",
+        actionLabel: set.draft ? "ทำต่อ" : set.history?.attemptCount ? "เริ่มใหม่" : "เริ่มทำ",
         history: set.history,
+        draft: set.draft,
       })),
     ),
     ...packages.flatMap((pack) =>
@@ -57,8 +58,9 @@ export default async function AllExamsPage() {
       badges: [pack.affiliationLabel, pack.majorShortName, pack.year, pack.label].filter(Boolean),
       primaryMeta: `${part.totalQuestions} ข้อ`,
       secondaryMeta: `${part.durationMinutes} นาที`,
-      actionLabel: "เริ่มทำ",
+      actionLabel: part.draft ? "ทำต่อ" : part.history?.attemptCount ? "เริ่มใหม่" : "เริ่มทำ",
       history: part.history,
+      draft: part.draft,
       })),
     ),
   ];
@@ -137,15 +139,22 @@ export default async function AllExamsPage() {
                         {badge}
                       </span>
                     ))}
+                    {item.draft ? (
+                      <span className="rounded-full bg-[#eaf4ff] px-3 py-1 text-xs font-black text-[#0b66c3]">มีคำตอบค้าง</span>
+                    ) : null}
                   </div>
                   <h3 className="mt-3 text-lg font-black leading-7 text-[#071f4a]">{item.title}</h3>
                   <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">{item.description}</p>
                 </div>
                 <span className="text-sm font-black text-[#0b66c3]">{item.primaryMeta}</span>
                 <span className="text-sm font-semibold text-slate-600">{item.secondaryMeta}</span>
-                {item.history?.bestAttempt ? (
+                {item.draft ? (
+                  <span className="rounded-full bg-[#eaf4ff] px-3 py-1 text-center text-xs font-black text-[#0b66c3]">
+                    ทำต่อ {Object.keys(item.draft.selectedChoices).length} ข้อ
+                  </span>
+                ) : item.history?.bestAttempt ? (
                   <span className="rounded-full bg-emerald-50 px-3 py-1 text-center text-xs font-black text-emerald-700">
-                    สูงสุด {item.history.bestAttempt.score}/{item.history.bestAttempt.maxScore}
+                    สูงสุด {item.history.bestAttempt.score}/{item.history.bestAttempt.maxScore} ({item.history.attemptCount} ครั้ง)
                   </span>
                 ) : session?.user?.id ? (
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">ยังไม่เคยทำ</span>

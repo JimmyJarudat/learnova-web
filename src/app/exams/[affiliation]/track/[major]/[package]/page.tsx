@@ -62,7 +62,11 @@ export default async function ExamPackagePage({ params }: PackagePageProps) {
         </div>
 
         <div className="space-y-4">
-          {pack.parts.map((part) => (
+          {pack.parts.map((part) => {
+            const draftAnsweredCount = part.draft ? Object.keys(part.draft.selectedChoices).length : 0;
+            const actionLabel = part.draft ? "ทำต่อ" : part.history?.attemptCount ? "เริ่มใหม่" : "เริ่มทำ";
+
+            return (
             <Link
               key={part.slug}
               href={`/exams/${pack.affiliation.slug}/track/${pack.major.slug}/${pack.slug}/${part.slug}`}
@@ -73,6 +77,9 @@ export default async function ExamPackagePage({ params }: PackagePageProps) {
                   <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{part.shortTitle}</span>
                   <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{part.audienceLabel}</span>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{part.difficulty}</span>
+                  {part.draft ? (
+                    <span className="rounded-full bg-[#eaf4ff] px-3 py-1 text-xs font-black text-[#0b66c3]">มีคำตอบค้าง</span>
+                  ) : null}
                 </div>
                 <h3 className="mt-3 text-2xl font-black text-[#071f4a] group-hover:text-[#0b66c3]">{part.title}</h3>
                 <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{part.description}</p>
@@ -90,7 +97,15 @@ export default async function ExamPackagePage({ params }: PackagePageProps) {
               </div>
 
               <div className="lg:text-right">
-                {part.history?.bestAttempt ? (
+                {part.draft ? (
+                  <div className="rounded-lg bg-[#eaf4ff] px-3 py-2 text-[#0b66c3]">
+                    <p className="text-xs font-black">ทำต่อจากครั้งก่อน</p>
+                    <p className="mt-1 text-lg font-black">
+                      {draftAnsweredCount}/{part.totalQuestions} ข้อ
+                    </p>
+                    <p className="text-xs font-semibold">ทำแล้ว {part.history?.attemptCount ?? 0} ครั้ง</p>
+                  </div>
+                ) : part.history?.bestAttempt ? (
                   <div className="rounded-lg bg-emerald-50 px-3 py-2 text-emerald-900">
                     <p className="text-xs font-black">คะแนนสูงสุด</p>
                     <p className="mt-1 text-lg font-black">
@@ -107,10 +122,11 @@ export default async function ExamPackagePage({ params }: PackagePageProps) {
                     <p className="text-xs font-black">เข้าสู่ระบบเพื่อเก็บคะแนน</p>
                   </div>
                 )}
-                <p className="mt-3 text-sm font-black text-[#0b66c3]">เริ่มทำภาคนี้ →</p>
+                <p className="mt-3 text-sm font-black text-[#0b66c3]">{actionLabel} →</p>
               </div>
             </Link>
-          ))}
+          );
+          })}
         </div>
       </section>
 

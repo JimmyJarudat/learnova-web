@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { getAuthOptions } from "@/lib/auth/options";
 import { getPracticeCategory } from "@/server/exams/exam-data";
 
 type PracticeCategoryPageProps = {
@@ -30,7 +32,8 @@ export async function generateMetadata({ params }: PracticeCategoryPageProps): P
 
 export default async function PracticeCategoryPage({ params }: PracticeCategoryPageProps) {
   const { category: categorySlug } = await params;
-  const category = await getPracticeCategory(categorySlug);
+  const session = await getServerSession(await getAuthOptions());
+  const category = await getPracticeCategory(categorySlug, session?.user?.id);
 
   if (!category) {
     notFound();
@@ -70,27 +73,54 @@ export default async function PracticeCategoryPage({ params }: PracticeCategoryP
         </div>
 
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          {category.sets.map((set) => (
+          {category.sets.map((set) => {
+            const draftAnsweredCount = set.draft ? Object.keys(set.draft.selectedChoices).length : 0;
+            const actionLabel = set.draft ? "ทำต่อ" : set.history?.attemptCount ? "เริ่มใหม่" : "เริ่มทำ";
+
+            return (
             <Link
               key={set.slug}
               href={`/exams/practice/${category.slug}/${set.slug}`}
-              className="grid gap-4 border-b border-slate-100 p-5 transition last:border-b-0 hover:bg-slate-50 lg:grid-cols-[1fr_120px_110px_110px_110px] lg:items-center"
+              className="grid gap-4 border-b border-slate-100 p-5 transition last:border-b-0 hover:bg-slate-50 lg:grid-cols-[1fr_120px_110px_180px_110px] lg:items-center"
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{category.shortTitle}</span>
                   <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{set.scopeLabel}</span>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{set.yearLabel}</span>
+                  {set.draft ? (
+                    <span className="rounded-full bg-[#eaf4ff] px-3 py-1 text-xs font-black text-[#0b66c3]">มีคำตอบค้าง</span>
+                  ) : null}
                 </div>
                 <h3 className="mt-3 text-lg font-black leading-7 text-[#071f4a]">{set.title}</h3>
                 <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">{set.description}</p>
               </div>
               <span className="text-sm font-black text-[#0b66c3]">{set.totalQuestions} ข้อ</span>
               <span className="text-sm font-semibold text-slate-600">{set.durationMinutes} นาที</span>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">{set.difficulty}</span>
-              <span className="text-sm font-black text-[#0b66c3] lg:text-right">เริ่มทำ →</span>
+              <div className="rounded-lg bg-slate-50 px-3 py-2 text-xs font-black text-slate-600">
+                {set.draft ? (
+                  <>
+                    <p className="text-[#0b66c3]">ทำต่อ {draftAnsweredCount}/{set.totalQuestions} ข้อ</p>
+                    <p className="mt-1 text-slate-500">ทำแล้ว {set.history?.attemptCount ?? 0} ครั้ง</p>
+                  </>
+                ) : set.history?.bestAttempt ? (
+                  <>
+                    <p className="text-emerald-700">สูงสุด {set.history.bestAttempt.score}/{set.history.bestAttempt.maxScore}</p>
+                    <p className="mt-1 text-slate-500">ทำแล้ว {set.history.attemptCount} ครั้ง</p>
+                  </>
+                ) : session?.user?.id ? (
+                  <>
+                    <p>ยังไม่เคยทำ</p>
+                    <p className="mt-1 text-slate-500">คะแนนสูงสุด -</p>
+                  </>
+                ) : (
+                  <p>เข้าสู่ระบบเพื่อเก็บคะแนน</p>
+                )}
+              </div>
+              <span className="text-sm font-black text-[#0b66c3] lg:text-right">{actionLabel} →</span>
             </Link>
-          ))}
+          );
+          })}
         </div>
       </section>
 

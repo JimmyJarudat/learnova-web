@@ -73,7 +73,11 @@ export default async function PracticeSetsPage() {
             </div>
 
             <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-              {category.sets.map((set) => (
+              {category.sets.map((set) => {
+                const draftAnsweredCount = set.draft ? Object.keys(set.draft.selectedChoices).length : 0;
+                const actionLabel = set.draft ? "ทำต่อ" : set.history?.attemptCount ? "เริ่มใหม่" : "เริ่มทำ";
+
+                return (
                 <Link
                   key={set.slug}
                   href={`/exams/practice/${category.slug}/${set.slug}`}
@@ -84,24 +88,32 @@ export default async function PracticeSetsPage() {
                       <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{category.shortTitle}</span>
                       <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{set.scopeLabel}</span>
                       <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{set.yearLabel}</span>
+                      {set.draft ? (
+                        <span className="rounded-full bg-[#eaf4ff] px-3 py-1 text-xs font-black text-[#0b66c3]">มีคำตอบค้าง</span>
+                      ) : null}
                     </div>
                     <h3 className="mt-3 text-lg font-black leading-7 text-[#071f4a]">{set.title}</h3>
                     <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">{set.description}</p>
                   </div>
                   <span className="text-sm font-black text-[#0b66c3]">{set.totalQuestions} ข้อ</span>
                   <span className="text-sm font-semibold text-slate-600">{set.durationMinutes} นาที</span>
-                  {set.history?.bestAttempt ? (
+                  {set.draft ? (
+                    <span className="rounded-full bg-[#eaf4ff] px-3 py-1 text-center text-xs font-black text-[#0b66c3]">
+                      ทำต่อ {draftAnsweredCount}/{set.totalQuestions} ข้อ
+                    </span>
+                  ) : set.history?.bestAttempt ? (
                     <span className="rounded-full bg-emerald-50 px-3 py-1 text-center text-xs font-black text-emerald-700">
-                      สูงสุด {set.history.bestAttempt.score}/{set.history.bestAttempt.maxScore}
+                      สูงสุด {set.history.bestAttempt.score}/{set.history.bestAttempt.maxScore} ({set.history.attemptCount} ครั้ง)
                     </span>
                   ) : session?.user?.id ? (
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">ยังไม่เคยทำ</span>
                   ) : (
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">เข้าสู่ระบบเพื่อเก็บคะแนน</span>
                   )}
-                  <span className="text-sm font-black text-[#0b66c3] lg:text-right">เริ่มทำ →</span>
+                  <span className="text-sm font-black text-[#0b66c3] lg:text-right">{actionLabel} →</span>
                 </Link>
-              ))}
+              );
+              })}
             </div>
           </div>
         ))}
