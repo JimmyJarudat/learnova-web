@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { ExamAttemptStatus } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
-import { getAuthOptions } from "@/lib/auth/options";
+import { authOptions } from "@/lib/auth/options";
 import { normalizeDraftSelectedChoices, readDraftSelectedChoices } from "@/server/exams/draft-payload";
 
 type DraftTargetType = "packagePart" | "practiceSet";
@@ -79,7 +79,7 @@ async function getValidChoicesByQuestionId(target: { targetType: DraftTargetType
 }
 
 export async function GET(request: Request) {
-  const session = await getServerSession(await getAuthOptions());
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     return NextResponse.json({ ok: false, message: "กรุณาเข้าสู่ระบบ" }, { status: 401 });
@@ -110,70 +110,90 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const session = await getServerSession(await getAuthOptions());
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     return NextResponse.json({ ok: false, message: "กรุณาเข้าสู่ระบบ" }, { status: 401 });
   }
 
-  const body = (await request.json().catch(() => ({}))) as DraftRequestBody;
+  try {
+    const body = (await request.json().catch(() => ({}))) as DraftRequestBody;
 
-  if ((body.targetType !== "packagePart" && body.targetType !== "practiceSet") || !body.targetId) {
-    return NextResponse.json({ ok: false, message: "ข้อมูลชุดข้อสอบไม่ถูกต้อง" }, { status: 400 });
+    if ((body.targetType !== "packagePart" && body.targetType !== "practiceSet") || !body.targetId) {
+      return NextResponse.json({ ok: false, message: "ข้อมูลชุดข้อสอบไม่ถูกต้อง" }, { status: 400 });
+    }
+
+    const target = { targetType: body.targetType, targetId: body.targetId };
+    const validChoicesByQuestionId = await getValidChoicesByQuestionId(target);
+
+    if (validChoicesByQuestionId.size === 0) {
+      return NextResponse.json({ ok: false, message: "ไม่พบข้อสอบสำหรับบันทึกฉบับร่าง" }, { status: 404 });
+    }
+
+    const selectedChoices = normalizeDraftSelectedChoices(body.selectedChoices, validChoicesByQuestionId);
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 1000 * 60 * 60 * 24 * 14);
+    const data = {
+      status: ExamAttemptStatus.IN_PROGRESS,
+      answersJson: { selectedChoices },
+      durationSecondsUsed: getDurationSecondsUsed(body.durationSecondsUsed),
+      lastSavedAt: now,
+      expiresAt,
+    };
+
+    const draft =
+      target.targetType === "packagePart"
+        ? await prisma.examAttemptDraft.upsert({
+            where: {
+              userId_packagePartId: {
+                userId: session.user.id,
+                packagePartId: target.targetId,
+              },
+            },
+            update: data,
+            create: {
+              ...data,
+              userId: session.user.id,
+              packagePartId: target.targetId,
+              practiceSetId: null,
+              startedAt: getValidStartedAt(body.startedAt),
+            },
+          })
+        : await prisma.examAttemptDraft.upsert({
+            where: {
+              userId_practiceSetId: {
+                userId: session.user.id,
+                practiceSetId: target.targetId,
+              },
+            },
+            update: data,
+            create: {
+              ...data,
+              userId: session.user.id,
+              packagePartId: null,
+              practiceSetId: target.targetId,
+              startedAt: getValidStartedAt(body.startedAt),
+            },
+          });
+
+    return NextResponse.json({
+      ok: true,
+      draft: {
+        id: draft.id,
+        selectedChoices,
+        startedAt: draft.startedAt.toISOString(),
+        durationSecondsUsed: draft.durationSecondsUsed,
+        lastSavedAt: draft.lastSavedAt.toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error("[exam-drafts] save failed", error);
+    return NextResponse.json({ ok: false, message: "บันทึกคำตอบไม่สำเร็จ" }, { status: 500 });
   }
-
-  const target = { targetType: body.targetType, targetId: body.targetId };
-  const validChoicesByQuestionId = await getValidChoicesByQuestionId(target);
-
-  if (validChoicesByQuestionId.size === 0) {
-    return NextResponse.json({ ok: false, message: "ไม่พบข้อสอบสำหรับบันทึกฉบับร่าง" }, { status: 404 });
-  }
-
-  const selectedChoices = normalizeDraftSelectedChoices(body.selectedChoices, validChoicesByQuestionId);
-  const now = new Date();
-  const expiresAt = new Date(now.getTime() + 1000 * 60 * 60 * 24 * 14);
-  const existingDraft = await prisma.examAttemptDraft.findFirst({
-    where: getDraftWhere(session.user.id, target),
-    select: { id: true },
-  });
-
-  const data = {
-    status: ExamAttemptStatus.IN_PROGRESS,
-    answersJson: { selectedChoices },
-    durationSecondsUsed: getDurationSecondsUsed(body.durationSecondsUsed),
-    lastSavedAt: now,
-    expiresAt,
-  };
-
-  const draft = existingDraft
-    ? await prisma.examAttemptDraft.update({
-        where: { id: existingDraft.id },
-        data,
-      })
-    : await prisma.examAttemptDraft.create({
-        data: {
-          ...data,
-          userId: session.user.id,
-          packagePartId: target.targetType === "packagePart" ? target.targetId : null,
-          practiceSetId: target.targetType === "practiceSet" ? target.targetId : null,
-          startedAt: getValidStartedAt(body.startedAt),
-        },
-      });
-
-  return NextResponse.json({
-    ok: true,
-    draft: {
-      id: draft.id,
-      selectedChoices,
-      startedAt: draft.startedAt.toISOString(),
-      durationSecondsUsed: draft.durationSecondsUsed,
-      lastSavedAt: draft.lastSavedAt.toISOString(),
-    },
-  });
 }
 
 export async function DELETE(request: Request) {
-  const session = await getServerSession(await getAuthOptions());
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     return NextResponse.json({ ok: false, message: "กรุณาเข้าสู่ระบบ" }, { status: 401 });

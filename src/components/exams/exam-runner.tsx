@@ -132,6 +132,20 @@ function formatAttemptDate(value: string) {
   }).format(new Date(value));
 }
 
+async function fetchWithTimeout(input: RequestInfo | URL, init: RequestInit = {}, timeoutMs = 8000) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(input, {
+      ...init,
+      signal: controller.signal,
+    });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 function formatPassageRange(range: { firstNo: number; lastNo: number } | null) {
   if (!range) {
     return "ใช้ตอบคำถามที่เกี่ยวข้อง";
@@ -385,13 +399,13 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
 
   async function saveDraft({ force = false }: { force?: boolean } = {}) {
     if (!draftTarget || submitted || part.questions.length === 0) {
-      return;
+      return false;
     }
 
     const signature = JSON.stringify(selectedChoicesRef.current);
 
     if (!force && signature === lastSavedDraftSignatureRef.current) {
-      return;
+      return true;
     }
 
     setDraftSaveState("saving");
@@ -400,10 +414,11 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
       const payloadBody = getDraftPayload();
 
       if (!payloadBody) {
-        return;
+        setDraftSaveState("idle");
+        return false;
       }
 
-      const response = await fetch("/api/exams/drafts", {
+      const response = await fetchWithTimeout("/api/exams/drafts", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -421,8 +436,10 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
       lastSavedDraftSignatureRef.current = signature;
       setLastDraftSavedAt(payload.draft?.lastSavedAt ?? new Date().toISOString());
       setDraftSaveState("saved");
+      return true;
     } catch {
       setDraftSaveState("error");
+      return false;
     }
   }
 
@@ -474,8 +491,14 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
 
   async function leaveAfterSavingDraft() {
     setIsLeaving(true);
-    await saveDraft({ force: true });
-    navigateAfterLeaveDecision();
+    const saved = await saveDraft({ force: true });
+
+    if (saved) {
+      navigateAfterLeaveDecision();
+      return;
+    }
+
+    setIsLeaving(false);
   }
 
   async function leaveWithoutSavingDraft() {
