@@ -3,8 +3,10 @@ import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ExamRunner } from "@/components/exams/exam-runner";
+import { InterviewCoach } from "@/components/exams/interview-coach";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { ExamPartKind } from "@/generated/prisma/client";
 import { getAuthOptions } from "@/lib/auth/options";
 import { getExamPackagePart, getPackagePartAttemptDraft, getPackagePartAttemptHistory } from "@/server/exams/exam-data";
 
@@ -46,10 +48,13 @@ export default async function TrackPartPage({ params }: TrackPartPageProps) {
     notFound();
   }
 
-  const [history, draft] = await Promise.all([
-    getPackagePartAttemptHistory(part.id, session.user.id),
-    getPackagePartAttemptDraft(part.id, session.user.id),
-  ]);
+  const isInterviewPart = part.kind === ExamPartKind.PART_C_INTERVIEW;
+  const [history, draft] = isInterviewPart
+    ? [undefined, null]
+    : await Promise.all([
+        getPackagePartAttemptHistory(part.id, session.user.id),
+        getPackagePartAttemptDraft(part.id, session.user.id),
+      ]);
 
   return (
     <main className="min-h-screen bg-[#eef2f7] text-slate-950">
@@ -83,12 +88,16 @@ export default async function TrackPartPage({ params }: TrackPartPageProps) {
         </div>
       </section>
 
-      <ExamRunner
-        part={part}
-        initialHistory={history}
-        initialDraft={draft}
-        draftTarget={{ type: "packagePart", id: part.id }}
-      />
+      {isInterviewPart ? (
+        <InterviewCoach examTitle={`${part.title} ${part.package.title}`} affiliationLabel={part.affiliation.label} majorName={part.major.shortName} />
+      ) : (
+        <ExamRunner
+          part={part}
+          initialHistory={history}
+          initialDraft={draft}
+          draftTarget={{ type: "packagePart", id: part.id }}
+        />
+      )}
 
       <SiteFooter />
     </main>

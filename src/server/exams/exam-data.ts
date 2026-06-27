@@ -745,6 +745,7 @@ export async function getExamPackagePart(
   return {
     id: part.id,
     slug: part.slug,
+    kind: part.kind,
     title: part.title,
     shortTitle: part.shortTitle ?? part.title,
     durationMinutes: part.durationMinutes,
