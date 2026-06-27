@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
+import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { ExamPartKind } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
 
@@ -216,9 +217,9 @@ export default async function AdminExamPracticeSetsPage() {
             </label>
           </div>
         </div>
-        <button className="mt-5 rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+        <AdminSubmitButton pendingText="กำลังเพิ่มชุด..." className="mt-5 rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
           เพิ่มชุดคลังฝึก
-        </button>
+        </AdminSubmitButton>
       </form>
 
       <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
@@ -297,16 +298,16 @@ export default async function AdminExamPracticeSetsPage() {
                     <input name="sortOrder" type="number" defaultValue={set.sortOrder} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
                   </label>
                   <div className="flex flex-wrap gap-2 lg:col-span-3">
-                    <button className="rounded-lg bg-[#0759b8] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+                    <AdminSubmitButton pendingText="กำลังบันทึก..." className="rounded-lg bg-[#0759b8] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#0b66c3]">
                       บันทึก
-                    </button>
+                    </AdminSubmitButton>
                   </div>
                 </form>
                 <form action={deletePracticeSet} className="mt-3">
                   <input type="hidden" name="setId" value={set.id} />
-                  <button className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
+                  <AdminSubmitButton pendingText="กำลังลบ..." className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
                     ลบชุดนี้
-                  </button>
+                  </AdminSubmitButton>
                 </form>
               </div>
             </details>

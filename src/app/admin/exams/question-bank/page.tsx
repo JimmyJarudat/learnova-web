@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import prisma from "@/lib/db/postgres";
 
 export const metadata = {
@@ -312,9 +313,9 @@ export default async function AdminExamQuestionBankPage({ searchParams }: Questi
             ))}
           </select>
           <input name="q" defaultValue={keyword} className="min-w-0 flex-1 rounded-lg border border-slate-200 px-3 py-3 text-sm font-semibold outline-none focus:border-[#0b66c3]" placeholder="ค้นหาโจทย์ / เฉลย / source label" />
-          <button className="rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+          <AdminSubmitButton pendingText="กำลังค้นหา..." className="rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
             ค้นหา
-          </button>
+          </AdminSubmitButton>
           {keyword || source ? (
             <Link href="/admin/exams/question-bank" className="rounded-xl border border-slate-200 px-5 py-3 text-center text-sm font-black text-slate-600 transition hover:border-[#0b66c3] hover:text-[#0b66c3]">
               ล้าง
@@ -344,9 +345,9 @@ export default async function AdminExamQuestionBankPage({ searchParams }: Questi
                 <form action={deleteQuestion}>
                   <input type="hidden" name="questionId" value={question.id} />
                   <input type="hidden" name="source" value={selectedSourceValue} />
-                  <button className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
+                  <AdminSubmitButton pendingText="กำลังลบ..." className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 transition hover:bg-rose-100">
                     ลบจากต้นทางนี้
-                  </button>
+                  </AdminSubmitButton>
                 </form>
               </div>
 
@@ -380,9 +381,9 @@ export default async function AdminExamQuestionBankPage({ searchParams }: Questi
                     <input name="explanation" defaultValue={question.explanation ?? ""} className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 text-sm font-semibold outline-none focus:border-[#0b66c3]" />
                   </label>
                 </div>
-                <button className="rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+                <AdminSubmitButton pendingText="กำลังบันทึก..." className="rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
                   บันทึกการแก้ไข
-                </button>
+                </AdminSubmitButton>
               </form>
             </article>
           );

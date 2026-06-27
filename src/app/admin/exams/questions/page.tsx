@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import crypto from "node:crypto";
+import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { JsonExampleCopy } from "@/components/admin/json-example-copy";
 import { ExamQuestionType } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
@@ -528,9 +529,9 @@ export default async function AdminExamQuestionsPage() {
             </label>
           </div>
 
-          <button className="mt-5 rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+          <AdminSubmitButton pendingText="กำลังเพิ่มคำถาม..." className="mt-5 rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
             เพิ่มคำถาม
-          </button>
+          </AdminSubmitButton>
         </form>
 
         <form action={importQuestions} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -585,9 +586,9 @@ export default async function AdminExamQuestionsPage() {
             </div>
           </div>
 
-          <button className="mt-5 rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+          <AdminSubmitButton pendingText="กำลังนำเข้า..." className="mt-5 rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
             นำเข้าคำถาม
-          </button>
+          </AdminSubmitButton>
         </form>
 
         <JsonExampleCopy value={jsonImportExample} />
