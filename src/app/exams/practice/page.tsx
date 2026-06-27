@@ -1,0 +1,113 @@
+import Link from "next/link";
+import { getServerSession } from "next-auth";
+import type { Metadata } from "next";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+import { getAuthOptions } from "@/lib/auth/options";
+import { getAllPracticeSets } from "@/server/exams/exam-data";
+
+const pageTitle = "ชุดฝึกข้อสอบครูผู้ช่วยทั้งหมด";
+const pageDescription = "รวมชุดฝึกตามหมวดสำหรับครูผู้ช่วย เช่น ภาค ก และหมวดข้อสอบที่ใช้ร่วมกันหลายสนามสอบ";
+
+export const metadata: Metadata = {
+  title: pageTitle,
+  description: pageDescription,
+  alternates: {
+    canonical: "/exams/practice",
+  },
+};
+
+export const dynamic = "force-dynamic";
+
+export default async function PracticeSetsPage() {
+  const session = await getServerSession(await getAuthOptions());
+  const { practiceCategories, totals } = await getAllPracticeSets(session?.user?.id);
+
+  return (
+    <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
+      <SiteHeader />
+
+      <section className="bg-[#071f4a] text-white">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <Link href="/exams" className="text-sm font-black text-[#ffd35a] hover:text-white">
+            กลับคลังข้อสอบ
+          </Link>
+          <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
+            <div>
+              <p className="text-sm font-black text-white/70">ชุดฝึกทั้งหมด</p>
+              <h1 className="mt-2 text-4xl font-black leading-tight sm:text-5xl">เลือกชุดฝึกตามหมวดข้อสอบ</h1>
+              <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-white/85">
+                ฝึกเนื้อหาที่ใช้ร่วมกันในหลายสนามสอบ โดยเลือกจากหมวดข้อสอบและชุดที่ต้องการ
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-lg border border-white/15 bg-white/12 p-4 backdrop-blur">
+                <p className="text-xs font-bold text-white/70">หมวด</p>
+                <p className="mt-1 text-3xl font-black text-[#ffd35a]">{totals.categories}</p>
+              </div>
+              <div className="rounded-lg border border-white/15 bg-white/12 p-4 backdrop-blur">
+                <p className="text-xs font-bold text-white/70">ชุดฝึก</p>
+                <p className="mt-1 text-3xl font-black text-[#ffd35a]">{totals.sets}</p>
+              </div>
+              <div className="rounded-lg border border-white/15 bg-white/12 p-4 backdrop-blur">
+                <p className="text-xs font-bold text-white/70">ข้อ</p>
+                <p className="mt-1 text-3xl font-black text-[#ffd35a]">{totals.questions.toLocaleString("th-TH")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl space-y-8 px-4 py-10 sm:px-6 lg:px-8">
+        {practiceCategories.map((category) => (
+          <div key={category.slug}>
+            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-black text-[#0b66c3]">{category.shortTitle}</p>
+                <h2 className="mt-1 text-2xl font-black text-[#071f4a]">{category.title}</h2>
+                <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-500">{category.description}</p>
+              </div>
+              <Link href={`/exams/practice/${category.slug}`} className="text-sm font-black text-[#0b66c3] hover:text-[#071f4a]">
+                เปิดหมวดนี้ →
+              </Link>
+            </div>
+
+            <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+              {category.sets.map((set) => (
+                <Link
+                  key={set.slug}
+                  href={`/exams/practice/${category.slug}/${set.slug}`}
+                  className="grid gap-4 border-b border-slate-100 p-5 transition last:border-b-0 hover:bg-slate-50 lg:grid-cols-[1fr_120px_110px_120px_110px] lg:items-center"
+                >
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{category.shortTitle}</span>
+                      <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{set.scopeLabel}</span>
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{set.yearLabel}</span>
+                    </div>
+                    <h3 className="mt-3 text-lg font-black leading-7 text-[#071f4a]">{set.title}</h3>
+                    <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">{set.description}</p>
+                  </div>
+                  <span className="text-sm font-black text-[#0b66c3]">{set.totalQuestions} ข้อ</span>
+                  <span className="text-sm font-semibold text-slate-600">{set.durationMinutes} นาที</span>
+                  {set.history?.bestAttempt ? (
+                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-center text-xs font-black text-emerald-700">
+                      สูงสุด {set.history.bestAttempt.score}/{set.history.bestAttempt.maxScore}
+                    </span>
+                  ) : session?.user?.id ? (
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">ยังไม่เคยทำ</span>
+                  ) : (
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-center text-xs font-black text-slate-600">เข้าสู่ระบบเพื่อเก็บคะแนน</span>
+                  )}
+                  <span className="text-sm font-black text-[#0b66c3] lg:text-right">เริ่มทำ →</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <SiteFooter />
+    </main>
+  );
+}

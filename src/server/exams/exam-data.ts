@@ -150,7 +150,7 @@ export async function getExamOverview() {
 }
 
 export async function getAllExamPackages(userId?: string) {
-  const [packages, affiliations] = await Promise.all([
+  const [packages, practiceCategories, affiliations] = await Promise.all([
     prisma.examPackage.findMany({
       where: { isActive: true },
       orderBy: [{ year: "desc" }, { sortOrder: "asc" }, { title: "asc" }],
@@ -168,6 +168,23 @@ export async function getAllExamPackages(userId?: string) {
         },
       },
     }),
+    prisma.practiceCategory.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: "asc" }, { title: "asc" }],
+      include: {
+        sets: {
+          where: { isActive: true },
+          orderBy: [{ sortOrder: "asc" }, { title: "asc" }],
+          include: {
+            affiliations: {
+              include: {
+                affiliation: { select: { label: true } },
+              },
+            },
+          },
+        },
+      },
+    }),
     prisma.examAffiliation.findMany({
       where: { isActive: true },
       orderBy: [{ sortOrder: "asc" }, { label: "asc" }],
@@ -175,7 +192,7 @@ export async function getAllExamPackages(userId?: string) {
     }),
   ]);
 
-  const attempts = userId
+  const packageAttempts = userId
     ? await prisma.examAttempt.findMany({
         where: {
           userId,
@@ -195,9 +212,22 @@ export async function getAllExamPackages(userId?: string) {
         },
       })
     : [];
-  const attemptsByPackageId = new Map<string, typeof attempts>();
+  const practiceAttempts = userId
+    ? await prisma.examAttempt.findMany({
+        where: {
+          userId,
+          status: ExamAttemptStatus.SUBMITTED,
+          practiceSetId: {
+            in: practiceCategories.flatMap((category) => category.sets.map((set) => set.id)),
+          },
+        },
+        orderBy: [{ submittedAt: "desc" }, { createdAt: "desc" }],
+      })
+    : [];
+  const attemptsByPackageId = new Map<string, typeof packageAttempts>();
+  const attemptsByPracticeSetId = new Map<string, typeof practiceAttempts>();
 
-  for (const attempt of attempts) {
+  for (const attempt of packageAttempts) {
     const packageId = attempt.packagePart?.packageId;
 
     if (!packageId) {
@@ -207,13 +237,52 @@ export async function getAllExamPackages(userId?: string) {
     attemptsByPackageId.set(packageId, [...(attemptsByPackageId.get(packageId) ?? []), attempt]);
   }
 
+  for (const attempt of practiceAttempts) {
+    if (!attempt.practiceSetId) {
+      continue;
+    }
+
+    attemptsByPracticeSetId.set(attempt.practiceSetId, [...(attemptsByPracticeSetId.get(attempt.practiceSetId) ?? []), attempt]);
+  }
+
   return {
     affiliations,
     totals: {
       affiliations: affiliations.length,
-      sets: packages.length,
+      sets: packages.length + practiceCategories.reduce((sum, category) => sum + category.sets.length, 0),
       questions: await prisma.examQuestion.count({ where: { isActive: true } }),
     },
+    practiceCategories: practiceCategories.map((category) => ({
+      slug: category.slug,
+      title: category.title,
+      shortTitle: category.shortTitle ?? category.title,
+      description: category.description,
+      sets: category.sets.map((set) => {
+        const setAttempts = attemptsByPracticeSetId.get(set.id) ?? [];
+        const bestAttempt = setAttempts
+          .slice()
+          .sort((a, b) => toNumber(b.score) - toNumber(a.score) || toNumber(b.maxScore) - toNumber(a.maxScore))[0];
+
+        return {
+          slug: set.slug,
+          title: set.title,
+          scopeLabel: set.scopeLabel,
+          yearLabel: set.yearLabel,
+          description: set.description,
+          durationMinutes: set.durationMinutes,
+          totalQuestions: set.totalQuestions,
+          totalScore: toNumber(set.totalScore),
+          difficulty: set.difficulty,
+          affiliationLabels: set.affiliations.map((item) => item.affiliation.label),
+          history: userId
+            ? {
+                attemptCount: setAttempts.length,
+                bestAttempt: bestAttempt ? mapAttemptSummary(bestAttempt) : null,
+              }
+            : null,
+        };
+      }),
+    })),
     packages: packages.map((pack) => {
       const packageAttempts = attemptsByPackageId.get(pack.id) ?? [];
       const bestAttempt = packageAttempts
@@ -240,6 +309,19 @@ export async function getAllExamPackages(userId?: string) {
           : null,
       };
     }),
+  };
+}
+
+export async function getAllPracticeSets(userId?: string) {
+  const { practiceCategories, totals } = await getAllExamPackages(userId);
+
+  return {
+    practiceCategories,
+    totals: {
+      categories: practiceCategories.length,
+      sets: practiceCategories.reduce((sum, category) => sum + category.sets.length, 0),
+      questions: totals.questions,
+    },
   };
 }
 
