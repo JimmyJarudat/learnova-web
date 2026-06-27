@@ -233,6 +233,7 @@ export type UserWhereInput = {
   socialAccounts?: Prisma.SocialAccountListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
   examAttempts?: Prisma.ExamAttemptListRelationFilter
+  examAttemptDrafts?: Prisma.ExamAttemptDraftListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -250,6 +251,7 @@ export type UserOrderByWithRelationInput = {
   socialAccounts?: Prisma.SocialAccountOrderByRelationAggregateInput
   passwordResetTokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
   examAttempts?: Prisma.ExamAttemptOrderByRelationAggregateInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -270,6 +272,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   socialAccounts?: Prisma.SocialAccountListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
   examAttempts?: Prisma.ExamAttemptListRelationFilter
+  examAttemptDrafts?: Prisma.ExamAttemptDraftListRelationFilter
 }, "id" | "username" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -321,6 +324,7 @@ export type UserCreateInput = {
   socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   examAttempts?: Prisma.ExamAttemptCreateNestedManyWithoutUserInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -338,6 +342,7 @@ export type UserUncheckedCreateInput = {
   socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   examAttempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutUserInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -355,6 +360,7 @@ export type UserUpdateInput = {
   socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   examAttempts?: Prisma.ExamAttemptUpdateManyWithoutUserNestedInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -372,6 +378,7 @@ export type UserUncheckedUpdateInput = {
   socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   examAttempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutUserNestedInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -493,6 +500,20 @@ export type UserUpdateOneRequiredWithoutExamAttemptsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExamAttemptsInput, Prisma.UserUpdateWithoutExamAttemptsInput>, Prisma.UserUncheckedUpdateWithoutExamAttemptsInput>
 }
 
+export type UserCreateNestedOneWithoutExamAttemptDraftsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExamAttemptDraftsInput, Prisma.UserUncheckedCreateWithoutExamAttemptDraftsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExamAttemptDraftsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutExamAttemptDraftsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExamAttemptDraftsInput, Prisma.UserUncheckedCreateWithoutExamAttemptDraftsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExamAttemptDraftsInput
+  upsert?: Prisma.UserUpsertWithoutExamAttemptDraftsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExamAttemptDraftsInput, Prisma.UserUpdateWithoutExamAttemptDraftsInput>, Prisma.UserUncheckedUpdateWithoutExamAttemptDraftsInput>
+}
+
 export type UserCreateNestedOneWithoutSocialAccountsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutSocialAccountsInput, Prisma.UserUncheckedCreateWithoutSocialAccountsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocialAccountsInput
@@ -535,6 +556,7 @@ export type UserCreateWithoutExamAttemptsInput = {
   deletedAt?: Date | string | null
   socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExamAttemptsInput = {
@@ -551,6 +573,7 @@ export type UserUncheckedCreateWithoutExamAttemptsInput = {
   deletedAt?: Date | string | null
   socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExamAttemptsInput = {
@@ -583,6 +606,7 @@ export type UserUpdateWithoutExamAttemptsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExamAttemptsInput = {
@@ -599,6 +623,91 @@ export type UserUncheckedUpdateWithoutExamAttemptsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutExamAttemptDraftsInput = {
+  id?: string
+  username: string
+  email: string
+  passwordHash?: string | null
+  displayName?: string | null
+  avatarUrl?: string | null
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  examAttempts?: Prisma.ExamAttemptCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutExamAttemptDraftsInput = {
+  id?: string
+  username: string
+  email: string
+  passwordHash?: string | null
+  displayName?: string | null
+  avatarUrl?: string | null
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  examAttempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutExamAttemptDraftsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutExamAttemptDraftsInput, Prisma.UserUncheckedCreateWithoutExamAttemptDraftsInput>
+}
+
+export type UserUpsertWithoutExamAttemptDraftsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutExamAttemptDraftsInput, Prisma.UserUncheckedUpdateWithoutExamAttemptDraftsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutExamAttemptDraftsInput, Prisma.UserUncheckedCreateWithoutExamAttemptDraftsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutExamAttemptDraftsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutExamAttemptDraftsInput, Prisma.UserUncheckedUpdateWithoutExamAttemptDraftsInput>
+}
+
+export type UserUpdateWithoutExamAttemptDraftsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  examAttempts?: Prisma.ExamAttemptUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutExamAttemptDraftsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  examAttempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSocialAccountsInput = {
@@ -615,6 +724,7 @@ export type UserCreateWithoutSocialAccountsInput = {
   deletedAt?: Date | string | null
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   examAttempts?: Prisma.ExamAttemptCreateNestedManyWithoutUserInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSocialAccountsInput = {
@@ -631,6 +741,7 @@ export type UserUncheckedCreateWithoutSocialAccountsInput = {
   deletedAt?: Date | string | null
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   examAttempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutUserInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSocialAccountsInput = {
@@ -663,6 +774,7 @@ export type UserUpdateWithoutSocialAccountsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   examAttempts?: Prisma.ExamAttemptUpdateManyWithoutUserNestedInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocialAccountsInput = {
@@ -679,6 +791,7 @@ export type UserUncheckedUpdateWithoutSocialAccountsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   examAttempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutUserNestedInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPasswordResetTokensInput = {
@@ -695,6 +808,7 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   deletedAt?: Date | string | null
   socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
   examAttempts?: Prisma.ExamAttemptCreateNestedManyWithoutUserInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -711,6 +825,7 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   deletedAt?: Date | string | null
   socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
   examAttempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutUserInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -743,6 +858,7 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
   examAttempts?: Prisma.ExamAttemptUpdateManyWithoutUserNestedInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -759,6 +875,7 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
   examAttempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutUserNestedInput
+  examAttemptDrafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -770,12 +887,14 @@ export type UserCountOutputType = {
   socialAccounts: number
   passwordResetTokens: number
   examAttempts: number
+  examAttemptDrafts: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   socialAccounts?: boolean | UserCountOutputTypeCountSocialAccountsArgs
   passwordResetTokens?: boolean | UserCountOutputTypeCountPasswordResetTokensArgs
   examAttempts?: boolean | UserCountOutputTypeCountExamAttemptsArgs
+  examAttemptDrafts?: boolean | UserCountOutputTypeCountExamAttemptDraftsArgs
 }
 
 /**
@@ -809,6 +928,13 @@ export type UserCountOutputTypeCountExamAttemptsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.ExamAttemptWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountExamAttemptDraftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExamAttemptDraftWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -825,6 +951,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   socialAccounts?: boolean | Prisma.User$socialAccountsArgs<ExtArgs>
   passwordResetTokens?: boolean | Prisma.User$passwordResetTokensArgs<ExtArgs>
   examAttempts?: boolean | Prisma.User$examAttemptsArgs<ExtArgs>
+  examAttemptDrafts?: boolean | Prisma.User$examAttemptDraftsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -875,6 +1002,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   socialAccounts?: boolean | Prisma.User$socialAccountsArgs<ExtArgs>
   passwordResetTokens?: boolean | Prisma.User$passwordResetTokensArgs<ExtArgs>
   examAttempts?: boolean | Prisma.User$examAttemptsArgs<ExtArgs>
+  examAttemptDrafts?: boolean | Prisma.User$examAttemptDraftsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -886,6 +1014,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     socialAccounts: Prisma.$SocialAccountPayload<ExtArgs>[]
     passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
     examAttempts: Prisma.$ExamAttemptPayload<ExtArgs>[]
+    examAttemptDrafts: Prisma.$ExamAttemptDraftPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1296,6 +1425,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   socialAccounts<T extends Prisma.User$socialAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$socialAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocialAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   passwordResetTokens<T extends Prisma.User$passwordResetTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   examAttempts<T extends Prisma.User$examAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$examAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  examAttemptDrafts<T extends Prisma.User$examAttemptDraftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$examAttemptDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamAttemptDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1798,6 +1928,30 @@ export type User$examAttemptsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.ExamAttemptScalarFieldEnum | Prisma.ExamAttemptScalarFieldEnum[]
+}
+
+/**
+ * User.examAttemptDrafts
+ */
+export type User$examAttemptDraftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExamAttemptDraft
+   */
+  select?: Prisma.ExamAttemptDraftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExamAttemptDraft
+   */
+  omit?: Prisma.ExamAttemptDraftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamAttemptDraftInclude<ExtArgs> | null
+  where?: Prisma.ExamAttemptDraftWhereInput
+  orderBy?: Prisma.ExamAttemptDraftOrderByWithRelationInput | Prisma.ExamAttemptDraftOrderByWithRelationInput[]
+  cursor?: Prisma.ExamAttemptDraftWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExamAttemptDraftScalarFieldEnum | Prisma.ExamAttemptDraftScalarFieldEnum[]
 }
 
 /**

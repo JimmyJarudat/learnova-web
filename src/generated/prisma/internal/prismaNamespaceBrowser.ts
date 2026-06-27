@@ -71,6 +71,7 @@ export const ModelName = {
   ExamAttempt: 'ExamAttempt',
   ExamAttemptAnswer: 'ExamAttemptAnswer',
   ExamAttemptAnswerChoice: 'ExamAttemptAnswerChoice',
+  ExamAttemptDraft: 'ExamAttemptDraft',
   SocialAccount: 'SocialAccount',
   PasswordResetToken: 'PasswordResetToken',
   system_config: 'system_config',
@@ -416,6 +417,25 @@ export const ExamAttemptAnswerChoiceScalarFieldEnum = {
 export type ExamAttemptAnswerChoiceScalarFieldEnum = (typeof ExamAttemptAnswerChoiceScalarFieldEnum)[keyof typeof ExamAttemptAnswerChoiceScalarFieldEnum]
 
 
+export const ExamAttemptDraftScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  packagePartId: 'packagePartId',
+  practiceSetId: 'practiceSetId',
+  status: 'status',
+  answersJson: 'answersJson',
+  startedAt: 'startedAt',
+  durationSecondsUsed: 'durationSecondsUsed',
+  lastSavedAt: 'lastSavedAt',
+  submittedAt: 'submittedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamAttemptDraftScalarFieldEnum = (typeof ExamAttemptDraftScalarFieldEnum)[keyof typeof ExamAttemptDraftScalarFieldEnum]
+
+
 export const SocialAccountScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -556,6 +576,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {

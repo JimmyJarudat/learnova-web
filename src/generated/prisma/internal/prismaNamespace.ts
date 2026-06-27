@@ -404,6 +404,7 @@ export const ModelName = {
   ExamAttempt: 'ExamAttempt',
   ExamAttemptAnswer: 'ExamAttemptAnswer',
   ExamAttemptAnswerChoice: 'ExamAttemptAnswerChoice',
+  ExamAttemptDraft: 'ExamAttemptDraft',
   SocialAccount: 'SocialAccount',
   PasswordResetToken: 'PasswordResetToken',
   system_config: 'system_config',
@@ -426,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "examAffiliation" | "examMajor" | "examTrack" | "examPackage" | "examPackagePart" | "examSection" | "practiceCategory" | "practiceSet" | "practiceSetAffiliation" | "examQuestion" | "examPassage" | "examQuestionAsset" | "examQuestionChoice" | "examQuestionAcceptedAnswer" | "examPackagePartQuestion" | "practiceSetQuestion" | "examAttempt" | "examAttemptAnswer" | "examAttemptAnswerChoice" | "socialAccount" | "passwordResetToken" | "system_config" | "newsSource" | "newsCategory" | "newsArticle" | "newsFetchLog"
+    modelProps: "user" | "examAffiliation" | "examMajor" | "examTrack" | "examPackage" | "examPackagePart" | "examSection" | "practiceCategory" | "practiceSet" | "practiceSetAffiliation" | "examQuestion" | "examPassage" | "examQuestionAsset" | "examQuestionChoice" | "examQuestionAcceptedAnswer" | "examPackagePartQuestion" | "practiceSetQuestion" | "examAttempt" | "examAttemptAnswer" | "examAttemptAnswerChoice" | "examAttemptDraft" | "socialAccount" | "passwordResetToken" | "system_config" | "newsSource" | "newsCategory" | "newsArticle" | "newsFetchLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1910,6 +1911,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ExamAttemptDraft: {
+      payload: Prisma.$ExamAttemptDraftPayload<ExtArgs>
+      fields: Prisma.ExamAttemptDraftFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExamAttemptDraftFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExamAttemptDraftFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>
+        }
+        findFirst: {
+          args: Prisma.ExamAttemptDraftFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExamAttemptDraftFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>
+        }
+        findMany: {
+          args: Prisma.ExamAttemptDraftFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>[]
+        }
+        create: {
+          args: Prisma.ExamAttemptDraftCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>
+        }
+        createMany: {
+          args: Prisma.ExamAttemptDraftCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExamAttemptDraftCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>[]
+        }
+        delete: {
+          args: Prisma.ExamAttemptDraftDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>
+        }
+        update: {
+          args: Prisma.ExamAttemptDraftUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExamAttemptDraftDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExamAttemptDraftUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExamAttemptDraftUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExamAttemptDraftUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExamAttemptDraftPayload>
+        }
+        aggregate: {
+          args: Prisma.ExamAttemptDraftAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExamAttemptDraft>
+        }
+        groupBy: {
+          args: Prisma.ExamAttemptDraftGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExamAttemptDraftGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExamAttemptDraftCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExamAttemptDraftCountAggregateOutputType> | number
+        }
+      }
+    }
     SocialAccount: {
       payload: Prisma.$SocialAccountPayload<ExtArgs>
       fields: Prisma.SocialAccountFieldRefs
@@ -2787,6 +2862,25 @@ export const ExamAttemptAnswerChoiceScalarFieldEnum = {
 export type ExamAttemptAnswerChoiceScalarFieldEnum = (typeof ExamAttemptAnswerChoiceScalarFieldEnum)[keyof typeof ExamAttemptAnswerChoiceScalarFieldEnum]
 
 
+export const ExamAttemptDraftScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  packagePartId: 'packagePartId',
+  practiceSetId: 'practiceSetId',
+  status: 'status',
+  answersJson: 'answersJson',
+  startedAt: 'startedAt',
+  durationSecondsUsed: 'durationSecondsUsed',
+  lastSavedAt: 'lastSavedAt',
+  submittedAt: 'submittedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExamAttemptDraftScalarFieldEnum = (typeof ExamAttemptDraftScalarFieldEnum)[keyof typeof ExamAttemptDraftScalarFieldEnum]
+
+
 export const SocialAccountScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -2927,6 +3021,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {
@@ -3088,20 +3189,6 @@ export type ListEnumExamAttemptStatusFieldRefInput<$PrismaModel> = FieldRefInput
 
 
 /**
- * Reference to a field of type 'SocialProvider'
- */
-export type EnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider'>
-    
-
-
-/**
- * Reference to a field of type 'SocialProvider[]'
- */
-export type ListEnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider[]'>
-    
-
-
-/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -3112,6 +3199,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'SocialProvider'
+ */
+export type EnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider'>
+    
+
+
+/**
+ * Reference to a field of type 'SocialProvider[]'
+ */
+export type ListEnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider[]'>
     
 
 
@@ -3258,6 +3359,7 @@ export type GlobalOmitConfig = {
   examAttempt?: Prisma.ExamAttemptOmit
   examAttemptAnswer?: Prisma.ExamAttemptAnswerOmit
   examAttemptAnswerChoice?: Prisma.ExamAttemptAnswerChoiceOmit
+  examAttemptDraft?: Prisma.ExamAttemptDraftOmit
   socialAccount?: Prisma.SocialAccountOmit
   passwordResetToken?: Prisma.PasswordResetTokenOmit
   system_config?: Prisma.system_configOmit

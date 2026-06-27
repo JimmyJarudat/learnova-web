@@ -320,6 +320,7 @@ export type ExamPackagePartWhereInput = {
   package?: Prisma.XOR<Prisma.ExamPackageScalarRelationFilter, Prisma.ExamPackageWhereInput>
   items?: Prisma.ExamPackagePartQuestionListRelationFilter
   attempts?: Prisma.ExamAttemptListRelationFilter
+  drafts?: Prisma.ExamAttemptDraftListRelationFilter
   sections?: Prisma.ExamSectionListRelationFilter
 }
 
@@ -343,6 +344,7 @@ export type ExamPackagePartOrderByWithRelationInput = {
   package?: Prisma.ExamPackageOrderByWithRelationInput
   items?: Prisma.ExamPackagePartQuestionOrderByRelationAggregateInput
   attempts?: Prisma.ExamAttemptOrderByRelationAggregateInput
+  drafts?: Prisma.ExamAttemptDraftOrderByRelationAggregateInput
   sections?: Prisma.ExamSectionOrderByRelationAggregateInput
 }
 
@@ -370,6 +372,7 @@ export type ExamPackagePartWhereUniqueInput = Prisma.AtLeast<{
   package?: Prisma.XOR<Prisma.ExamPackageScalarRelationFilter, Prisma.ExamPackageWhereInput>
   items?: Prisma.ExamPackagePartQuestionListRelationFilter
   attempts?: Prisma.ExamAttemptListRelationFilter
+  drafts?: Prisma.ExamAttemptDraftListRelationFilter
   sections?: Prisma.ExamSectionListRelationFilter
 }, "id" | "packageId_slug">
 
@@ -438,6 +441,7 @@ export type ExamPackagePartCreateInput = {
   package: Prisma.ExamPackageCreateNestedOneWithoutPartsInput
   items?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutPartInput
   attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPackagePartInput
+  drafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutPackagePartInput
   sections?: Prisma.ExamSectionCreateNestedManyWithoutPartInput
 }
 
@@ -460,6 +464,7 @@ export type ExamPackagePartUncheckedCreateInput = {
   updatedAt?: Date | string
   items?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutPartInput
   attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPackagePartInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutPackagePartInput
   sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -482,6 +487,7 @@ export type ExamPackagePartUpdateInput = {
   package?: Prisma.ExamPackageUpdateOneRequiredWithoutPartsNestedInput
   items?: Prisma.ExamPackagePartQuestionUpdateManyWithoutPartNestedInput
   attempts?: Prisma.ExamAttemptUpdateManyWithoutPackagePartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUpdateManyWithoutPackagePartNestedInput
   sections?: Prisma.ExamSectionUpdateManyWithoutPartNestedInput
 }
 
@@ -504,6 +510,7 @@ export type ExamPackagePartUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutPartNestedInput
   attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPackagePartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutPackagePartNestedInput
   sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -759,6 +766,22 @@ export type ExamPackagePartUpdateOneWithoutAttemptsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExamPackagePartUpdateToOneWithWhereWithoutAttemptsInput, Prisma.ExamPackagePartUpdateWithoutAttemptsInput>, Prisma.ExamPackagePartUncheckedUpdateWithoutAttemptsInput>
 }
 
+export type ExamPackagePartCreateNestedOneWithoutDraftsInput = {
+  create?: Prisma.XOR<Prisma.ExamPackagePartCreateWithoutDraftsInput, Prisma.ExamPackagePartUncheckedCreateWithoutDraftsInput>
+  connectOrCreate?: Prisma.ExamPackagePartCreateOrConnectWithoutDraftsInput
+  connect?: Prisma.ExamPackagePartWhereUniqueInput
+}
+
+export type ExamPackagePartUpdateOneWithoutDraftsNestedInput = {
+  create?: Prisma.XOR<Prisma.ExamPackagePartCreateWithoutDraftsInput, Prisma.ExamPackagePartUncheckedCreateWithoutDraftsInput>
+  connectOrCreate?: Prisma.ExamPackagePartCreateOrConnectWithoutDraftsInput
+  upsert?: Prisma.ExamPackagePartUpsertWithoutDraftsInput
+  disconnect?: Prisma.ExamPackagePartWhereInput | boolean
+  delete?: Prisma.ExamPackagePartWhereInput | boolean
+  connect?: Prisma.ExamPackagePartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ExamPackagePartUpdateToOneWithWhereWithoutDraftsInput, Prisma.ExamPackagePartUpdateWithoutDraftsInput>, Prisma.ExamPackagePartUncheckedUpdateWithoutDraftsInput>
+}
+
 export type ExamPackagePartCreateWithoutPackageInput = {
   id?: string
   slug: string
@@ -777,6 +800,7 @@ export type ExamPackagePartCreateWithoutPackageInput = {
   updatedAt?: Date | string
   items?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutPartInput
   attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPackagePartInput
+  drafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutPackagePartInput
   sections?: Prisma.ExamSectionCreateNestedManyWithoutPartInput
 }
 
@@ -798,6 +822,7 @@ export type ExamPackagePartUncheckedCreateWithoutPackageInput = {
   updatedAt?: Date | string
   items?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutPartInput
   attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPackagePartInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutPackagePartInput
   sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -868,6 +893,7 @@ export type ExamPackagePartCreateWithoutSectionsInput = {
   package: Prisma.ExamPackageCreateNestedOneWithoutPartsInput
   items?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutPartInput
   attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPackagePartInput
+  drafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutPackagePartInput
 }
 
 export type ExamPackagePartUncheckedCreateWithoutSectionsInput = {
@@ -889,6 +915,7 @@ export type ExamPackagePartUncheckedCreateWithoutSectionsInput = {
   updatedAt?: Date | string
   items?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutPartInput
   attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPackagePartInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutPackagePartInput
 }
 
 export type ExamPackagePartCreateOrConnectWithoutSectionsInput = {
@@ -926,6 +953,7 @@ export type ExamPackagePartUpdateWithoutSectionsInput = {
   package?: Prisma.ExamPackageUpdateOneRequiredWithoutPartsNestedInput
   items?: Prisma.ExamPackagePartQuestionUpdateManyWithoutPartNestedInput
   attempts?: Prisma.ExamAttemptUpdateManyWithoutPackagePartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUpdateManyWithoutPackagePartNestedInput
 }
 
 export type ExamPackagePartUncheckedUpdateWithoutSectionsInput = {
@@ -947,6 +975,7 @@ export type ExamPackagePartUncheckedUpdateWithoutSectionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutPartNestedInput
   attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPackagePartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutPackagePartNestedInput
 }
 
 export type ExamPackagePartCreateWithoutItemsInput = {
@@ -967,6 +996,7 @@ export type ExamPackagePartCreateWithoutItemsInput = {
   updatedAt?: Date | string
   package: Prisma.ExamPackageCreateNestedOneWithoutPartsInput
   attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPackagePartInput
+  drafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutPackagePartInput
   sections?: Prisma.ExamSectionCreateNestedManyWithoutPartInput
 }
 
@@ -988,6 +1018,7 @@ export type ExamPackagePartUncheckedCreateWithoutItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPackagePartInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutPackagePartInput
   sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -1025,6 +1056,7 @@ export type ExamPackagePartUpdateWithoutItemsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   package?: Prisma.ExamPackageUpdateOneRequiredWithoutPartsNestedInput
   attempts?: Prisma.ExamAttemptUpdateManyWithoutPackagePartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUpdateManyWithoutPackagePartNestedInput
   sections?: Prisma.ExamSectionUpdateManyWithoutPartNestedInput
 }
 
@@ -1046,6 +1078,7 @@ export type ExamPackagePartUncheckedUpdateWithoutItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPackagePartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutPackagePartNestedInput
   sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -1067,6 +1100,7 @@ export type ExamPackagePartCreateWithoutAttemptsInput = {
   updatedAt?: Date | string
   package: Prisma.ExamPackageCreateNestedOneWithoutPartsInput
   items?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutPartInput
+  drafts?: Prisma.ExamAttemptDraftCreateNestedManyWithoutPackagePartInput
   sections?: Prisma.ExamSectionCreateNestedManyWithoutPartInput
 }
 
@@ -1088,6 +1122,7 @@ export type ExamPackagePartUncheckedCreateWithoutAttemptsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutPartInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedCreateNestedManyWithoutPackagePartInput
   sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -1125,6 +1160,7 @@ export type ExamPackagePartUpdateWithoutAttemptsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   package?: Prisma.ExamPackageUpdateOneRequiredWithoutPartsNestedInput
   items?: Prisma.ExamPackagePartQuestionUpdateManyWithoutPartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUpdateManyWithoutPackagePartNestedInput
   sections?: Prisma.ExamSectionUpdateManyWithoutPartNestedInput
 }
 
@@ -1146,6 +1182,111 @@ export type ExamPackagePartUncheckedUpdateWithoutAttemptsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutPartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutPackagePartNestedInput
+  sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPartNestedInput
+}
+
+export type ExamPackagePartCreateWithoutDraftsInput = {
+  id?: string
+  slug: string
+  kind: $Enums.ExamPartKind
+  title: string
+  shortTitle?: string | null
+  audienceLabel?: string | null
+  description?: string | null
+  durationMinutes?: number
+  totalQuestions?: number
+  totalScore?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  difficulty?: string | null
+  sortOrder?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  package: Prisma.ExamPackageCreateNestedOneWithoutPartsInput
+  items?: Prisma.ExamPackagePartQuestionCreateNestedManyWithoutPartInput
+  attempts?: Prisma.ExamAttemptCreateNestedManyWithoutPackagePartInput
+  sections?: Prisma.ExamSectionCreateNestedManyWithoutPartInput
+}
+
+export type ExamPackagePartUncheckedCreateWithoutDraftsInput = {
+  id?: string
+  packageId: string
+  slug: string
+  kind: $Enums.ExamPartKind
+  title: string
+  shortTitle?: string | null
+  audienceLabel?: string | null
+  description?: string | null
+  durationMinutes?: number
+  totalQuestions?: number
+  totalScore?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  difficulty?: string | null
+  sortOrder?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.ExamPackagePartQuestionUncheckedCreateNestedManyWithoutPartInput
+  attempts?: Prisma.ExamAttemptUncheckedCreateNestedManyWithoutPackagePartInput
+  sections?: Prisma.ExamSectionUncheckedCreateNestedManyWithoutPartInput
+}
+
+export type ExamPackagePartCreateOrConnectWithoutDraftsInput = {
+  where: Prisma.ExamPackagePartWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExamPackagePartCreateWithoutDraftsInput, Prisma.ExamPackagePartUncheckedCreateWithoutDraftsInput>
+}
+
+export type ExamPackagePartUpsertWithoutDraftsInput = {
+  update: Prisma.XOR<Prisma.ExamPackagePartUpdateWithoutDraftsInput, Prisma.ExamPackagePartUncheckedUpdateWithoutDraftsInput>
+  create: Prisma.XOR<Prisma.ExamPackagePartCreateWithoutDraftsInput, Prisma.ExamPackagePartUncheckedCreateWithoutDraftsInput>
+  where?: Prisma.ExamPackagePartWhereInput
+}
+
+export type ExamPackagePartUpdateToOneWithWhereWithoutDraftsInput = {
+  where?: Prisma.ExamPackagePartWhereInput
+  data: Prisma.XOR<Prisma.ExamPackagePartUpdateWithoutDraftsInput, Prisma.ExamPackagePartUncheckedUpdateWithoutDraftsInput>
+}
+
+export type ExamPackagePartUpdateWithoutDraftsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  totalQuestions?: Prisma.IntFieldUpdateOperationsInput | number
+  totalScore?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  package?: Prisma.ExamPackageUpdateOneRequiredWithoutPartsNestedInput
+  items?: Prisma.ExamPackagePartQuestionUpdateManyWithoutPartNestedInput
+  attempts?: Prisma.ExamAttemptUpdateManyWithoutPackagePartNestedInput
+  sections?: Prisma.ExamSectionUpdateManyWithoutPartNestedInput
+}
+
+export type ExamPackagePartUncheckedUpdateWithoutDraftsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  packageId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  totalQuestions?: Prisma.IntFieldUpdateOperationsInput | number
+  totalScore?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutPartNestedInput
+  attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPackagePartNestedInput
   sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -1185,6 +1326,7 @@ export type ExamPackagePartUpdateWithoutPackageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ExamPackagePartQuestionUpdateManyWithoutPartNestedInput
   attempts?: Prisma.ExamAttemptUpdateManyWithoutPackagePartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUpdateManyWithoutPackagePartNestedInput
   sections?: Prisma.ExamSectionUpdateManyWithoutPartNestedInput
 }
 
@@ -1206,6 +1348,7 @@ export type ExamPackagePartUncheckedUpdateWithoutPackageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ExamPackagePartQuestionUncheckedUpdateManyWithoutPartNestedInput
   attempts?: Prisma.ExamAttemptUncheckedUpdateManyWithoutPackagePartNestedInput
+  drafts?: Prisma.ExamAttemptDraftUncheckedUpdateManyWithoutPackagePartNestedInput
   sections?: Prisma.ExamSectionUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -1235,12 +1378,14 @@ export type ExamPackagePartUncheckedUpdateManyWithoutPackageInput = {
 export type ExamPackagePartCountOutputType = {
   items: number
   attempts: number
+  drafts: number
   sections: number
 }
 
 export type ExamPackagePartCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | ExamPackagePartCountOutputTypeCountItemsArgs
   attempts?: boolean | ExamPackagePartCountOutputTypeCountAttemptsArgs
+  drafts?: boolean | ExamPackagePartCountOutputTypeCountDraftsArgs
   sections?: boolean | ExamPackagePartCountOutputTypeCountSectionsArgs
 }
 
@@ -1271,6 +1416,13 @@ export type ExamPackagePartCountOutputTypeCountAttemptsArgs<ExtArgs extends runt
 /**
  * ExamPackagePartCountOutputType without action
  */
+export type ExamPackagePartCountOutputTypeCountDraftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExamAttemptDraftWhereInput
+}
+
+/**
+ * ExamPackagePartCountOutputType without action
+ */
 export type ExamPackagePartCountOutputTypeCountSectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ExamSectionWhereInput
 }
@@ -1296,6 +1448,7 @@ export type ExamPackagePartSelect<ExtArgs extends runtime.Types.Extensions.Inter
   package?: boolean | Prisma.ExamPackageDefaultArgs<ExtArgs>
   items?: boolean | Prisma.ExamPackagePart$itemsArgs<ExtArgs>
   attempts?: boolean | Prisma.ExamPackagePart$attemptsArgs<ExtArgs>
+  drafts?: boolean | Prisma.ExamPackagePart$draftsArgs<ExtArgs>
   sections?: boolean | Prisma.ExamPackagePart$sectionsArgs<ExtArgs>
   _count?: boolean | Prisma.ExamPackagePartCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["examPackagePart"]>
@@ -1364,6 +1517,7 @@ export type ExamPackagePartInclude<ExtArgs extends runtime.Types.Extensions.Inte
   package?: boolean | Prisma.ExamPackageDefaultArgs<ExtArgs>
   items?: boolean | Prisma.ExamPackagePart$itemsArgs<ExtArgs>
   attempts?: boolean | Prisma.ExamPackagePart$attemptsArgs<ExtArgs>
+  drafts?: boolean | Prisma.ExamPackagePart$draftsArgs<ExtArgs>
   sections?: boolean | Prisma.ExamPackagePart$sectionsArgs<ExtArgs>
   _count?: boolean | Prisma.ExamPackagePartCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1380,6 +1534,7 @@ export type $ExamPackagePartPayload<ExtArgs extends runtime.Types.Extensions.Int
     package: Prisma.$ExamPackagePayload<ExtArgs>
     items: Prisma.$ExamPackagePartQuestionPayload<ExtArgs>[]
     attempts: Prisma.$ExamAttemptPayload<ExtArgs>[]
+    drafts: Prisma.$ExamAttemptDraftPayload<ExtArgs>[]
     sections: Prisma.$ExamSectionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1796,6 +1951,7 @@ export interface Prisma__ExamPackagePartClient<T, Null = never, ExtArgs extends 
   package<T extends Prisma.ExamPackageDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamPackageDefaultArgs<ExtArgs>>): Prisma.Prisma__ExamPackageClient<runtime.Types.Result.GetResult<Prisma.$ExamPackagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.ExamPackagePart$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamPackagePart$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamPackagePartQuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   attempts<T extends Prisma.ExamPackagePart$attemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamPackagePart$attemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  drafts<T extends Prisma.ExamPackagePart$draftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamPackagePart$draftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamAttemptDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sections<T extends Prisma.ExamPackagePart$sectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExamPackagePart$sectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamSectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2288,6 +2444,30 @@ export type ExamPackagePart$attemptsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.ExamAttemptScalarFieldEnum | Prisma.ExamAttemptScalarFieldEnum[]
+}
+
+/**
+ * ExamPackagePart.drafts
+ */
+export type ExamPackagePart$draftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExamAttemptDraft
+   */
+  select?: Prisma.ExamAttemptDraftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExamAttemptDraft
+   */
+  omit?: Prisma.ExamAttemptDraftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExamAttemptDraftInclude<ExtArgs> | null
+  where?: Prisma.ExamAttemptDraftWhereInput
+  orderBy?: Prisma.ExamAttemptDraftOrderByWithRelationInput | Prisma.ExamAttemptDraftOrderByWithRelationInput[]
+  cursor?: Prisma.ExamAttemptDraftWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExamAttemptDraftScalarFieldEnum | Prisma.ExamAttemptDraftScalarFieldEnum[]
 }
 
 /**

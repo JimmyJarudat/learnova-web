@@ -137,6 +137,13 @@ export type ExamAttemptAnswer = Prisma.ExamAttemptAnswerModel
  */
 export type ExamAttemptAnswerChoice = Prisma.ExamAttemptAnswerChoiceModel
 /**
+ * Model ExamAttemptDraft
+ * เก็บคำตอบฉบับร่างระหว่างผู้ใช้ทำข้อสอบ
+ * ใช้กู้คืนกรณีปิดเว็บ กลับมาทำต่อ หรือส่งคำตอบไม่สำเร็จเพราะเน็ตมีปัญหา
+ * draft จะชี้ได้อย่างใดอย่างหนึ่ง: part ของชุดตามสนาม หรือ practice set ของหมวดฝึก
+ */
+export type ExamAttemptDraft = Prisma.ExamAttemptDraftModel
+/**
  * Model SocialAccount
  * 
  */

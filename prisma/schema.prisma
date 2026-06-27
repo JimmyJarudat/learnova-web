@@ -55,9 +55,10 @@ model User {
   updatedAt       DateTime  @updatedAt
   deletedAt       DateTime?
 
-  socialAccounts       SocialAccount[]
+  socialAccounts      SocialAccount[]
   passwordResetTokens PasswordResetToken[]
   examAttempts        ExamAttempt[]
+  examAttemptDrafts   ExamAttemptDraft[]
 
   @@index([email])
   @@index([username])
@@ -148,7 +149,7 @@ model ExamPackage {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  track ExamTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  track ExamTrack         @relation(fields: [trackId], references: [id], onDelete: Cascade)
   parts ExamPackagePart[]
 
   @@unique([trackId, slug])
@@ -181,6 +182,7 @@ model ExamPackagePart {
   package  ExamPackage               @relation(fields: [packageId], references: [id], onDelete: Cascade)
   items    ExamPackagePartQuestion[]
   attempts ExamAttempt[]
+  drafts   ExamAttemptDraft[]
   sections ExamSection[]
 
   @@unique([packageId, slug])
@@ -193,18 +195,18 @@ model ExamPackagePart {
 /// เก็บหัวข้อคั่นระหว่างข้อ เช่น ตอนที่ 1 ความสามารถด้านเหตุผล, ตอนที่ 2 ภาษาไทย
 /// ใช้แสดงเป็นแถบหัวข้อในหน้าทำข้อสอบ โดยไม่ต้องสร้างเป็นคำถามปลอม
 model ExamSection {
-  id            String   @id @default(uuid()) @db.Uuid
-  partId        String?  @map("part_id") @db.Uuid
-  practiceSetId String?  @map("practice_set_id") @db.Uuid
-  title         String   @db.VarChar(255)
-  description   String?  @db.Text
+  id            String            @id @default(uuid()) @db.Uuid
+  partId        String?           @map("part_id") @db.Uuid
+  practiceSetId String?           @map("practice_set_id") @db.Uuid
+  title         String            @db.VarChar(255)
+  description   String?           @db.Text
   contentFormat ExamContentFormat @default(MARKDOWN) @map("content_format")
-  sortOrder     Int      @default(0) @map("sort_order")
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  sortOrder     Int               @default(0) @map("sort_order")
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  part          ExamPackagePart? @relation(fields: [partId], references: [id], onDelete: Cascade)
-  practiceSet   PracticeSet?     @relation(fields: [practiceSetId], references: [id], onDelete: Cascade)
+  part          ExamPackagePart?          @relation(fields: [partId], references: [id], onDelete: Cascade)
+  practiceSet   PracticeSet?              @relation(fields: [practiceSetId], references: [id], onDelete: Cascade)
   packageItems  ExamPackagePartQuestion[]
   practiceItems PracticeSetQuestion[]
 
@@ -258,6 +260,7 @@ model PracticeSet {
   affiliations PracticeSetAffiliation[]
   items        PracticeSetQuestion[]
   attempts     ExamAttempt[]
+  drafts       ExamAttemptDraft[]
   sections     ExamSection[]
 
   @@unique([categoryId, slug])
@@ -285,30 +288,30 @@ model PracticeSetAffiliation {
 /// คลังคำถามกลาง ใช้ซ้ำได้ทั้งชุดตามสนามและชุดฝึกตามหมวด
 /// คำถามหนึ่งข้ออาจถูกนำไปอยู่หลายชุด ผ่านตาราง join ของ package part หรือ practice set
 model ExamQuestion {
-  id              String           @id @default(uuid()) @db.Uuid
-  passageId       String?          @map("passage_id") @db.Uuid
-  type            ExamQuestionType @default(SINGLE_CHOICE)
-  contentFormat   ExamContentFormat @default(MARKDOWN) @map("content_format")
-  stem            String           @db.Text
-  inlinePassage   String?          @map("passage") @db.Text
-  imageUrl        String?          @map("image_url") @db.Text
-  explanation     String?          @db.Text
-  explanationFormat ExamContentFormat @default(MARKDOWN) @map("explanation_format")
-  explanationImageUrl String?      @map("explanation_image_url") @db.Text
-  difficulty      String?          @db.VarChar(50)
-  tags            String[]         @default([])
-  sourceLabel     String?          @map("source_label") @db.VarChar(150)
-  isActive        Boolean          @default(true) @map("is_active")
-  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id                  String            @id @default(uuid()) @db.Uuid
+  passageId           String?           @map("passage_id") @db.Uuid
+  type                ExamQuestionType  @default(SINGLE_CHOICE)
+  contentFormat       ExamContentFormat @default(MARKDOWN) @map("content_format")
+  stem                String            @db.Text
+  inlinePassage       String?           @map("passage") @db.Text
+  imageUrl            String?           @map("image_url") @db.Text
+  explanation         String?           @db.Text
+  explanationFormat   ExamContentFormat @default(MARKDOWN) @map("explanation_format")
+  explanationImageUrl String?           @map("explanation_image_url") @db.Text
+  difficulty          String?           @db.VarChar(50)
+  tags                String[]          @default([])
+  sourceLabel         String?           @map("source_label") @db.VarChar(150)
+  isActive            Boolean           @default(true) @map("is_active")
+  createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  sharedPassage ExamPassage? @relation(fields: [passageId], references: [id], onDelete: SetNull)
-  choices       ExamQuestionChoice[]
-  assets        ExamQuestionAsset[]
+  sharedPassage   ExamPassage?                 @relation(fields: [passageId], references: [id], onDelete: SetNull)
+  choices         ExamQuestionChoice[]
+  assets          ExamQuestionAsset[]
   acceptedAnswers ExamQuestionAcceptedAnswer[]
-  packageItems  ExamPackagePartQuestion[]
-  practiceItems PracticeSetQuestion[]
-  answers       ExamAttemptAnswer[]
+  packageItems    ExamPackagePartQuestion[]
+  practiceItems   PracticeSetQuestion[]
+  answers         ExamAttemptAnswer[]
 
   @@index([passageId])
   @@index([type])
@@ -320,15 +323,15 @@ model ExamQuestion {
 /// เก็บข้อความ/สถานการณ์/บทอ่านร่วมที่ใช้ตอบหลายข้อ เช่น "จากข้อความนี้ใช้ตอบคำถามข้อ 1-5"
 /// คำถามหลายข้อสามารถชี้ passage เดียวกันผ่าน ExamQuestion.passageId ได้
 model ExamPassage {
-  id            String   @id @default(uuid()) @db.Uuid
-  title         String?  @db.VarChar(255)
-  content       String   @db.Text
+  id            String            @id @default(uuid()) @db.Uuid
+  title         String?           @db.VarChar(255)
+  content       String            @db.Text
   contentFormat ExamContentFormat @default(MARKDOWN) @map("content_format")
-  imageUrl      String?  @map("image_url") @db.Text
-  sourceLabel   String?  @map("source_label") @db.VarChar(150)
-  sortOrder     Int      @default(0) @map("sort_order")
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  imageUrl      String?           @map("image_url") @db.Text
+  sourceLabel   String?           @map("source_label") @db.VarChar(150)
+  sortOrder     Int               @default(0) @map("sort_order")
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   questions ExamQuestion[]
 
@@ -339,14 +342,14 @@ model ExamPassage {
 /// เก็บรูป/ไฟล์ประกอบของคำถามได้หลายรายการ เช่น ตาราง กราฟ รูปเรขาคณิต หรือภาพประกอบเฉลย
 /// ถ้ามีรูปเดียวใช้ ExamQuestion.imageUrl ได้ แต่ถ้ามีหลายรูปให้ใช้ตารางนี้
 model ExamQuestionAsset {
-  id          String   @id @default(uuid()) @db.Uuid
-  questionId  String   @map("question_id") @db.Uuid
-  url         String   @db.Text
-  altText     String?  @map("alt_text") @db.VarChar(255)
-  caption     String?  @db.Text
-  sortOrder   Int      @default(0) @map("sort_order")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id         String   @id @default(uuid()) @db.Uuid
+  questionId String   @map("question_id") @db.Uuid
+  url        String   @db.Text
+  altText    String?  @map("alt_text") @db.VarChar(255)
+  caption    String?  @db.Text
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   question ExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
@@ -358,22 +361,22 @@ model ExamQuestionAsset {
 /// เก็บตัวเลือกของคำถาม เช่น ก ข ค ง พร้อมบอกว่าข้อไหนถูก
 /// รองรับ single choice และ multiple choice โดยให้มี isCorrect ได้มากกว่าหนึ่งตัวเลือก
 model ExamQuestionChoice {
-  id          String   @id @default(uuid()) @db.Uuid
-  questionId  String   @map("question_id") @db.Uuid
-  label       String   @db.VarChar(20)
-  text        String   @db.Text
-  contentFormat ExamContentFormat @default(MARKDOWN) @map("content_format")
-  imageUrl    String?  @map("image_url") @db.Text
-  isCorrect   Boolean  @default(false) @map("is_correct")
-  explanation String?  @db.Text
-  explanationFormat ExamContentFormat @default(MARKDOWN) @map("explanation_format")
-  explanationImageUrl String? @map("explanation_image_url") @db.Text
-  sortOrder   Int      @default(0) @map("sort_order")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id                  String            @id @default(uuid()) @db.Uuid
+  questionId          String            @map("question_id") @db.Uuid
+  label               String            @db.VarChar(20)
+  text                String            @db.Text
+  contentFormat       ExamContentFormat @default(MARKDOWN) @map("content_format")
+  imageUrl            String?           @map("image_url") @db.Text
+  isCorrect           Boolean           @default(false) @map("is_correct")
+  explanation         String?           @db.Text
+  explanationFormat   ExamContentFormat @default(MARKDOWN) @map("explanation_format")
+  explanationImageUrl String?           @map("explanation_image_url") @db.Text
+  sortOrder           Int               @default(0) @map("sort_order")
+  createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  question ExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  answerChoices  ExamAttemptAnswerChoice[]
+  question      ExamQuestion              @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answerChoices ExamAttemptAnswerChoice[]
 
   @@unique([questionId, label])
   @@index([questionId])
@@ -384,14 +387,14 @@ model ExamQuestionChoice {
 /// เก็บคำตอบที่ยอมรับได้สำหรับ SHORT_ANSWER
 /// ใช้กรณีข้อสอบแบบพิมพ์คำตอบสั้น เช่น ชื่อกฎหมาย คำสำคัญ หรือผลลัพธ์ตัวเลข
 model ExamQuestionAcceptedAnswer {
-  id             String   @id @default(uuid()) @db.Uuid
-  questionId     String   @map("question_id") @db.Uuid
-  text           String   @db.Text
-  normalizedText String?  @map("normalized_text") @db.Text
-  contentFormat  ExamContentFormat @default(PLAIN_TEXT) @map("content_format")
-  isCaseSensitive Boolean @default(false) @map("is_case_sensitive")
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id              String            @id @default(uuid()) @db.Uuid
+  questionId      String            @map("question_id") @db.Uuid
+  text            String            @db.Text
+  normalizedText  String?           @map("normalized_text") @db.Text
+  contentFormat   ExamContentFormat @default(PLAIN_TEXT) @map("content_format")
+  isCaseSensitive Boolean           @default(false) @map("is_case_sensitive")
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   question ExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
@@ -402,13 +405,13 @@ model ExamQuestionAcceptedAnswer {
 /// ตาราง join ระหว่างภาคในชุดข้อสอบกับคำถาม
 /// ใช้กำหนดลำดับข้อ คะแนนต่อข้อ และ override คำอธิบายเฉพาะชุดได้ในอนาคต
 model ExamPackagePartQuestion {
-  id        String   @id @default(uuid()) @db.Uuid
-  partId    String   @map("part_id") @db.Uuid
-  sectionId String?  @map("section_id") @db.Uuid
-  questionId String  @map("question_id") @db.Uuid
-  position  Int
-  score     Decimal  @default(1) @db.Decimal(8, 2)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  id         String   @id @default(uuid()) @db.Uuid
+  partId     String   @map("part_id") @db.Uuid
+  sectionId  String?  @map("section_id") @db.Uuid
+  questionId String   @map("question_id") @db.Uuid
+  position   Int
+  score      Decimal  @default(1) @db.Decimal(8, 2)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   part     ExamPackagePart @relation(fields: [partId], references: [id], onDelete: Cascade)
   section  ExamSection?    @relation(fields: [sectionId], references: [id], onDelete: SetNull)
@@ -424,13 +427,13 @@ model ExamPackagePartQuestion {
 /// ตาราง join ระหว่างชุดฝึกตามหมวดกับคำถาม
 /// ทำให้ชุด ภาค ก หลายชุดดึงคำถามจากคลังกลางมาเรียงและให้คะแนนต่างกันได้
 model PracticeSetQuestion {
-  id        String   @id @default(uuid()) @db.Uuid
-  setId     String   @map("set_id") @db.Uuid
-  sectionId String?  @map("section_id") @db.Uuid
-  questionId String  @map("question_id") @db.Uuid
-  position  Int
-  score     Decimal  @default(1) @db.Decimal(8, 2)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  id         String   @id @default(uuid()) @db.Uuid
+  setId      String   @map("set_id") @db.Uuid
+  sectionId  String?  @map("section_id") @db.Uuid
+  questionId String   @map("question_id") @db.Uuid
+  position   Int
+  score      Decimal  @default(1) @db.Decimal(8, 2)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   set      PracticeSet  @relation(fields: [setId], references: [id], onDelete: Cascade)
   section  ExamSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
@@ -446,25 +449,25 @@ model PracticeSetQuestion {
 /// เก็บการเริ่มทำข้อสอบของผู้ใช้หนึ่งครั้ง
 /// attempt จะชี้ได้อย่างใดอย่างหนึ่ง: part ของชุดตามสนาม หรือ practice set ของหมวดฝึก
 model ExamAttempt {
-  id            String            @id @default(uuid()) @db.Uuid
-  userId        String            @map("user_id")
-  packagePartId String?           @map("package_part_id") @db.Uuid
-  practiceSetId String?           @map("practice_set_id") @db.Uuid
-  status        ExamAttemptStatus @default(IN_PROGRESS)
-  startedAt     DateTime          @default(now()) @map("started_at") @db.Timestamptz(6)
-  submittedAt   DateTime?         @map("submitted_at") @db.Timestamptz(6)
-  expiresAt     DateTime?         @map("expires_at") @db.Timestamptz(6)
-  totalQuestions Int              @default(0) @map("total_questions")
-  answeredCount  Int              @default(0) @map("answered_count")
-  score          Decimal          @default(0) @db.Decimal(8, 2)
-  maxScore       Decimal          @default(0) @map("max_score") @db.Decimal(8, 2)
-  durationSeconds Int?            @map("duration_seconds")
-  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id              String            @id @default(uuid()) @db.Uuid
+  userId          String            @map("user_id")
+  packagePartId   String?           @map("package_part_id") @db.Uuid
+  practiceSetId   String?           @map("practice_set_id") @db.Uuid
+  status          ExamAttemptStatus @default(IN_PROGRESS)
+  startedAt       DateTime          @default(now()) @map("started_at") @db.Timestamptz(6)
+  submittedAt     DateTime?         @map("submitted_at") @db.Timestamptz(6)
+  expiresAt       DateTime?         @map("expires_at") @db.Timestamptz(6)
+  totalQuestions  Int               @default(0) @map("total_questions")
+  answeredCount   Int               @default(0) @map("answered_count")
+  score           Decimal           @default(0) @db.Decimal(8, 2)
+  maxScore        Decimal           @default(0) @map("max_score") @db.Decimal(8, 2)
+  durationSeconds Int?              @map("duration_seconds")
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  packagePart ExamPackagePart? @relation(fields: [packagePartId], references: [id], onDelete: SetNull)
-  practiceSet PracticeSet?     @relation(fields: [practiceSetId], references: [id], onDelete: SetNull)
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packagePart ExamPackagePart?    @relation(fields: [packagePartId], references: [id], onDelete: SetNull)
+  practiceSet PracticeSet?        @relation(fields: [practiceSetId], references: [id], onDelete: SetNull)
   answers     ExamAttemptAnswer[]
 
   @@index([userId])
@@ -478,16 +481,16 @@ model ExamAttempt {
 /// เก็บคำตอบรายข้อของผู้ใช้ใน attempt หนึ่งครั้ง
 /// รองรับทั้งเลือกตัวเลือกและคำตอบแบบข้อความสั้นในอนาคต
 model ExamAttemptAnswer {
-  id                String   @id @default(uuid()) @db.Uuid
-  attemptId         String   @map("attempt_id") @db.Uuid
-  questionId        String   @map("question_id") @db.Uuid
-  textAnswer        String?  @map("text_answer") @db.Text
-  isCorrect         Boolean? @map("is_correct")
-  score             Decimal  @default(0) @db.Decimal(8, 2)
-  answeredAt        DateTime @default(now()) @map("answered_at") @db.Timestamptz(6)
+  id         String   @id @default(uuid()) @db.Uuid
+  attemptId  String   @map("attempt_id") @db.Uuid
+  questionId String   @map("question_id") @db.Uuid
+  textAnswer String?  @map("text_answer") @db.Text
+  isCorrect  Boolean? @map("is_correct")
+  score      Decimal  @default(0) @db.Decimal(8, 2)
+  answeredAt DateTime @default(now()) @map("answered_at") @db.Timestamptz(6)
 
-  attempt        ExamAttempt         @relation(fields: [attemptId], references: [id], onDelete: Cascade)
-  question       ExamQuestion        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  attempt         ExamAttempt               @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question        ExamQuestion              @relation(fields: [questionId], references: [id], onDelete: Cascade)
   selectedChoices ExamAttemptAnswerChoice[]
 
   @@unique([attemptId, questionId])
@@ -503,12 +506,45 @@ model ExamAttemptAnswerChoice {
   choiceId  String   @map("choice_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  answer ExamAttemptAnswer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  answer ExamAttemptAnswer  @relation(fields: [answerId], references: [id], onDelete: Cascade)
   choice ExamQuestionChoice @relation(fields: [choiceId], references: [id], onDelete: Cascade)
 
   @@unique([answerId, choiceId])
   @@index([choiceId])
   @@map("exam_attempt_answer_choices")
+}
+
+/// เก็บคำตอบฉบับร่างระหว่างผู้ใช้ทำข้อสอบ
+/// ใช้กู้คืนกรณีปิดเว็บ กลับมาทำต่อ หรือส่งคำตอบไม่สำเร็จเพราะเน็ตมีปัญหา
+/// draft จะชี้ได้อย่างใดอย่างหนึ่ง: part ของชุดตามสนาม หรือ practice set ของหมวดฝึก
+model ExamAttemptDraft {
+  id                  String            @id @default(uuid()) @db.Uuid
+  userId              String            @map("user_id")
+  packagePartId       String?           @map("package_part_id") @db.Uuid
+  practiceSetId       String?           @map("practice_set_id") @db.Uuid
+  status              ExamAttemptStatus @default(IN_PROGRESS)
+  answersJson         Json              @default("{}") @map("answers_json")
+  startedAt           DateTime          @default(now()) @map("started_at") @db.Timestamptz(6)
+  durationSecondsUsed Int               @default(0) @map("duration_seconds_used")
+  lastSavedAt         DateTime          @default(now()) @map("last_saved_at") @db.Timestamptz(6)
+  submittedAt         DateTime?         @map("submitted_at") @db.Timestamptz(6)
+  expiresAt           DateTime?         @map("expires_at") @db.Timestamptz(6)
+  createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packagePart ExamPackagePart? @relation(fields: [packagePartId], references: [id], onDelete: Cascade)
+  practiceSet PracticeSet?     @relation(fields: [practiceSetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, packagePartId])
+  @@unique([userId, practiceSetId])
+  @@index([userId])
+  @@index([packagePartId])
+  @@index([practiceSetId])
+  @@index([status])
+  @@index([lastSavedAt])
+  @@index([expiresAt])
+  @@map("exam_attempt_drafts")
 }
 
 model SocialAccount {
@@ -550,39 +586,38 @@ model PasswordResetToken {
 }
 
 model system_config {
-  id                  String    @id @db.VarChar(50)
-  value               String    @db.VarChar(4000)
-  description         String?   @db.VarChar(4000)
-  created_at          DateTime  @default(now()) @db.Timestamp(6)
-  updated_at          DateTime  @default(now()) @db.Timestamp(6)
-  category            String    @default("GENERAL") @db.VarChar(50)
-  is_active           Boolean   @default(true)
-  is_encrypted        Boolean   @default(false)
+  id                  String   @id @db.VarChar(50)
+  value               String   @db.VarChar(4000)
+  description         String?  @db.VarChar(4000)
+  created_at          DateTime @default(now()) @db.Timestamp(6)
+  updated_at          DateTime @default(now()) @db.Timestamp(6)
+  category            String   @default("GENERAL") @db.VarChar(50)
+  is_active           Boolean  @default(true)
+  is_encrypted        Boolean  @default(false)
   last_modified_by_id String?
-  display_name        String?   @db.VarChar(100)
-  data_type           String    @default("STRING") @db.VarChar(20)
+  display_name        String?  @db.VarChar(100)
+  data_type           String   @default("STRING") @db.VarChar(20)
 
   @@index([category, is_active], map: "ix_system_config_category_is_active")
   @@map("system_config")
 }
 
-
 model NewsSource {
-  id          String    @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  name        String    @db.VarChar(150)
-  url         String    @unique @db.Text
+  name String @db.VarChar(150)
+  url  String @unique @db.Text
 
   /// government, teacher_exam, education_news, social, other
-  type        String    @default("other") @db.VarChar(50)
+  type String @default("other") @db.VarChar(50)
 
   isActive    Boolean   @default(true) @map("is_active")
   lastFetchAt DateTime? @map("last_fetch_at") @db.Timestamptz(6)
 
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  articles    NewsArticle[]
+  articles NewsArticle[]
 
   @@index([type])
   @@index([isActive])
@@ -590,23 +625,23 @@ model NewsSource {
 }
 
 model NewsCategory {
-  id          String   @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  nameTh      String   @map("name_th") @db.VarChar(100)
-  nameEn      String?  @map("name_en") @db.VarChar(100)
+  nameTh String  @map("name_th") @db.VarChar(100)
+  nameEn String? @map("name_en") @db.VarChar(100)
 
   /// teacher-exam, obec, otep, ksp, recruitment
-  slug        String   @unique @db.VarChar(120)
+  slug String @unique @db.VarChar(120)
 
-  description String?  @db.Text
+  description String? @db.Text
 
-  sortOrder   Int      @default(0) @map("sort_order")
-  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder Int     @default(0) @map("sort_order")
+  isActive  Boolean @default(true) @map("is_active")
 
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  articles    NewsArticle[]
+  articles NewsArticle[]
 
   @@index([isActive])
   @@index([sortOrder])
@@ -614,68 +649,68 @@ model NewsCategory {
 }
 
 model NewsArticle {
-  id                String        @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  sourceId          String?       @map("source_id") @db.Uuid
-  source            NewsSource?   @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  sourceId String?     @map("source_id") @db.Uuid
+  source   NewsSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
 
-  categoryId        String?       @map("category_id") @db.Uuid
-  category          NewsCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId String?       @map("category_id") @db.Uuid
+  category   NewsCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  title             String        @db.VarChar(255)
-  slug              String        @unique @db.VarChar(255)
+  title String @db.VarChar(255)
+  slug  String @unique @db.VarChar(255)
 
-  excerpt           String?       @db.VarChar(500)
-  summary           String?       @db.Text
-  content           String?       @db.Text
+  excerpt String? @db.VarChar(500)
+  summary String? @db.Text
+  content String? @db.Text
 
-  sourceName        String?       @map("source_name") @db.VarChar(150)
-  sourceUrl         String        @unique @map("source_url") @db.Text
-  imageUrl          String?       @map("image_url") @db.Text
+  sourceName String? @map("source_name") @db.VarChar(150)
+  sourceUrl  String  @unique @map("source_url") @db.Text
+  imageUrl   String? @map("image_url") @db.Text
 
-  tags              String[]      @default([])
+  tags String[] @default([])
 
   /// draft, published, upcoming, open, closing_soon, closed, cancelled, archived
-  status            String        @default("published") @db.VarChar(30)
+  status String @default("published") @db.VarChar(30)
 
   /// วันที่เริ่มรับสมัคร ใช้กับข่าวสมัครงาน/เปิดสอบ
-  applicationStart  DateTime?     @map("application_start") @db.Date
+  applicationStart DateTime? @map("application_start") @db.Date
 
   /// วันที่สิ้นสุดรับสมัคร ใช้คำนวณ open / closing_soon / closed
-  applicationEnd    DateTime?     @map("application_end") @db.Date
+  applicationEnd DateTime? @map("application_end") @db.Date
 
   /// เวลาที่ระบบ mark ว่าปิดรับสมัครแล้ว
-  closedAt          DateTime?     @map("closed_at") @db.Timestamptz(6)
+  closedAt DateTime? @map("closed_at") @db.Timestamptz(6)
 
   /// เวลาที่ mark ว่าประกาศถูกยกเลิก
-  cancelledAt       DateTime?     @map("cancelled_at") @db.Timestamptz(6)
+  cancelledAt DateTime? @map("cancelled_at") @db.Timestamptz(6)
 
   /// เวลาที่เก็บถาวร
-  archivedAt        DateTime?     @map("archived_at") @db.Timestamptz(6)
+  archivedAt DateTime? @map("archived_at") @db.Timestamptz(6)
 
   /// id จากต้นทาง เช่น JOB OCSC: 10859
   /// ใช้สำหรับ sync/upsert คู่กับ sourceId
-  externalId        String?       @map("external_id") @db.VarChar(100)
+  externalId String? @map("external_id") @db.VarChar(100)
 
   /// เวลาล่าสุดที่ workflow ยังเจอข่าวนี้จากต้นทาง
-  lastSeenAt        DateTime?     @map("last_seen_at") @db.Timestamptz(6)
+  lastSeenAt DateTime? @map("last_seen_at") @db.Timestamptz(6)
 
-  relevanceScore    Int           @default(0) @map("relevance_score")
-  viewCount         Int           @default(0) @map("view_count")
+  relevanceScore Int @default(0) @map("relevance_score")
+  viewCount      Int @default(0) @map("view_count")
 
-  isFeatured        Boolean       @default(false) @map("is_featured")
+  isFeatured Boolean @default(false) @map("is_featured")
 
-  sourcePublishedAt DateTime?     @map("source_published_at") @db.Timestamptz(6)
-  publishedAt       DateTime?     @map("published_at") @db.Timestamptz(6)
-  fetchedAt         DateTime      @default(now()) @map("fetched_at") @db.Timestamptz(6)
+  sourcePublishedAt DateTime? @map("source_published_at") @db.Timestamptz(6)
+  publishedAt       DateTime? @map("published_at") @db.Timestamptz(6)
+  fetchedAt         DateTime  @default(now()) @map("fetched_at") @db.Timestamptz(6)
 
-  rawData           Json?         @map("raw_data")
+  rawData Json? @map("raw_data")
 
-  createdBy         String?       @map("created_by") @db.Uuid
-  updatedBy         String?       @map("updated_by") @db.Uuid
+  createdBy String? @map("created_by") @db.Uuid
+  updatedBy String? @map("updated_by") @db.Uuid
 
-  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt         DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@index([status])
   @@index([categoryId])
@@ -693,27 +728,27 @@ model NewsArticle {
 }
 
 model NewsFetchLog {
-  id            String    @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  sourceId      String?   @map("source_id") @db.Uuid
-  sourceName    String?   @map("source_name") @db.VarChar(150)
-  sourceUrl     String?   @map("source_url") @db.Text
+  sourceId   String? @map("source_id") @db.Uuid
+  sourceName String? @map("source_name") @db.VarChar(150)
+  sourceUrl  String? @map("source_url") @db.Text
 
   /// success, partial_success, failed
-  status        String    @default("success") @db.VarChar(30)
+  status String @default("success") @db.VarChar(30)
 
-  totalFound    Int       @default(0) @map("total_found")
-  totalInserted Int       @default(0) @map("total_inserted")
-  totalSkipped  Int       @default(0) @map("total_skipped")
-  totalFailed   Int       @default(0) @map("total_failed")
+  totalFound    Int @default(0) @map("total_found")
+  totalInserted Int @default(0) @map("total_inserted")
+  totalSkipped  Int @default(0) @map("total_skipped")
+  totalFailed   Int @default(0) @map("total_failed")
 
-  message       String?   @db.Text
-  errorMessage  String?   @map("error_message") @db.Text
+  message      String? @db.Text
+  errorMessage String? @map("error_message") @db.Text
 
-  startedAt     DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
-  finishedAt    DateTime? @map("finished_at") @db.Timestamptz(6)
+  startedAt  DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt DateTime? @map("finished_at") @db.Timestamptz(6)
 
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@index([sourceId])
   @@index([status])
