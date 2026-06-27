@@ -47,18 +47,20 @@ export default async function AllExamsPage() {
         history: set.history,
       })),
     ),
-    ...packages.map((pack) => ({
-      id: `package-${pack.affiliationSlug}-${pack.majorSlug}-${pack.slug}`,
+    ...packages.flatMap((pack) =>
+      pack.parts.map((part) => ({
+      id: `part-${pack.affiliationSlug}-${pack.majorSlug}-${pack.slug}-${part.slug}`,
       typeLabel: "จำลองสนาม",
-      href: `/exams/${pack.affiliationSlug}/track/${pack.majorSlug}/${pack.slug}`,
-      title: pack.title,
-      description: pack.description,
-      badges: [pack.affiliationLabel, pack.majorShortName, pack.year].filter(Boolean),
-      primaryMeta: `${pack.partCount} ภาค`,
-      secondaryMeta: pack.label,
-      actionLabel: "เลือกภาค",
-      history: pack.history,
-    })),
+      href: `/exams/${pack.affiliationSlug}/track/${pack.majorSlug}/${pack.slug}/${part.slug}`,
+      title: `${pack.title} - ${part.shortTitle}`,
+      description: part.title,
+      badges: [pack.affiliationLabel, pack.majorShortName, pack.year, pack.label].filter(Boolean),
+      primaryMeta: `${part.totalQuestions} ข้อ`,
+      secondaryMeta: `${part.durationMinutes} นาที`,
+      actionLabel: "เริ่มทำ",
+      history: part.history,
+      })),
+    ),
   ];
 
   return (

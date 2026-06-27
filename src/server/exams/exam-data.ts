@@ -158,7 +158,16 @@ export async function getAllExamPackages(userId?: string) {
         parts: {
           where: { isActive: true },
           orderBy: { sortOrder: "asc" },
-          select: { id: true },
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            shortTitle: true,
+            durationMinutes: true,
+            totalQuestions: true,
+            totalScore: true,
+            difficulty: true,
+          },
         },
         track: {
           include: {
@@ -225,6 +234,7 @@ export async function getAllExamPackages(userId?: string) {
       })
     : [];
   const attemptsByPackageId = new Map<string, typeof packageAttempts>();
+  const attemptsByPackagePartId = new Map<string, typeof packageAttempts>();
   const attemptsByPracticeSetId = new Map<string, typeof practiceAttempts>();
 
   for (const attempt of packageAttempts) {
@@ -235,6 +245,10 @@ export async function getAllExamPackages(userId?: string) {
     }
 
     attemptsByPackageId.set(packageId, [...(attemptsByPackageId.get(packageId) ?? []), attempt]);
+
+    if (attempt.packagePartId) {
+      attemptsByPackagePartId.set(attempt.packagePartId, [...(attemptsByPackagePartId.get(attempt.packagePartId) ?? []), attempt]);
+    }
   }
 
   for (const attempt of practiceAttempts) {
@@ -301,6 +315,29 @@ export async function getAllExamPackages(userId?: string) {
         majorSlug: pack.track.major.slug,
         majorName: pack.track.major.name,
         majorShortName: pack.track.major.shortName ?? pack.track.major.name,
+        parts: pack.parts.map((part) => {
+          const partAttempts = attemptsByPackagePartId.get(part.id) ?? [];
+          const bestPartAttempt = partAttempts
+            .slice()
+            .sort((a, b) => toNumber(b.score) - toNumber(a.score) || toNumber(b.maxScore) - toNumber(a.maxScore))[0];
+
+          return {
+            id: part.id,
+            slug: part.slug,
+            title: part.title,
+            shortTitle: part.shortTitle ?? part.title,
+            durationMinutes: part.durationMinutes,
+            totalQuestions: part.totalQuestions,
+            totalScore: toNumber(part.totalScore),
+            difficulty: part.difficulty,
+            history: userId
+              ? {
+                  attemptCount: partAttempts.length,
+                  bestAttempt: bestPartAttempt ? mapAttemptSummary(bestPartAttempt) : null,
+                }
+              : null,
+          };
+        }),
         history: userId
           ? {
               attemptCount: packageAttempts.length,

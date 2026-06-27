@@ -61,43 +61,54 @@ export default async function ExamPackagePage({ params }: PackagePageProps) {
           <h2 className="mt-1 text-3xl font-black text-[#071f4a]">อยากลองทำส่วนไหนก่อน</h2>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="space-y-4">
           {pack.parts.map((part) => (
             <Link
               key={part.slug}
               href={`/exams/${pack.affiliation.slug}/track/${pack.major.slug}/${pack.slug}/${part.slug}`}
-              className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              className="group grid gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-[#0b66c3]/40 hover:shadow-lg lg:grid-cols-[1fr_220px_140px] lg:items-center"
             >
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{part.shortTitle}</span>
-                <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{part.audienceLabel}</span>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-[#071f4a] px-3 py-1 text-xs font-black text-white">{part.shortTitle}</span>
+                  <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{part.audienceLabel}</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{part.difficulty}</span>
+                </div>
+                <h3 className="mt-3 text-2xl font-black text-[#071f4a] group-hover:text-[#0b66c3]">{part.title}</h3>
+                <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{part.description}</p>
               </div>
-              <h3 className="mt-4 text-2xl font-black text-[#071f4a] group-hover:text-[#0b66c3]">{part.title}</h3>
-              <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{part.description}</p>
-              <p className="mt-4 text-sm font-semibold text-slate-500">
-                {part.totalQuestions} ข้อ | {part.durationMinutes} นาที | {part.difficulty}
-              </p>
-              {part.history?.bestAttempt ? (
-                <div className="mt-5 rounded-lg bg-emerald-50 p-4 text-emerald-900">
-                  <p className="text-xs font-black">คะแนนสูงสุดที่เคยทำ</p>
-                  <p className="mt-1 text-2xl font-black">
-                    {part.history.bestAttempt.score}/{part.history.bestAttempt.maxScore} คะแนน
-                  </p>
-                  <p className="mt-1 text-xs font-semibold">
-                    ทำแล้ว {part.history.attemptCount} ครั้ง
-                  </p>
+
+              <div className="grid grid-cols-2 gap-2 text-sm lg:grid-cols-1">
+                <div className="rounded-lg bg-slate-50 px-3 py-2">
+                  <p className="text-xs font-black text-slate-500">จำนวนข้อ</p>
+                  <p className="mt-1 font-black text-[#071f4a]">{part.totalQuestions} ข้อ</p>
                 </div>
-              ) : session?.user?.id ? (
-                <div className="mt-5 rounded-lg bg-slate-50 p-4 text-slate-600">
-                  <p className="text-xs font-black">ยังไม่เคยทำภาคนี้</p>
-                  <p className="mt-1 text-xs font-semibold">เริ่มทำครั้งแรกเพื่อเก็บประวัติคะแนน</p>
+                <div className="rounded-lg bg-slate-50 px-3 py-2">
+                  <p className="text-xs font-black text-slate-500">เวลา</p>
+                  <p className="mt-1 font-black text-[#071f4a]">{part.durationMinutes} นาที</p>
                 </div>
-              ) : (
-                <div className="mt-5 rounded-lg bg-slate-50 p-4 text-slate-600">
-                  <p className="text-xs font-black">เข้าสู่ระบบเพื่อเก็บประวัติคะแนน</p>
-                </div>
-              )}
-              <p className="mt-5 text-sm font-black text-[#0b66c3]">เริ่มทำภาคนี้ →</p>
+              </div>
+
+              <div className="lg:text-right">
+                {part.history?.bestAttempt ? (
+                  <div className="rounded-lg bg-emerald-50 px-3 py-2 text-emerald-900">
+                    <p className="text-xs font-black">คะแนนสูงสุด</p>
+                    <p className="mt-1 text-lg font-black">
+                      {part.history.bestAttempt.score}/{part.history.bestAttempt.maxScore}
+                    </p>
+                    <p className="text-xs font-semibold">ทำแล้ว {part.history.attemptCount} ครั้ง</p>
+                  </div>
+                ) : session?.user?.id ? (
+                  <div className="rounded-lg bg-slate-50 px-3 py-2 text-slate-600">
+                    <p className="text-xs font-black">ยังไม่เคยทำ</p>
+                  </div>
+                ) : (
+                  <div className="rounded-lg bg-slate-50 px-3 py-2 text-slate-600">
+                    <p className="text-xs font-black">เข้าสู่ระบบเพื่อเก็บคะแนน</p>
+                  </div>
+                )}
+                <p className="mt-3 text-sm font-black text-[#0b66c3]">เริ่มทำภาคนี้ →</p>
+              </div>
             </Link>
           ))}
         </div>

@@ -213,12 +213,17 @@ export default async function ExamsPage() {
 
       <section className="mx-auto grid max-w-7xl gap-8 px-4 pb-12 sm:px-6 lg:grid-cols-[1fr_360px] lg:px-8">
         <div>
-          <div className="mb-5">
-            <p className="text-sm font-black text-[#0b66c3]">ชุดข้อสอบแนะนำ</p>
-            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดจำลองสนามที่พร้อมใช้งาน</h2>
-            <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
-              เลือกชุดข้อสอบตามสังกัดและเอก จากนั้นเลือกภาคที่ต้องการทำภายในชุดนั้น
-            </p>
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-sm font-black text-[#0b66c3]">ชุดข้อสอบแนะนำ</p>
+              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดจำลองสนามที่พร้อมใช้งาน</h2>
+              <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
+                เลือกชุดข้อสอบตามสังกัดและเอก จากนั้นเลือกภาคที่ต้องการทำภายในชุดนั้น
+              </p>
+            </div>
+            <Link href="/exams/simulations" className="inline-flex w-fit rounded-lg border border-[#0b66c3]/25 bg-white px-4 py-2.5 text-sm font-black text-[#0b66c3] shadow-sm transition hover:border-[#0b66c3] hover:bg-[#f3f8ff]">
+              ดูชุดจำลองทั้งหมด
+            </Link>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {popularPackages.map((pack) => (
