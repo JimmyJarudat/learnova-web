@@ -118,6 +118,10 @@ type AttemptDraft = {
 };
 
 type DraftSaveState = "idle" | "saving" | "saved" | "error";
+type AiAdviceState = {
+  status: "idle" | "loading" | "success" | "error";
+  text: string | null;
+};
 
 function formatTime(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -257,7 +261,9 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
   const selectedChoicesRef = useRef(selectedChoices);
   const shouldWarnBeforeLeavingRef = useRef(false);
   const allowNavigationRef = useRef(false);
+  const lastAiAdviceAttemptIdRef = useRef<string | null>(null);
   const lastSavedDraftSignatureRef = useRef(initialDraft ? JSON.stringify(initialDraft.selectedChoices) : "");
+  const [aiAdvice, setAiAdvice] = useState<AiAdviceState>({ status: "idle", text: null });
 
   const resultByQuestionId = useMemo(() => {
     const entries = result?.questions?.map((question) => [question.questionId, question] as const) ?? [];
@@ -534,6 +540,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
     setStartedAt(Date.now());
     setIsSubmitting(false);
     setIsResultAnalysisOpen(false);
+    setAiAdvice({ status: "idle", text: null });
     setIsIncompleteConfirmOpen(false);
     setIsLeaveConfirmOpen(false);
     setIsLeaving(false);
@@ -690,6 +697,71 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
 
     return () => window.clearInterval(timer);
   }, [submitted, isSubmitting, part.questions.length]);
+
+  useEffect(() => {
+    if (!result?.ok || !resultAnalysis || !result.attemptId || lastAiAdviceAttemptIdRef.current === result.attemptId) {
+      return;
+    }
+
+    lastAiAdviceAttemptIdRef.current = result.attemptId;
+    setAiAdvice({ status: "loading", text: null });
+
+    const controller = new AbortController();
+
+    async function loadAiAdvice() {
+      const response = await fetch("/api/exams/ai-analysis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          examTitle: part.title,
+          result: {
+            score: result?.score ?? 0,
+            maxScore: result?.maxScore ?? 0,
+            percentage: resultAnalysis?.percentage ?? 0,
+            totalQuestions: result?.totalQuestions ?? part.questions.length,
+            answeredCount: result?.answeredCount ?? 0,
+            correctCount: result?.correctCount ?? 0,
+            incorrectCount: resultAnalysis?.incorrectCount ?? 0,
+            unansweredCount: resultAnalysis?.unansweredCount ?? 0,
+            durationSeconds: result?.durationSeconds ?? 0,
+            levelLabel: resultAnalysis?.levelLabel,
+          },
+          sections: sectionAnalysis.slice(0, 5).map((section) => ({
+            title: section.title,
+            score: section.score,
+            maxScore: section.maxScore,
+            percentage: section.percentage,
+            correctCount: section.correctCount,
+            incorrectCount: section.incorrectCount,
+            unansweredCount: section.unansweredCount,
+          })),
+          reviewQuestions: reviewQuestions.slice(0, 30).map((question) => ({
+            no: question.no,
+            status: question.status,
+          })),
+          latestAttempts,
+        }),
+        signal: controller.signal,
+      });
+      const payload = (await response.json().catch(() => ({}))) as { ok?: boolean; advice?: string };
+
+      if (!response.ok || !payload.ok || !payload.advice) {
+        throw new Error("AI advice failed");
+      }
+
+      setAiAdvice({ status: "success", text: payload.advice });
+    }
+
+    loadAiAdvice().catch(() => {
+      if (!controller.signal.aborted) {
+        setAiAdvice({ status: "error", text: null });
+      }
+    });
+
+    return () => controller.abort();
+  }, [latestAttempts, part.questions.length, part.title, result, resultAnalysis, reviewQuestions, sectionAnalysis]);
 
   if (part.questions.length === 0) {
     return (
@@ -1195,6 +1267,47 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
                 </div>
               </section>
             ) : null}
+
+            <section className="mt-5 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-black text-[#0b66c3]">คำแนะนำรอบถัดไป</p>
+                  <h3 className="mt-1 text-xl font-black text-[#071f4a]">สรุปแนวทางฝึกต่อ</h3>
+                </div>
+                <p
+                  className={`rounded-full px-3 py-1 text-xs font-black ${
+                    aiAdvice.status === "success"
+                      ? "bg-emerald-50 text-emerald-700"
+                      : aiAdvice.status === "loading"
+                        ? "bg-blue-50 text-[#0b66c3]"
+                        : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  {aiAdvice.status === "success" ? "AI ช่วยสรุป" : aiAdvice.status === "loading" ? "กำลังวิเคราะห์" : "คำแนะนำพื้นฐาน"}
+                </p>
+              </div>
+              <div className="mt-4 rounded-lg bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-600">
+                {aiAdvice.status === "loading" ? (
+                  <p>กำลังสร้างคำแนะนำเพิ่มเติมจากผลสอบล่าสุด...</p>
+                ) : aiAdvice.status === "success" && aiAdvice.text ? (
+                  <p>{aiAdvice.text}</p>
+                ) : (
+                  <div className="space-y-2">
+                    <p>{resultAnalysis.advice}</p>
+                    {sectionAnalysis[0] ? (
+                      <p>
+                        เริ่มจากทบทวนหัวข้อ “{sectionAnalysis[0].title}” ก่อน เพราะเป็นหัวข้อที่คะแนนต่ำสุดในรอบนี้
+                      </p>
+                    ) : null}
+                    {aiAdvice.status === "error" ? (
+                      <p className="text-xs font-black text-slate-400">
+                        คำแนะนำ AI ยังไม่พร้อมใช้งาน ระบบจึงแสดงคำแนะนำพื้นฐานแทน
+                      </p>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+            </section>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <button
