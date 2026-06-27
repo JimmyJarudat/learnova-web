@@ -44,6 +44,14 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+const affiliationLogoBySlug: Record<string, string> = {
+  obec: "/images/affiliations/obec.png",
+  ovec: "/images/affiliations/ovec.png",
+  dole: "/images/affiliations/dole.png",
+  dla: "/images/affiliations/dla.svg",
+  bma: "/images/affiliations/bma.svg",
+};
+
 export default async function ExamsPage() {
   const { affiliations, practiceCategories, popularPackages, totals } = await getExamOverview();
 
@@ -51,82 +59,105 @@ export default async function ExamsPage() {
     <main className="min-h-screen bg-[#f7f8fc] text-slate-950">
       <SiteHeader />
 
-      <section className="relative overflow-hidden bg-[#071f4a] text-white">
-        <Image
-          src="/images/learnova-hero-teachers-group.png"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071f4a] via-[#071f4a]/88 to-[#071f4a]/28" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071f4a]/70 via-transparent to-transparent" />
-
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 sm:py-16 lg:grid-cols-[1fr_420px] lg:px-8 lg:py-20">
-          <div className="max-w-3xl">
-            <span className="rounded-full bg-[#ffd35a] px-4 py-2 text-sm font-black text-[#071f4a] shadow-sm">
-              คลังข้อสอบ
-            </span>
-            <h1 className="mt-5 text-4xl font-black leading-tight sm:text-6xl">
-              เลือกฝึกให้ตรงจังหวะที่คุณต้องใช้
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg font-semibold leading-8 text-white/85">
-              ฝึกภาค ก แบบรวมได้ทันที หรือเลือกสังกัด เอก และปีสอบเพื่อจำลองสนามเต็มชุดที่มี ภาค ก ภาค ข และภาค ค อยู่ในหน้าเดียว
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/exams/practice/part-a" className="rounded-xl bg-[#ffd35a] px-6 py-3 text-sm font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-[#f6bf22]">
-                ฝึกภาค ก
-              </Link>
-              <Link href="/exams/ovec" className="rounded-xl bg-[#ffd35a] px-6 py-3 text-sm font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-[#f6bf22]">
-                จำลองสนาม สอศ.
-              </Link>
-              <Link href="#affiliations" className="rounded-xl bg-white px-6 py-3 text-sm font-black text-[#071f4a] shadow-lg shadow-black/10 transition hover:bg-slate-100">
-                เลือกสังกัดสอบ
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-            {[
-              ["สังกัด", totals.affiliations],
-              ["ชุดข้อสอบ", totals.sets],
-              ["ข้อทั้งหมด", totals.questions.toLocaleString("th-TH")],
-            ].map(([label, value]) => (
-              <div key={label} className="rounded-lg border border-white/15 bg-white/12 p-5 shadow-sm backdrop-blur">
-                <p className="text-sm font-bold text-white/70">{label}</p>
-                <p className="mt-1 text-4xl font-black text-[#ffd35a]">{value}</p>
+      <section className="border-b border-[#bfd4ee] bg-[#eaf3ff]">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_390px] lg:items-stretch">
+            <div className="relative overflow-hidden rounded-lg bg-[#071f4a] p-6 text-white shadow-sm">
+              <div className="absolute inset-y-0 right-0 w-28 bg-[#ffd35a]" />
+              <div className="absolute right-8 top-8 hidden h-24 w-24 rotate-6 rounded-lg border-2 border-[#071f4a] bg-white/95 p-3 shadow-lg sm:block">
+                <div className="h-2 w-16 rounded-full bg-[#071f4a]" />
+                <div className="mt-3 space-y-2">
+                  <div className="h-2 rounded-full bg-slate-200" />
+                  <div className="h-2 w-10 rounded-full bg-slate-200" />
+                  <div className="h-2 w-14 rounded-full bg-[#ffd35a]" />
+                </div>
               </div>
-            ))}
+              <div className="relative max-w-3xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#071f4a]">
+                  คลังข้อสอบ
+                </span>
+                <span className="rounded-full bg-[#ffd35a] px-3 py-1 text-xs font-black text-[#071f4a]">
+                  ครูผู้ช่วยทุกสังกัด
+                </span>
+              </div>
+              <h1 className="mt-4 max-w-2xl text-3xl font-black leading-tight sm:text-5xl">
+                เลือกชุดข้อสอบที่ตรงกับสนามของคุณ
+              </h1>
+              <p className="mt-4 max-w-2xl text-sm font-semibold leading-7 text-white/78 sm:text-base">
+                เลือกฝึกภาค ก รวม หรือเลือกสังกัดและเอกเพื่อทำชุดจำลองสนามสอบตามโครงสร้างของแต่ละสนาม
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Link href="/exams/practice/part-a" className="rounded-lg bg-[#ffd35a] px-4 py-2.5 text-sm font-black text-[#071f4a] shadow-sm transition hover:bg-[#f6bf22]">
+                  ฝึกภาค ก
+                </Link>
+                <Link href="#affiliations" className="rounded-lg bg-white px-4 py-2.5 text-sm font-black text-[#071f4a] shadow-sm transition hover:bg-slate-100">
+                  เลือกสังกัด
+                </Link>
+                <Link href="/exams/all" className="rounded-lg border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-black text-white transition hover:bg-white/18">
+                  ข้อสอบทั้งหมด
+                </Link>
+              </div>
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-[#c7dcf4] bg-white p-5 shadow-sm">
+              <div className="rounded-lg border border-slate-200 bg-[#f8fafc] p-4">
+                <p className="text-sm font-black text-[#0b66c3]">ภาพรวมคลังข้อสอบ</p>
+                <p className="mt-1 text-sm font-semibold text-slate-500">ข้อมูลข้อสอบที่เปิดใช้งาน</p>
+              </div>
+              <div className="mt-4 grid gap-3">
+                {[
+                  ["สังกัดสอบ", totals.affiliations],
+                  ["ชุดข้อสอบ", totals.sets],
+                  ["ข้อทั้งหมด", totals.questions.toLocaleString("th-TH")],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3">
+                    <p className="text-sm font-black text-slate-600">{label}</p>
+                    <p className="text-2xl font-black text-[#071f4a]">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 rounded-lg bg-[#071f4a] px-4 py-3 text-sm font-black text-white">
+                เลือกหมวดฝึก หรือเลือกสังกัดเพื่อเข้าสู่ชุดจำลองสนาม
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {practiceCategories.length > 0 ? (
         <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
-          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-black text-[#0b66c3]">ฝึกตามหมวด</p>
-              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">อยากฝึกเรื่องไหนซ้ำ ๆ</h2>
+              <h2 className="mt-1 text-3xl font-black text-[#071f4a]">เลือกหมวดข้อสอบที่ต้องการฝึก</h2>
+              <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
+                เหมาะสำหรับการฝึกเนื้อหาที่ใช้ร่วมกันในหลายสนามสอบ โดยไม่จำเป็นต้องเลือกสังกัดหรือเอกก่อน
+              </p>
             </div>
-            <p className="max-w-xl text-sm font-semibold leading-6 text-slate-500">
-              สำหรับคนที่อยากฝึกภาคที่ใช้ร่วมกันหลายสนาม โดยไม่ต้องเลือกสังกัดและเอกก่อน
-            </p>
+            <Link href="/exams/practice/part-a" className="inline-flex w-fit rounded-lg border border-[#0b66c3]/25 bg-white px-4 py-2.5 text-sm font-black text-[#0b66c3] shadow-sm transition hover:border-[#0b66c3] hover:bg-[#f3f8ff]">
+              ดูชุดฝึกทั้งหมด
+            </Link>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {practiceCategories.map((category) => (
               <Link
                 key={category.slug}
                 href={`/exams/practice/${category.slug}`}
-                className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-[#0b66c3]/40 hover:shadow-lg"
               >
-                <span className={`block h-1.5 w-16 rounded-full ${category.colorClass}`} />
-                <h3 className="mt-4 text-xl font-black leading-7 text-[#071f4a] group-hover:text-[#0b66c3]">{category.title}</h3>
-                <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{category.description}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="flex items-center justify-between gap-3">
+                  <span className={`block h-1.5 w-14 rounded-full ${category.colorClass}`} />
                   <span className="rounded-full bg-[#fff2c2] px-3 py-1 text-xs font-black text-[#9a5b00]">{category.setCount} ชุด</span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">ทุกสังกัด</span>
+                </div>
+                <h3 className="mt-4 text-xl font-black leading-7 text-[#071f4a] group-hover:text-[#0b66c3]">{category.title}</h3>
+                <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-slate-600">{category.description}</p>
+                <div className="mt-5 flex items-center justify-between">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">หลายสังกัด</span>
+                  <span className="text-sm font-black text-[#0b66c3]">เลือกชุด →</span>
                 </div>
               </Link>
             ))}
@@ -134,32 +165,14 @@ export default async function ExamsPage() {
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
-        <Link
-          href="/exams/all"
-          className="group grid gap-5 rounded-lg border border-[#0b66c3]/20 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl lg:grid-cols-[1fr_auto] lg:items-center"
-        >
-          <div>
-            <p className="text-sm font-black text-[#0b66c3]">สนามจริงทั้งหมด</p>
-            <h2 className="mt-1 text-2xl font-black text-[#071f4a]">รวมชุดจำลองสนามตามสังกัด เอก และปีสอบ</h2>
-            <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-slate-600">
-              เหมาะสำหรับคนที่เลือกสนามสอบแล้ว และต้องการเห็นชุดเต็มของสนามนั้น ทั้ง ภาค ก ภาค ข และภาค ค
-            </p>
-          </div>
-          <span className="inline-flex w-fit rounded-xl bg-[#0b66c3] px-5 py-3 text-sm font-black text-white transition group-hover:bg-[#084f99]">
-            เปิดคลังรวม →
-          </span>
-        </Link>
-      </section>
-
       <section id="affiliations" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-black text-[#0b66c3]">เลือกสนามสอบ</p>
-            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">คุณกำลังเตรียมสอบสังกัดไหน</h2>
+            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">เลือกสังกัดที่ต้องการเตรียมสอบ</h2>
           </div>
           <p className="max-w-xl text-sm font-semibold leading-6 text-slate-500">
-            แต่ละสังกัดมีวิชาแกนกลางเหมือนกัน แต่ชุดข้อสอบและหัวข้อเฉพาะจะจัดให้ตรงสนามที่เลือก
+            แต่ละสังกัดมีโครงสร้างข้อสอบและหัวข้อเฉพาะแตกต่างกัน ระบบจะแสดงชุดข้อสอบตามสนามที่เลือก
           </p>
         </div>
 
@@ -170,10 +183,16 @@ export default async function ExamsPage() {
               href={`/exams/${affiliation.slug}`}
               className="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className={`${affiliation.colorClass} relative h-40 overflow-hidden`}>
-                {affiliation.imageUrl ? (
-                  <Image src={affiliation.imageUrl} alt="" fill sizes="(min-width: 1024px) 20vw, 100vw" className="object-contain object-bottom transition group-hover:scale-105" />
-                ) : null}
+              <div className={`${affiliation.colorClass} relative grid h-44 place-items-center overflow-hidden`}>
+                <div className="absolute inset-x-8 bottom-0 h-24 rounded-t-full bg-white/20 blur-xl" />
+                <Image
+                  src={affiliationLogoBySlug[affiliation.slug] ?? affiliation.imageUrl ?? "/images/teacher-card-general.png"}
+                  alt={`โลโก้${affiliation.label}`}
+                  width={156}
+                  height={156}
+                  unoptimized
+                  className="relative max-h-36 w-auto object-contain drop-shadow-xl transition group-hover:scale-105"
+                />
                 <span className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-black text-[#071f4a]">
                   {affiliation.label}
                 </span>
@@ -191,10 +210,10 @@ export default async function ExamsPage() {
       <section className="mx-auto grid max-w-7xl gap-8 px-4 pb-12 sm:px-6 lg:grid-cols-[1fr_360px] lg:px-8">
         <div>
           <div className="mb-5">
-            <p className="text-sm font-black text-[#0b66c3]">เริ่มทำได้เลย</p>
-            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดจำลองสนามจริงที่พร้อมเปิด</h2>
+            <p className="text-sm font-black text-[#0b66c3]">ชุดข้อสอบแนะนำ</p>
+            <h2 className="mt-1 text-3xl font-black text-[#071f4a]">ชุดจำลองสนามที่พร้อมใช้งาน</h2>
             <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
-              เลือกเส้นทางตามสังกัดและเอกก่อน แล้วเข้าไปเลือกทำ ภาค ก ภาค ข หรือ ภาค ค ของสนามนั้น
+              เลือกชุดข้อสอบตามสังกัดและเอก จากนั้นเลือกภาคที่ต้องการทำภายในชุดนั้น
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
@@ -211,30 +230,42 @@ export default async function ExamsPage() {
                   </div>
                   <h3 className="mt-4 text-lg font-black leading-7 text-[#071f4a]">{pack.title}</h3>
                   <p className="mt-2 text-sm font-semibold text-slate-600">
-                    เลือกทำ ภาค ก, ภาค ข วิชาชีพครู, ภาค ข {pack.majorShortName} หรือ ภาค ค
+                    ประกอบด้วย ภาค ก, ภาค ข วิชาชีพครู, ภาค ข {pack.majorShortName} และ ภาค ค
                   </p>
                 </Link>
               ))}
           </div>
         </div>
 
-        <aside className="rounded-lg bg-[#071f4a] p-5 text-white shadow-sm">
-          <p className="text-sm font-black text-[#ffd35a]">เริ่มยังไงดี</p>
-          <div className="mt-5 space-y-4">
-            {[
-              ["1", "ฝึกภาค ก รวม", "เริ่มซ้อมพื้นฐานกลางได้ทันที โดยไม่ต้องเลือกสังกัดหรือเอก"],
-              ["2", "จำลองสนาม", "เลือกสังกัด เอก และปีสอบเมื่อต้องการทำชุดเต็ม"],
-              ["3", "เลือกภาค", "ในสนามจำลองจะมี ภาค ก ภาค ข และภาค ค ให้เลือก"],
-              ["4", "ดูคะแนน", "ส่งคำตอบแล้วดูคะแนนสูงสุดและประวัติของแต่ละภาคได้"],
-            ].map((item) => (
-              <div key={item[0]} className="flex gap-3">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#ffd35a] text-sm font-black text-[#071f4a]">{item[0]}</span>
-                <div>
-                  <h3 className="font-black">{item[1]}</h3>
-                  <p className="mt-1 text-sm font-semibold leading-6 text-white/70">{item[2]}</p>
+        <aside className="space-y-4">
+          <Link
+            href="/exams/all"
+            className="block rounded-lg border border-[#0b66c3]/20 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+          >
+            <p className="text-sm font-black text-[#0b66c3]">คลังรวม</p>
+            <h2 className="mt-1 text-xl font-black text-[#071f4a]">ข้อสอบทั้งหมด</h2>
+            <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
+              แสดงชุดข้อสอบจากทุกสังกัด ทุกเอก และทุกปีสอบในหน้าเดียว
+            </p>
+          </Link>
+
+          <div className="rounded-lg bg-[#071f4a] p-5 text-white shadow-sm">
+            <p className="text-sm font-black text-[#ffd35a]">แนวทางการเลือกชุดข้อสอบ</p>
+            <div className="mt-5 space-y-4">
+              {[
+                ["1", "ฝึกเนื้อหาพื้นฐาน", "เลือกหมวดฝึกภาค ก รวม"],
+                ["2", "เตรียมสอบตามสนามจริง", "เลือกสังกัดและเอกที่ต้องการสอบ"],
+                ["3", "ทำชุดข้อสอบแบบแยกภาค", "เลือกภาค ก ภาค ข หรือ ภาค ค ภายในชุดสอบ"],
+              ].map((item) => (
+                <div key={item[0]} className="flex gap-3">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#ffd35a] text-sm font-black text-[#071f4a]">{item[0]}</span>
+                  <div>
+                    <h3 className="font-black">{item[1]}</h3>
+                    <p className="mt-1 text-sm font-semibold leading-6 text-white/70">{item[2]}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </aside>
       </section>
