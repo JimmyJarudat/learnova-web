@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { RichContent } from "@/components/exams/rich-content";
-import { analyzeExamResult } from "@/utils/exam-result-analysis";
+import { analyzeExamResult, analyzeExamResultBySection } from "@/utils/exam-result-analysis";
 
 type ExamChoice = {
   id: string;
@@ -301,6 +301,17 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
       initialHistory?.bestAttempt,
     );
   }, [initialHistory?.bestAttempt, part.questions.length, result]);
+  const sectionAnalysis = useMemo(() => {
+    if (!result?.ok) {
+      return [];
+    }
+
+    return analyzeExamResultBySection(part.questions, result.questions);
+  }, [part.questions, result]);
+  const reviewQuestions = useMemo(
+    () => sectionAnalysis.flatMap((section) => section.reviewQuestions).sort((a, b) => a.no - b.no),
+    [sectionAnalysis],
+  );
 
   const answeredCount = Object.keys(selectedChoices).length;
   const unansweredCount = Math.max(part.questions.length - answeredCount, 0);
@@ -337,8 +348,13 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
   }
 
   function scrollToQuestion(questionId: string) {
-    document.getElementsByName(`question-${questionId}`)[0]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    document.getElementById(`question-${questionId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
     setIsNavigatorOpen(false);
+  }
+
+  function reviewQuestion(questionId: string) {
+    setIsResultAnalysisOpen(false);
+    window.setTimeout(() => scrollToQuestion(questionId), 100);
   }
 
   async function submitExam({ skipIncompleteConfirm = false }: { skipIncompleteConfirm?: boolean } = {}) {
@@ -745,7 +761,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
                 </section>
               ) : null}
 
-              <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <article id={`question-${question.id}`} className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     {question.inlinePassage ? (
@@ -1024,7 +1040,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
     ) : null}
     {isResultAnalysisOpen && result?.ok && resultAnalysis ? (
       <div className="fixed inset-0 z-[65] grid place-items-center bg-slate-950/60 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true">
-        <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-white shadow-2xl">
+        <div className="flex max-h-full w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
           <div className="bg-[#071f4a] p-5 text-white">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -1042,7 +1058,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
             </div>
           </div>
 
-          <div className="bg-slate-50 p-5">
+          <div className="overflow-y-auto bg-slate-50 p-5">
             <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
@@ -1095,6 +1111,90 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
                 <p className="mt-1 text-2xl font-black">{formatTime(result.durationSeconds ?? 0)}</p>
               </div>
             </div>
+
+            {sectionAnalysis.length > 0 ? (
+              <section className="mt-5 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-black text-[#0b66c3]">หัวข้อที่ควรทบทวนก่อน</p>
+                    <h3 className="mt-1 text-xl font-black text-[#071f4a]">วิเคราะห์ตามหัวข้อข้อสอบ</h3>
+                  </div>
+                  <p className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-500">
+                    เรียงจากคะแนนต่ำสุด
+                  </p>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  {sectionAnalysis.slice(0, 4).map((section, index) => {
+                    const barClass =
+                      section.percentage >= 80
+                        ? "bg-emerald-500"
+                        : section.percentage >= 60
+                          ? "bg-[#0b66c3]"
+                          : section.percentage >= 40
+                            ? "bg-amber-500"
+                            : "bg-rose-500";
+
+                    return (
+                      <div key={section.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-xs font-black text-slate-400">ลำดับ {index + 1}</p>
+                            <p className="mt-1 font-black text-[#071f4a]">{section.title}</p>
+                            <p className="mt-1 text-xs font-semibold text-slate-500">
+                              ถูก {section.correctCount} | ผิด {section.incorrectCount} | ไม่ตอบ {section.unansweredCount}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-lg font-black text-[#071f4a]">
+                              {section.score}/{section.maxScore}
+                            </p>
+                            <p className="text-xs font-black text-slate-500">{section.percentage}%</p>
+                          </div>
+                        </div>
+                        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                          <div className={`h-full rounded-full ${barClass}`} style={{ width: `${section.percentage}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            ) : null}
+
+            {reviewQuestions.length > 0 ? (
+              <section className="mt-5 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-black text-[#0b66c3]">ข้อที่ควรกลับไปดู</p>
+                    <h3 className="mt-1 text-xl font-black text-[#071f4a]">ข้อผิดและข้อที่ยังไม่ได้ตอบ</h3>
+                  </div>
+                  <p className="rounded-full bg-rose-50 px-3 py-1 text-xs font-black text-rose-700">
+                    {reviewQuestions.length} ข้อ
+                  </p>
+                </div>
+                <div className="mt-4 flex max-h-28 flex-wrap gap-2 overflow-y-auto pr-1">
+                  {reviewQuestions.map((question) => (
+                    <button
+                      key={question.id}
+                      type="button"
+                      onClick={() => reviewQuestion(question.id)}
+                      className={`h-9 rounded-lg px-3 text-xs font-black transition ${
+                        question.status === "unanswered"
+                          ? "bg-amber-50 text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100"
+                          : "bg-rose-50 text-rose-700 ring-1 ring-rose-200 hover:bg-rose-100"
+                      }`}
+                    >
+                      ข้อ {question.no}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-3 flex flex-wrap gap-4 text-xs font-black text-slate-500">
+                  <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded bg-rose-100 ring-1 ring-rose-200" /> ตอบผิด</span>
+                  <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded bg-amber-100 ring-1 ring-amber-200" /> ไม่ได้ตอบ</span>
+                </div>
+              </section>
+            ) : null}
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <button

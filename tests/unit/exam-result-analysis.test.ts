@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { analyzeExamResult } from "@/utils/exam-result-analysis";
+import { analyzeExamResult, analyzeExamResultBySection } from "@/utils/exam-result-analysis";
 
 describe("analyzeExamResult", () => {
   test("summarizes score, missing answers, and previous best difference", () => {
@@ -41,5 +41,38 @@ describe("analyzeExamResult", () => {
         durationSeconds: 0,
       }).bestScoreDiff,
     ).toBe(null);
+  });
+
+  test("groups result by section and sorts weakest section first", () => {
+    const sections = analyzeExamResultBySection(
+      [
+        { id: "q1", no: 1, score: 1, section: { id: "number", title: "ความสามารถด้านตัวเลข" } },
+        { id: "q2", no: 2, score: 1, section: { id: "number", title: "ความสามารถด้านตัวเลข" } },
+        { id: "q3", no: 3, score: 1, section: { id: "thai", title: "ภาษาไทย" } },
+      ],
+      [
+        { questionId: "q1", selectedChoiceIds: ["c1"], isCorrect: false, score: 0, maxScore: 1 },
+        { questionId: "q2", selectedChoiceIds: [], isCorrect: null, score: 0, maxScore: 1 },
+        { questionId: "q3", selectedChoiceIds: ["c3"], isCorrect: true, score: 1, maxScore: 1 },
+      ],
+    );
+
+    expect(sections[0]).toEqual({
+      id: "number",
+      title: "ความสามารถด้านตัวเลข",
+      score: 0,
+      maxScore: 2,
+      totalQuestions: 2,
+      answeredCount: 1,
+      correctCount: 0,
+      incorrectCount: 1,
+      unansweredCount: 1,
+      reviewQuestions: [
+        { id: "q1", no: 1, status: "incorrect" },
+        { id: "q2", no: 2, status: "unanswered" },
+      ],
+      percentage: 0,
+    });
+    expect(sections[1].title).toBe("ภาษาไทย");
   });
 });
