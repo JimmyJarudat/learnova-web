@@ -9,6 +9,7 @@ const adminMenu = [
   { href: "/admin/exams/tracks", label: "สนามสอบ", description: "เพิ่มสังกัด + เอก" },
   { href: "/admin/exams/simulations", label: "ชุดจำลองสนาม", description: "สร้างชุด ก ข ค" },
   { href: "/admin/exams/questions", label: "เพิ่มคำถาม", description: "เพิ่มข้อสอบทีละข้อ" },
+  { href: "/admin/exams/question-bank", label: "จัดการคำถาม", description: "แก้ไขและลบคำถาม" },
 ];
 
 export default async function AdminExamsLayout({ children }: { children: React.ReactNode }) {
