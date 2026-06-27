@@ -46,6 +46,7 @@ export type PracticeSetMinAggregateOutputType = {
   categoryId: string | null
   slug: string | null
   title: string | null
+  kind: $Enums.ExamPartKind | null
   scopeLabel: string | null
   yearLabel: string | null
   description: string | null
@@ -64,6 +65,7 @@ export type PracticeSetMaxAggregateOutputType = {
   categoryId: string | null
   slug: string | null
   title: string | null
+  kind: $Enums.ExamPartKind | null
   scopeLabel: string | null
   yearLabel: string | null
   description: string | null
@@ -82,6 +84,7 @@ export type PracticeSetCountAggregateOutputType = {
   categoryId: number
   slug: number
   title: number
+  kind: number
   scopeLabel: number
   yearLabel: number
   description: number
@@ -116,6 +119,7 @@ export type PracticeSetMinAggregateInputType = {
   categoryId?: true
   slug?: true
   title?: true
+  kind?: true
   scopeLabel?: true
   yearLabel?: true
   description?: true
@@ -134,6 +138,7 @@ export type PracticeSetMaxAggregateInputType = {
   categoryId?: true
   slug?: true
   title?: true
+  kind?: true
   scopeLabel?: true
   yearLabel?: true
   description?: true
@@ -152,6 +157,7 @@ export type PracticeSetCountAggregateInputType = {
   categoryId?: true
   slug?: true
   title?: true
+  kind?: true
   scopeLabel?: true
   yearLabel?: true
   description?: true
@@ -257,6 +263,7 @@ export type PracticeSetGroupByOutputType = {
   categoryId: string
   slug: string
   title: string
+  kind: $Enums.ExamPartKind
   scopeLabel: string | null
   yearLabel: string | null
   description: string | null
@@ -298,6 +305,7 @@ export type PracticeSetWhereInput = {
   categoryId?: Prisma.UuidFilter<"PracticeSet"> | string
   slug?: Prisma.StringFilter<"PracticeSet"> | string
   title?: Prisma.StringFilter<"PracticeSet"> | string
+  kind?: Prisma.EnumExamPartKindFilter<"PracticeSet"> | $Enums.ExamPartKind
   scopeLabel?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
   yearLabel?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
   description?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
@@ -322,6 +330,7 @@ export type PracticeSetOrderByWithRelationInput = {
   categoryId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  kind?: Prisma.SortOrder
   scopeLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   yearLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -350,6 +359,7 @@ export type PracticeSetWhereUniqueInput = Prisma.AtLeast<{
   categoryId?: Prisma.UuidFilter<"PracticeSet"> | string
   slug?: Prisma.StringFilter<"PracticeSet"> | string
   title?: Prisma.StringFilter<"PracticeSet"> | string
+  kind?: Prisma.EnumExamPartKindFilter<"PracticeSet"> | $Enums.ExamPartKind
   scopeLabel?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
   yearLabel?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
   description?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
@@ -374,6 +384,7 @@ export type PracticeSetOrderByWithAggregationInput = {
   categoryId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  kind?: Prisma.SortOrder
   scopeLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   yearLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -400,6 +411,7 @@ export type PracticeSetScalarWhereWithAggregatesInput = {
   categoryId?: Prisma.UuidWithAggregatesFilter<"PracticeSet"> | string
   slug?: Prisma.StringWithAggregatesFilter<"PracticeSet"> | string
   title?: Prisma.StringWithAggregatesFilter<"PracticeSet"> | string
+  kind?: Prisma.EnumExamPartKindWithAggregatesFilter<"PracticeSet"> | $Enums.ExamPartKind
   scopeLabel?: Prisma.StringNullableWithAggregatesFilter<"PracticeSet"> | string | null
   yearLabel?: Prisma.StringNullableWithAggregatesFilter<"PracticeSet"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"PracticeSet"> | string | null
@@ -417,6 +429,7 @@ export type PracticeSetCreateInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -441,6 +454,7 @@ export type PracticeSetUncheckedCreateInput = {
   categoryId: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -463,6 +477,7 @@ export type PracticeSetUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -487,6 +502,7 @@ export type PracticeSetUncheckedUpdateInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -510,6 +526,7 @@ export type PracticeSetCreateManyInput = {
   categoryId: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -527,6 +544,7 @@ export type PracticeSetUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -545,6 +563,7 @@ export type PracticeSetUncheckedUpdateManyInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -583,6 +602,7 @@ export type PracticeSetCountOrderByAggregateInput = {
   categoryId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  kind?: Prisma.SortOrder
   scopeLabel?: Prisma.SortOrder
   yearLabel?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -608,6 +628,7 @@ export type PracticeSetMaxOrderByAggregateInput = {
   categoryId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  kind?: Prisma.SortOrder
   scopeLabel?: Prisma.SortOrder
   yearLabel?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -626,6 +647,7 @@ export type PracticeSetMinOrderByAggregateInput = {
   categoryId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  kind?: Prisma.SortOrder
   scopeLabel?: Prisma.SortOrder
   yearLabel?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -773,6 +795,7 @@ export type PracticeSetCreateWithoutSectionsInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -796,6 +819,7 @@ export type PracticeSetUncheckedCreateWithoutSectionsInput = {
   categoryId: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -833,6 +857,7 @@ export type PracticeSetUpdateWithoutSectionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -856,6 +881,7 @@ export type PracticeSetUncheckedUpdateWithoutSectionsInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -877,6 +903,7 @@ export type PracticeSetCreateWithoutCategoryInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -899,6 +926,7 @@ export type PracticeSetUncheckedCreateWithoutCategoryInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -951,6 +979,7 @@ export type PracticeSetScalarWhereInput = {
   categoryId?: Prisma.UuidFilter<"PracticeSet"> | string
   slug?: Prisma.StringFilter<"PracticeSet"> | string
   title?: Prisma.StringFilter<"PracticeSet"> | string
+  kind?: Prisma.EnumExamPartKindFilter<"PracticeSet"> | $Enums.ExamPartKind
   scopeLabel?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
   yearLabel?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
   description?: Prisma.StringNullableFilter<"PracticeSet"> | string | null
@@ -968,6 +997,7 @@ export type PracticeSetCreateWithoutAffiliationsInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -991,6 +1021,7 @@ export type PracticeSetUncheckedCreateWithoutAffiliationsInput = {
   categoryId: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -1028,6 +1059,7 @@ export type PracticeSetUpdateWithoutAffiliationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1051,6 +1083,7 @@ export type PracticeSetUncheckedUpdateWithoutAffiliationsInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1072,6 +1105,7 @@ export type PracticeSetCreateWithoutItemsInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -1095,6 +1129,7 @@ export type PracticeSetUncheckedCreateWithoutItemsInput = {
   categoryId: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -1132,6 +1167,7 @@ export type PracticeSetUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1155,6 +1191,7 @@ export type PracticeSetUncheckedUpdateWithoutItemsInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1176,6 +1213,7 @@ export type PracticeSetCreateWithoutAttemptsInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -1199,6 +1237,7 @@ export type PracticeSetUncheckedCreateWithoutAttemptsInput = {
   categoryId: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -1236,6 +1275,7 @@ export type PracticeSetUpdateWithoutAttemptsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1259,6 +1299,7 @@ export type PracticeSetUncheckedUpdateWithoutAttemptsInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1280,6 +1321,7 @@ export type PracticeSetCreateWithoutDraftsInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -1303,6 +1345,7 @@ export type PracticeSetUncheckedCreateWithoutDraftsInput = {
   categoryId: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -1340,6 +1383,7 @@ export type PracticeSetUpdateWithoutDraftsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1363,6 +1407,7 @@ export type PracticeSetUncheckedUpdateWithoutDraftsInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1384,6 +1429,7 @@ export type PracticeSetCreateManyCategoryInput = {
   id?: string
   slug: string
   title: string
+  kind?: $Enums.ExamPartKind
   scopeLabel?: string | null
   yearLabel?: string | null
   description?: string | null
@@ -1401,6 +1447,7 @@ export type PracticeSetUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1423,6 +1470,7 @@ export type PracticeSetUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1445,6 +1493,7 @@ export type PracticeSetUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumExamPartKindFieldUpdateOperationsInput | $Enums.ExamPartKind
   scopeLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   yearLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1530,6 +1579,7 @@ export type PracticeSetSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   categoryId?: boolean
   slug?: boolean
   title?: boolean
+  kind?: boolean
   scopeLabel?: boolean
   yearLabel?: boolean
   description?: boolean
@@ -1555,6 +1605,7 @@ export type PracticeSetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   categoryId?: boolean
   slug?: boolean
   title?: boolean
+  kind?: boolean
   scopeLabel?: boolean
   yearLabel?: boolean
   description?: boolean
@@ -1574,6 +1625,7 @@ export type PracticeSetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   categoryId?: boolean
   slug?: boolean
   title?: boolean
+  kind?: boolean
   scopeLabel?: boolean
   yearLabel?: boolean
   description?: boolean
@@ -1593,6 +1645,7 @@ export type PracticeSetSelectScalar = {
   categoryId?: boolean
   slug?: boolean
   title?: boolean
+  kind?: boolean
   scopeLabel?: boolean
   yearLabel?: boolean
   description?: boolean
@@ -1606,7 +1659,7 @@ export type PracticeSetSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PracticeSetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "categoryId" | "slug" | "title" | "scopeLabel" | "yearLabel" | "description" | "durationMinutes" | "totalQuestions" | "totalScore" | "difficulty" | "sortOrder" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["practiceSet"]>
+export type PracticeSetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "categoryId" | "slug" | "title" | "kind" | "scopeLabel" | "yearLabel" | "description" | "durationMinutes" | "totalQuestions" | "totalScore" | "difficulty" | "sortOrder" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["practiceSet"]>
 export type PracticeSetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.PracticeCategoryDefaultArgs<ExtArgs>
   affiliations?: boolean | Prisma.PracticeSet$affiliationsArgs<ExtArgs>
@@ -1638,6 +1691,7 @@ export type $PracticeSetPayload<ExtArgs extends runtime.Types.Extensions.Interna
     categoryId: string
     slug: string
     title: string
+    kind: $Enums.ExamPartKind
     scopeLabel: string | null
     yearLabel: string | null
     description: string | null
@@ -2082,6 +2136,7 @@ export interface PracticeSetFieldRefs {
   readonly categoryId: Prisma.FieldRef<"PracticeSet", 'String'>
   readonly slug: Prisma.FieldRef<"PracticeSet", 'String'>
   readonly title: Prisma.FieldRef<"PracticeSet", 'String'>
+  readonly kind: Prisma.FieldRef<"PracticeSet", 'ExamPartKind'>
   readonly scopeLabel: Prisma.FieldRef<"PracticeSet", 'String'>
   readonly yearLabel: Prisma.FieldRef<"PracticeSet", 'String'>
   readonly description: Prisma.FieldRef<"PracticeSet", 'String'>

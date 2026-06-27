@@ -237,6 +237,7 @@ export const PracticeSetScalarFieldEnum = {
   categoryId: 'categoryId',
   slug: 'slug',
   title: 'title',
+  kind: 'kind',
   scopeLabel: 'scopeLabel',
   yearLabel: 'yearLabel',
   description: 'description',

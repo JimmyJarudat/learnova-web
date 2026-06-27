@@ -3,8 +3,10 @@ import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ExamRunner } from "@/components/exams/exam-runner";
+import { InterviewCoach } from "@/components/exams/interview-coach";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { ExamPartKind } from "@/generated/prisma/client";
 import { getAuthOptions } from "@/lib/auth/options";
 import { getPracticeSet, getPracticeSetAttemptDraft, getPracticeSetAttemptHistory } from "@/server/exams/exam-data";
 
@@ -46,10 +48,13 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
     notFound();
   }
 
-  const [history, draft] = await Promise.all([
-    getPracticeSetAttemptHistory(practiceSet.id, session.user.id),
-    getPracticeSetAttemptDraft(practiceSet.id, session.user.id),
-  ]);
+  const isInterviewSet = practiceSet.kind === ExamPartKind.PART_C_INTERVIEW;
+  const [history, draft] = isInterviewSet
+    ? [undefined, undefined]
+    : await Promise.all([
+        getPracticeSetAttemptHistory(practiceSet.id, session.user.id),
+        getPracticeSetAttemptDraft(practiceSet.id, session.user.id),
+      ]);
   const runnerPart = {
     id: practiceSet.id,
     title: practiceSet.title,
@@ -72,7 +77,7 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
             </Link>
             <h1 className="mt-2 text-2xl font-black text-[#071f4a]">{practiceSet.title}</h1>
             <p className="mt-1 text-sm font-semibold text-slate-500">
-              {practiceSet.category.shortTitle} | {practiceSet.scopeLabel} | {practiceSet.totalQuestions} ข้อ | {practiceSet.durationMinutes} นาที
+              {practiceSet.category.shortTitle} | {practiceSet.scopeLabel} | {isInterviewSet ? `ไม่เกิน 10 คำถาม | ${practiceSet.durationMinutes} นาที` : `${practiceSet.totalQuestions} ข้อ | ${practiceSet.durationMinutes} นาที`}
             </p>
           </div>
           <div className="grid grid-cols-3 gap-2 text-center">
@@ -81,8 +86,8 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
               <p className="text-xl font-black text-[#ffd35a]">{practiceSet.durationMinutes}:00</p>
             </div>
             <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-slate-200">
-              <p className="text-xs font-bold text-slate-500">ข้อทั้งหมด</p>
-              <p className="text-xl font-black text-[#071f4a]">{practiceSet.totalQuestions}</p>
+              <p className="text-xs font-bold text-slate-500">{isInterviewSet ? "คำถามสูงสุด" : "ข้อทั้งหมด"}</p>
+              <p className="text-xl font-black text-[#071f4a]">{isInterviewSet ? 10 : practiceSet.totalQuestions}</p>
             </div>
             <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-slate-200">
               <p className="text-xs font-bold text-slate-500">ระดับ</p>
@@ -92,13 +97,22 @@ export default async function PracticeSetPage({ params }: PracticeSetPageProps) 
         </div>
       </section>
 
-      <ExamRunner
-        part={runnerPart}
-        initialHistory={history}
-        initialDraft={draft}
-        submitUrl={`/api/exams/practice-sets/${practiceSet.id}/submit`}
-        draftTarget={{ type: "practiceSet", id: practiceSet.id }}
-      />
+      {isInterviewSet ? (
+        <InterviewCoach
+          examTitle={practiceSet.title}
+          affiliationLabel={practiceSet.scopeLabel ?? "ครูผู้ช่วยทุกสังกัด"}
+          majorName={practiceSet.category.shortTitle}
+          durationMinutes={practiceSet.durationMinutes}
+        />
+      ) : (
+        <ExamRunner
+          part={runnerPart}
+          initialHistory={history}
+          initialDraft={draft}
+          submitUrl={`/api/exams/practice-sets/${practiceSet.id}/submit`}
+          draftTarget={{ type: "practiceSet", id: practiceSet.id }}
+        />
+      )}
 
       <SiteFooter />
     </main>

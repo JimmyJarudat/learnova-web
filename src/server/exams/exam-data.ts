@@ -937,6 +937,7 @@ export async function getPracticeSet(categorySlug: string, setSlug: string) {
   return {
     id: practiceSet.id,
     slug: practiceSet.slug,
+    kind: practiceSet.kind,
     title: practiceSet.title,
     scopeLabel: practiceSet.scopeLabel,
     yearLabel: practiceSet.yearLabel,

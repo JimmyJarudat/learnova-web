@@ -244,6 +244,7 @@ model PracticeSet {
   categoryId      String   @map("category_id") @db.Uuid
   slug            String   @db.VarChar(140)
   title           String   @db.VarChar(255)
+  kind            ExamPartKind @default(PART_A_GENERAL)
   scopeLabel      String?  @map("scope_label") @db.VarChar(120)
   yearLabel       String?  @map("year_label") @db.VarChar(50)
   description     String?  @db.Text
