@@ -11,7 +11,7 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 type QuestionBankPageProps = {
-  searchParams: Promise<{ q?: string; source?: string }>;
+  searchParams: Promise<{ q?: string; source?: string; status?: string; count?: string }>;
 };
 
 function readText(formData: FormData, key: string) {
@@ -30,7 +30,7 @@ function parseSource(value: string) {
   return { type: "all" as const, id: "" };
 }
 
-function buildQuestionBankPath(q: string, source: string) {
+function buildQuestionBankPath(q: string, source: string, status?: string, count?: number) {
   const params = new URLSearchParams();
 
   if (q) {
@@ -39,6 +39,14 @@ function buildQuestionBankPath(q: string, source: string) {
 
   if (source) {
     params.set("source", source);
+  }
+
+  if (status) {
+    params.set("status", status);
+  }
+
+  if (typeof count === "number") {
+    params.set("count", String(count));
   }
 
   const query = params.toString();
@@ -214,8 +222,103 @@ async function deleteQuestion(formData: FormData) {
   revalidatePath("/exams");
 }
 
+async function deleteAllQuestionsFromSource(formData: FormData) {
+  "use server";
+
+  const source = readText(formData, "source");
+  const selectedSource = parseSource(source);
+
+  if (selectedSource.type === "all") {
+    throw new Error("กรุณาเลือกต้นทางก่อนลบคำถามทั้งหมด");
+  }
+
+  let deletedCount = 0;
+
+  await prisma.$transaction(async (tx) => {
+    if (selectedSource.type === "practice") {
+      const items = await tx.practiceSetQuestion.findMany({
+        where: { setId: selectedSource.id },
+        select: { questionId: true },
+      });
+      const questionIds = [...new Set(items.map((item) => item.questionId))];
+
+      deletedCount = items.length;
+
+      await tx.practiceSetQuestion.deleteMany({
+        where: { setId: selectedSource.id },
+      });
+      await tx.examSection.deleteMany({
+        where: { practiceSetId: selectedSource.id },
+      });
+      await tx.practiceSet.update({
+        where: { id: selectedSource.id },
+        data: {
+          totalQuestions: 0,
+          totalScore: 0,
+        },
+      });
+
+      for (const questionId of questionIds) {
+        const [practiceUsage, packageUsage] = await Promise.all([
+          tx.practiceSetQuestion.count({ where: { questionId } }),
+          tx.examPackagePartQuestion.count({ where: { questionId } }),
+        ]);
+
+        if (practiceUsage + packageUsage === 0) {
+          await tx.examQuestion.update({
+            where: { id: questionId },
+            data: { isActive: false },
+          });
+        }
+      }
+    } else if (selectedSource.type === "part") {
+      const items = await tx.examPackagePartQuestion.findMany({
+        where: { partId: selectedSource.id },
+        select: { questionId: true },
+      });
+      const questionIds = [...new Set(items.map((item) => item.questionId))];
+
+      deletedCount = items.length;
+
+      await tx.examPackagePartQuestion.deleteMany({
+        where: { partId: selectedSource.id },
+      });
+      await tx.examSection.deleteMany({
+        where: { partId: selectedSource.id },
+      });
+      await tx.examPackagePart.update({
+        where: { id: selectedSource.id },
+        data: {
+          totalQuestions: 0,
+          totalScore: 0,
+        },
+      });
+
+      for (const questionId of questionIds) {
+        const [practiceUsage, packageUsage] = await Promise.all([
+          tx.practiceSetQuestion.count({ where: { questionId } }),
+          tx.examPackagePartQuestion.count({ where: { questionId } }),
+        ]);
+
+        if (practiceUsage + packageUsage === 0) {
+          await tx.examQuestion.update({
+            where: { id: questionId },
+            data: { isActive: false },
+          });
+        }
+      }
+    }
+  });
+
+  revalidatePath("/admin/exams/question-bank");
+  revalidatePath("/admin/exams/practice-sets");
+  revalidatePath("/admin/exams/simulations");
+  revalidatePath("/exams");
+  redirect(buildQuestionBankPath("", source, "deleted-all", deletedCount));
+}
+
 export default async function AdminExamQuestionBankPage({ searchParams }: QuestionBankPageProps) {
-  const { q = "", source = "" } = await searchParams;
+  const { q = "", source = "", status = "", count = "" } = await searchParams;
   const keyword = q.trim();
   const [practiceSets, packages] = await Promise.all([
     prisma.practiceSet.findMany({
@@ -298,6 +401,11 @@ export default async function AdminExamQuestionBankPage({ searchParams }: Questi
     },
   });
   const selectedSourceLabel = sourceOptions.find((option) => option.value === selectedSourceValue)?.label ?? "ยังไม่มีต้นทางคำถาม";
+  const selectedSourceCount = sourceOptions.find((option) => option.value === selectedSourceValue)?.count ?? 0;
+  const statusMessage =
+    status === "deleted-all"
+      ? `ลบคำถามจากต้นทางนี้แล้ว ${Number(count || 0).toLocaleString("th-TH")} ข้อ`
+      : "";
 
   return (
     <section className="space-y-6">
@@ -325,6 +433,25 @@ export default async function AdminExamQuestionBankPage({ searchParams }: Questi
         <p className="mt-3 text-sm font-semibold text-slate-500">
           กำลังดู: <span className="font-black text-slate-700">{selectedSourceLabel}</span>
         </p>
+        {statusMessage ? (
+          <p className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700">
+            {statusMessage}
+          </p>
+        ) : null}
+        <form action={deleteAllQuestionsFromSource} className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-4">
+          <input type="hidden" name="source" value={selectedSourceValue} />
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-black text-rose-800">ลบคำถามทั้งหมดจากต้นทางนี้</p>
+              <p className="mt-1 text-xs font-semibold leading-5 text-rose-700">
+                จะลบคำถามที่ผูกกับต้นทางที่เลือกอยู่ {selectedSourceCount.toLocaleString("th-TH")} ข้อ และลบหัวข้อคั่นของต้นทางนี้ออกด้วย
+              </p>
+            </div>
+            <AdminSubmitButton pendingText="กำลังลบทั้งหมด..." className="rounded-lg border border-rose-300 bg-white px-4 py-2.5 text-sm font-black text-rose-700 transition hover:bg-rose-100">
+              ลบทั้งหมด
+            </AdminSubmitButton>
+          </div>
+        </form>
       </div>
 
       <div className="space-y-4">

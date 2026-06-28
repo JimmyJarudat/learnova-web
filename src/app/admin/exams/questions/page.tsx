@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { redirect } from "next/navigation";
 import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { JsonExampleCopy } from "@/components/admin/json-example-copy";
+import { QuestionExportButton } from "@/components/admin/question-export-button";
 import { ExamQuestionType } from "@/generated/prisma/client";
 import prisma from "@/lib/db/postgres";
 
@@ -17,6 +18,7 @@ type AdminExamQuestionsPageProps = {
     destination?: string;
     status?: string;
     count?: string;
+    message?: string;
   }>;
 };
 
@@ -96,7 +98,7 @@ function DestinationSelect({
   );
 }
 
-function buildQuestionsAdminPath(destination: string, status?: string, count?: number) {
+function buildQuestionsAdminPath(destination: string, status?: string, count?: number, message?: string) {
   const params = new URLSearchParams();
 
   if (destination) {
@@ -109,6 +111,10 @@ function buildQuestionsAdminPath(destination: string, status?: string, count?: n
 
   if (typeof count === "number") {
     params.set("count", String(count));
+  }
+
+  if (message) {
+    params.set("message", message);
   }
 
   const query = params.toString();
@@ -447,14 +453,21 @@ async function importQuestions(formData: FormData) {
   const jsonText = readText(formData, "jsonText");
   const file = formData.get("jsonFile");
   const fileText = file instanceof File && file.size > 0 ? await file.text() : "";
-  const rows = parseImportRows(jsonText || fileText);
 
   if (!destination) {
-    throw new Error("กรุณาเลือกปลายทางคำถาม");
+    redirect(buildQuestionsAdminPath("", "import-error", 0, "กรุณาเลือกปลายทางคำถาม"));
+  }
+
+  let rows: ImportQuestionRow[] = [];
+
+  try {
+    rows = parseImportRows(jsonText || fileText);
+  } catch {
+    redirect(buildQuestionsAdminPath(destination, "import-error", 0, "รูปแบบ JSON ไม่ถูกต้อง กรุณาตรวจไฟล์อีกครั้ง"));
   }
 
   if (rows.length === 0) {
-    throw new Error("ไม่พบคำถามใน JSON หรือไฟล์");
+    redirect(buildQuestionsAdminPath(destination, "import-error", 0, "ไม่พบคำถามใน JSON หรือไฟล์"));
   }
 
   const passageIds = new Map<string, string>();
@@ -526,7 +539,7 @@ async function getQuestionsPageData() {
 }
 
 export default async function AdminExamQuestionsPage({ searchParams }: AdminExamQuestionsPageProps) {
-  const { destination = "", status = "", count = "" } = await searchParams;
+  const { destination = "", status = "", count = "", message = "" } = await searchParams;
   const { practiceSets, packages } = await getQuestionsPageData();
   const destinationOptions: DestinationOption[] = [
     ...practiceSets.map((set) => ({
@@ -554,6 +567,7 @@ export default async function AdminExamQuestionsPage({ searchParams }: AdminExam
       : status === "imported"
         ? `นำเข้าคำถามสำเร็จ ${Number(count || 0).toLocaleString("th-TH")} ข้อ`
         : "";
+  const errorMessage = status === "import-error" ? message : "";
 
   return (
     <section className="space-y-6">
@@ -566,6 +580,11 @@ export default async function AdminExamQuestionsPage({ searchParams }: AdminExam
         {successMessage ? (
           <p className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700">
             {successMessage}
+          </p>
+        ) : null}
+        {errorMessage ? (
+          <p className="mt-4 rounded-lg bg-rose-50 px-4 py-3 text-sm font-black text-rose-700">
+            {errorMessage}
           </p>
         ) : null}
       </div>
@@ -642,10 +661,16 @@ export default async function AdminExamQuestionsPage({ searchParams }: AdminExam
           </div>
 
           <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_320px]">
-            <label className="block">
-              <span className="text-sm font-black text-slate-700">วาง JSON</span>
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-sm font-black text-slate-700">วาง JSON</span>
+                <AdminSubmitButton pendingText="กำลังนำเข้า..." className="rounded-xl bg-[#071f4a] px-5 py-2.5 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+                  นำเข้าคำถาม
+                </AdminSubmitButton>
+                <QuestionExportButton defaultValue={selectedDestinationValue} />
+              </div>
               <textarea name="jsonText" className="mt-2 min-h-72 w-full rounded-lg border border-slate-200 px-3 py-3 font-mono text-sm outline-none focus:border-[#0b66c3]" placeholder='{"section":"ส่วนที่ 1 ...","topic":"ตอนที่ 1 ...","questions":[{"no":1,"passage":"ข้อความร่วม ถ้ามี","question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"..."}]}' />
-            </label>
+            </div>
             <div>
               <label className="block">
                 <span className="text-sm font-black text-slate-700">หรือเลือกไฟล์</span>
@@ -657,10 +682,6 @@ export default async function AdminExamQuestionsPage({ searchParams }: AdminExam
               </div>
             </div>
           </div>
-
-          <AdminSubmitButton pendingText="กำลังนำเข้า..." className="mt-5 rounded-xl bg-[#071f4a] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0b66c3]">
-            นำเข้าคำถาม
-          </AdminSubmitButton>
         </form>
 
         <div className="order-3">
