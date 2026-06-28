@@ -41,3 +41,6 @@ planning.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# เอาไฟล์ชุดข้อสอบออกจากการ commit
+/ชุดข้อสอบ
