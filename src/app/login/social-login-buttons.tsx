@@ -33,7 +33,11 @@ const socialProviders = [
   },
 ];
 
-export function SocialLoginButtons() {
+type SocialLoginButtonsProps = {
+  callbackUrl: string;
+};
+
+export function SocialLoginButtons({ callbackUrl }: SocialLoginButtonsProps) {
   return (
     <div className="flex items-center justify-center gap-3">
       {socialProviders.map((provider) => (
@@ -45,7 +49,7 @@ export function SocialLoginButtons() {
           disabled={!provider.enabled}
           onClick={() => {
             if (provider.enabled) {
-              void signIn(provider.id, { callbackUrl: "/" });
+              void signIn(provider.id, { callbackUrl });
             }
           }}
           className={`grid h-10 w-10 place-items-center rounded-full border border-slate-200 shadow-sm transition enabled:hover:-translate-y-0.5 enabled:hover:shadow-md disabled:cursor-not-allowed ${provider.className}`}

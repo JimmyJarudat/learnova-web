@@ -13,11 +13,15 @@ type RegisterResponse = {
   fieldErrors?: FieldErrors;
 };
 
+type RegisterFormProps = {
+  callbackUrl: string;
+};
+
 function fieldError(errors: FieldErrors, field: keyof FieldErrors) {
   return errors[field] ? <p className="text-xs font-bold text-[#b42318]">{errors[field]}</p> : null;
 }
 
-export function RegisterForm() {
+export function RegisterForm({ callbackUrl }: RegisterFormProps) {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +57,13 @@ export function RegisterForm() {
         return;
       }
 
-      window.location.href = "/login?registered=1";
+      const params = new URLSearchParams({ registered: "1" });
+
+      if (callbackUrl !== "/") {
+        params.set("callbackUrl", callbackUrl);
+      }
+
+      window.location.href = `/login?${params.toString()}`;
     } catch {
       setFormError("ไม่สามารถสมัครสมาชิกได้ กรุณาลองอีกครั้ง");
     } finally {
@@ -63,7 +73,7 @@ export function RegisterForm() {
 
   return (
     <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-      <SocialLoginButtons />
+      <SocialLoginButtons callbackUrl={callbackUrl} />
 
       <div className="my-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-xs font-black text-slate-400">
         <span className="h-px bg-slate-200" />

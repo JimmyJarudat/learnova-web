@@ -13,6 +13,7 @@ type LoginPageProps = {
   searchParams?: Promise<{
     error?: string | string[];
     registered?: string | string[];
+    callbackUrl?: string | string[];
   }>;
 };
 
@@ -30,6 +31,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const error = Array.isArray(params?.error) ? params.error[0] : params?.error;
   const errorMessage = error ? authErrorMessages[error] ?? authErrorMessages.default : null;
   const registered = Array.isArray(params?.registered) ? params.registered[0] : params?.registered;
+  const callbackUrlParam = Array.isArray(params?.callbackUrl) ? params.callbackUrl[0] : params?.callbackUrl;
+  const callbackUrl = callbackUrlParam?.startsWith("/") ? callbackUrlParam : "/";
   const successMessage = registered === "1" ? "สร้างบัญชีสำเร็จแล้ว กรุณาเข้าสู่ระบบด้วย username หรืออีเมลของคุณ" : null;
 
   return (
@@ -50,7 +53,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <Link href="/" className="absolute left-1/2 top-5 grid h-10 w-10 -translate-x-1/2 place-items-center rounded-xl bg-[#ffd35a] text-lg font-black text-[#071f4a] shadow-sm">
             L
           </Link>
-          <LoginForm errorMessage={errorMessage} successMessage={successMessage} />
+          <LoginForm errorMessage={errorMessage} successMessage={successMessage} callbackUrl={callbackUrl} />
         </div>
       </section>
     </main>

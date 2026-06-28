@@ -21,7 +21,17 @@ const previewStats = [
   ["เฉลย", "ละเอียด"],
 ];
 
-export default function RegisterPage() {
+type RegisterPageProps = {
+  searchParams?: Promise<{
+    callbackUrl?: string | string[];
+  }>;
+};
+
+export default async function RegisterPage({ searchParams }: RegisterPageProps) {
+  const params = await searchParams;
+  const callbackUrlParam = Array.isArray(params?.callbackUrl) ? params.callbackUrl[0] : params?.callbackUrl;
+  const callbackUrl = callbackUrlParam?.startsWith("/") ? callbackUrlParam : "/";
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#071f4a] text-slate-950">
       <Image
@@ -91,11 +101,11 @@ export default function RegisterPage() {
                 </p>
               </div>
 
-              <RegisterForm />
+              <RegisterForm callbackUrl={callbackUrl} />
 
               <p className="mt-6 text-center text-sm font-semibold text-slate-600">
                 มีบัญชีแล้ว?{" "}
-                <Link href="/login" className="font-black text-[#0b66c3] hover:text-[#084f99]">
+                <Link href={`/login${callbackUrl !== "/" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`} className="font-black text-[#0b66c3] hover:text-[#084f99]">
                   เข้าสู่ระบบ
                 </Link>
               </p>

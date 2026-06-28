@@ -9,9 +9,10 @@ import { SocialLoginButtons } from "./social-login-buttons";
 type LoginFormProps = {
   errorMessage: string | null;
   successMessage: string | null;
+  callbackUrl: string;
 };
 
-export function LoginForm({ errorMessage, successMessage }: LoginFormProps) {
+export function LoginForm({ errorMessage, successMessage, callbackUrl }: LoginFormProps) {
   const [localError, setLocalError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,7 +26,7 @@ export function LoginForm({ errorMessage, successMessage }: LoginFormProps) {
       identifier: String(formData.get("identifier") ?? ""),
       password: String(formData.get("password") ?? ""),
       redirect: false,
-      callbackUrl: "/",
+      callbackUrl,
     });
 
     setIsSubmitting(false);
@@ -35,7 +36,7 @@ export function LoginForm({ errorMessage, successMessage }: LoginFormProps) {
       return;
     }
 
-    window.location.href = result?.url ?? "/";
+    window.location.href = result?.url ?? callbackUrl;
   }
 
   const visibleError = localError ?? errorMessage;
@@ -109,7 +110,7 @@ export function LoginForm({ errorMessage, successMessage }: LoginFormProps) {
         <span className="h-px bg-slate-200" />
       </div>
 
-      <SocialLoginButtons />
+      <SocialLoginButtons callbackUrl={callbackUrl} />
 
       <p className="mt-5 text-center text-xs font-semibold leading-5 text-slate-500">
         การเข้าสู่ระบบถือว่าคุณรับทราบ
@@ -130,7 +131,7 @@ export function LoginForm({ errorMessage, successMessage }: LoginFormProps) {
 
       <p className="mt-6 text-center text-sm font-semibold text-slate-600">
         ยังไม่มีบัญชี?{" "}
-        <Link href="/register" className="font-black text-[#0b66c3] hover:text-[#084f99]">
+        <Link href={`/register${callbackUrl !== "/" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`} className="font-black text-[#0b66c3] hover:text-[#084f99]">
           สมัครสมาชิก
         </Link>
       </p>

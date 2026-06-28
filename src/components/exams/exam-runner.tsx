@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { RichContent } from "@/components/exams/rich-content";
 import { analyzeExamResult, analyzeExamResultBySection } from "@/utils/exam-result-analysis";
@@ -241,6 +241,8 @@ function getChoiceClass({
 
 export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draftTarget }: ExamRunnerProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const loginHref = `/login?callbackUrl=${encodeURIComponent(pathname)}`;
   const initialSeconds = Math.max(part.durationMinutes * 60, 1);
   const initialDraftDuration = Math.max(0, Math.floor(initialDraft?.durationSecondsUsed ?? 0));
   const [selectedChoices, setSelectedChoices] = useState<Record<string, string>>(() => initialDraft?.selectedChoices ?? {});
@@ -794,7 +796,7 @@ export function ExamRunner({ part, initialHistory, initialDraft, submitUrl, draf
               >
                 {isSubmitting ? "กำลังส่ง..." : "ลองส่งอีกครั้ง"}
               </button>
-              <Link href="/login" className="inline-flex rounded-xl border border-rose-200 bg-white px-4 py-2 text-sm font-black text-rose-700">
+              <Link href={loginHref} className="inline-flex rounded-xl border border-rose-200 bg-white px-4 py-2 text-sm font-black text-rose-700">
                 เข้าสู่ระบบ
               </Link>
             </div>
