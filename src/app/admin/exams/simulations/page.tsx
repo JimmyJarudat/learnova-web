@@ -237,6 +237,9 @@ export default async function AdminExamSimulationsPage() {
                   <Link href={`/exams/${pack.track.affiliation.slug}/track/${pack.track.major.slug}/${pack.slug}`} className="rounded-lg border border-[#cfe5ff] bg-[#eef6ff] px-4 py-2 text-sm font-black text-[#0b66c3] transition hover:border-[#0b66c3]">
                     ดูหน้าเว็บ
                   </Link>
+                  <Link href={`/admin/exams/simulations/${pack.id}`} className="rounded-lg bg-[#0759b8] px-4 py-2 text-sm font-black text-white transition hover:bg-[#0b66c3]">
+                    จัดการภายในชุด
+                  </Link>
                 </div>
                 <div className="mt-3 grid gap-2 md:grid-cols-4">
                   {pack.parts.map((part) => (
